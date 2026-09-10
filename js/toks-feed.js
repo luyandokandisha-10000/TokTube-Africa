@@ -19,10 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="tok-stage">
             <video class="tok-video-el" data-reel-id="${reel.id}" poster="${reel.thumbnail || ''}" loop playsinline preload="${idx < 2 ? 'auto' : 'none'}" src="${safeVideoSrc}"></video>
 
-            <!-- Volume Control Overlay for Shorts -->
-            <div class="tok-volume-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: var(--radius-full); border: 1px solid rgba(255,255,255,0.2);">
-              <span class="tok-vol-badge-icon" style="font-size: 15px; cursor: pointer; user-select: none;" onclick="window.toggleTokMute(this)" title="Mute/Unmute">🔊</span>
-              <input type="range" class="tok-vol-range" min="0" max="1" step="0.05" value="1" oninput="window.setTokVolume(this)" style="width: 70px; height: 4px; accent-color: var(--tt-pink); cursor: pointer;" title="Adjust Volume">
+            <!-- Quality Selector for Shorts -->
+            <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25;">
+              <select class="tok-quality-select" onchange="window.changeTokQuality(this)" style="background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-full); padding: 5px 10px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px);">
+                <option value="1080p">1080p HD</option>
+                <option value="720p" selected>720p HD</option>
+                <option value="480p">480p</option>
+                <option value="360p">360p DataSaver</option>
+              </select>
             </div>
 
             <div class="tok-play-overlay">
@@ -31,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
 
-            <!-- Bottom overlay with Follow button placed on top of creator name -->
+            <!-- Bottom overlay with creator details -->
             <div class="tok-bottom-overlay">
               <div class="tok-creator-header-block" style="margin-bottom: 8px;">
                 <div style="display: inline-block; margin-bottom: 6px;">
@@ -75,14 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
                 </div>
                 <span class="tok-action-text" id="comment-count-label-${reel.id}">${commentsCount}</span>
-              </div>
-
-              <!-- Volume Action Button -->
-              <div class="tok-action-btn" onclick="event.stopPropagation(); window.toggleTokMute(this)" title="Mute/Unmute">
-                <div class="tok-action-circle">
-                  <span class="tok-vol-rail-icon" style="font-size:18px;">🔊</span>
-                </div>
-                <span class="tok-action-text tok-vol-rail-text">Vol</span>
               </div>
 
               <div class="tok-action-btn" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
@@ -250,6 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
       icon.textContent = iconChar;
     });
     tokShell.showToast(isMuted ? 'Volume on 🔊' : 'Muted 🔇');
+  };
+
+  window.changeTokQuality = function(selectEl) {
+    const quality = selectEl.value;
+    tokShell.showToast(`Quality set to ${quality} ✨`);
+    soundFX.playSwitchSound();
   };
 
   document.getElementById('btn-tok-prev')?.addEventListener('click', () => activateReel(currentIndex - 1));

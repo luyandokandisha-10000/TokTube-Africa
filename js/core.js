@@ -358,6 +358,134 @@ const TRANSLATIONS = {
     send: "إرسال",
     online: "متصل الآن • صانع محتوى أفريقي",
     search_placeholder: "ابحث عن المبدعين الأفارقة، العلوم، الموسيقى..."
+  },
+  bem: { // ChiBemba (Zambia)
+    nav_home: "Pa Ng'anda",
+    nav_toks: "Toks Zaipi",
+    nav_learn: "Masambililo (EduBoost)",
+    nav_friends: "Abanandi",
+    nav_messages: "Amashiwi",
+    nav_you: "Iwe & Ubwafwilisho",
+    nav_library: "Mu Layibulale",
+    nav_feedback: "Amatontonkanyo",
+    btn_create: "Panga",
+    nav_tube: "Amavidyo",
+    title_notifications: "Ifyakwishiba",
+    btn_mark_read: "Maka fyonse fya belengwa",
+    subscribers: "abasambilila",
+    subscribe: "Konka",
+    subscribed: "Ulekonka ✓",
+    comments: "Amashiwi",
+    translate_caption: "🌍 Alula mu ChiBemba",
+    translated_by: "Calyalulwa mu ChiBemba",
+    share: "Salanganya",
+    download: "Kopolola",
+    downloaded: "Cakopololwa ✓",
+    tip_creator: "Pela Ubupe (Airtel/MTN)",
+    save: "Sungila",
+    follow: "Konka",
+    following: "Ulekonka ✓",
+    block_user: "Kaka Umubomfi",
+    unblock_user: "Kakula Umubomfi",
+    send: "Tuma",
+    online: "Ali pa Intaneti • Kalemba wa ku Zambia",
+    search_placeholder: "Fwaya abapanga ifintu ku Zambia, STEM, inyimbo..."
+  },
+  nya: { // ChiNyanja / Chewa (Zambia)
+    nav_home: "Panyumba",
+    nav_toks: "Toks Zafupi",
+    nav_learn: "Maphunziro (EduBoost)",
+    nav_friends: "Amnzanga",
+    nav_messages: "Mauthenga",
+    nav_you: "Iwe & Thandizo",
+    nav_library: "M'Laibulale",
+    nav_feedback: "Maganizo",
+    btn_create: "Panga",
+    nav_tube: "Mavidiyo",
+    title_notifications: "Zidziwitso",
+    btn_mark_read: "Chonga zonse zawerengedwa",
+    subscribers: "otsatira",
+    subscribe: "Tsatirani",
+    subscribed: "Mukutsatira ✓",
+    comments: "Ndemanga",
+    translate_caption: "🌍 Masulirani mu ChiNyanja",
+    translated_by: "Zamasuliridwa mu ChiNyanja",
+    share: "Gawani",
+    download: "Koperani",
+    downloaded: "Zakopedwa ✓",
+    tip_creator: "Perekani Mphatso (Mobile Money)",
+    save: "Sungani",
+    follow: "Tsatirani",
+    following: "Mukutsatira ✓",
+    block_user: "Letsani Wosuta",
+    unblock_user: "Lolani Wosuta",
+    send: "Tumizani",
+    online: "Ali pa Intaneti • Mlengi wa ku Zambia",
+    search_placeholder: "Fufuzani opanga zinthu ku Zambia, maphunziro, nyimbo..."
+  },
+  toi: { // ChiTonga (Zambia)
+    nav_home: "Aŋanda",
+    nav_toks: "Toks Nsyonto",
+    nav_learn: "Lwiiyo (EduBoost)",
+    nav_friends: "Beenzuma",
+    nav_messages: "Mulumbe",
+    nav_you: "Nduwe & Lugwasyo",
+    nav_library: "Mubbuku",
+    nav_feedback: "Mizeezo",
+    btn_create: "Bamba",
+    nav_tube: "Mavidiyo",
+    title_notifications: "Zyakubuzigwa",
+    btn_mark_read: "Tondezya zyoonse zyabalwa",
+    subscribers: "batobela",
+    subscribe: "Tobela",
+    subscribed: "Ulatobela ✓",
+    comments: "Majwi",
+    translate_caption: "🌍 Sandula mu ChiTonga",
+    translated_by: "Zyasandulwa mu ChiTonga",
+    share: "Abana",
+    download: "Kopola",
+    downloaded: "Zyakkopolwa ✓",
+    tip_creator: "Pa Cipego (Mobile Money)",
+    save: "Yobola",
+    follow: "Tobela",
+    following: "Ulatobela ✓",
+    block_user: "Kasya Mubelesi",
+    unblock_user: "Kashununa Mubelesi",
+    send: "Tuma",
+    online: "Uli kwiinda Intaneti • Mulengi wa ku Zambia",
+    search_placeholder: "Yanda balengi bamu Zambia, zyakwiiya, nyimbo..."
+  },
+  loz: { // SiLozi (Zambia)
+    nav_home: "Kwa Ndu",
+    nav_toks: "Toks Ze Kuswani",
+    nav_learn: "Luto la Tuto (EduBoost)",
+    nav_friends: "Balikani",
+    nav_messages: "Liñusa",
+    nav_you: "Mina & Tuso",
+    nav_library: "Buka ya Libuka",
+    nav_feedback: "Maikuto",
+    btn_create: "Eza",
+    nav_tube: "Mavidiyo",
+    title_notifications: "Zibiso",
+    btn_mark_read: "Tshwaya kaufela li balilwe",
+    subscribers: "balateleli",
+    subscribe: "Latelela",
+    subscribed: "Mwa latelela ✓",
+    comments: "Maikuto",
+    translate_caption: "🌍 Toloka mwa SiLozi",
+    translated_by: "I tolokilwe mwa SiLozi",
+    share: "Abana",
+    download: "Kopa",
+    downloaded: "I kopilwe ✓",
+    tip_creator: "Fani Mpo (Mobile Money)",
+    save: "Buluka",
+    follow: "Latelela",
+    following: "Mwa latelela ✓",
+    block_user: "Kwala Mutusi",
+    unblock_user: "Kwalula Mutusi",
+    send: "Luma",
+    online: "U teñi fa Intaneti • Muezi wa mwa Zambia",
+    search_placeholder: "Bata baezi ba mwa Zambia, luto lwa tuto, lipina..."
   }
 };
 
@@ -375,7 +503,8 @@ class TranslationEngine {
     if (label) {
       const names = {
         en: 'English', sw: 'Kiswahili', yo: 'Yorùbá', ha: 'Hausa',
-        ig: 'Igbo', am: 'አማርኛ', zu: 'isiZulu', fr: 'Français', ar: 'العربية'
+        ig: 'Igbo', am: 'አማርኛ', zu: 'isiZulu', fr: 'Français', ar: 'العربية',
+        bem: 'ChiBemba (Zambia)', nya: 'ChiNyanja (Zambia)', toi: 'ChiTonga (Zambia)', loz: 'SiLozi (Zambia)'
       };
       label.textContent = names[langCode] || langCode;
     }
@@ -402,7 +531,8 @@ class TranslationEngine {
     if (this.currentLang === 'en') return text;
     const prefix = {
       sw: "[Kiswahili] ", yo: "[Yorùbá] ", ha: "[Hausa] ", ig: "[Igbo] ",
-      am: "[አማርኛ] ", zu: "[isiZulu] ", fr: "[Français] ", ar: "[العربية] "
+      am: "[አማርኛ] ", zu: "[isiZulu] ", fr: "[Français] ", ar: "[العربية] ",
+      bem: "[ChiBemba] ", nya: "[ChiNyanja] ", toi: "[ChiTonga] ", loz: "[SiLozi] "
     }[this.currentLang] || "";
     return prefix + text;
   }
@@ -1809,6 +1939,10 @@ class TokTubeShell {
               <div class="lang-option" data-lang="zu">🇿🇦 isiZulu</div>
               <div class="lang-option" data-lang="fr">🇨🇮 Français (Afrique)</div>
               <div class="lang-option" data-lang="ar">🇪🇬 العربية (Arabic)</div>
+              <div class="lang-option" data-lang="bem">🇿🇲 ChiBemba (Zambia)</div>
+              <div class="lang-option" data-lang="nya">🇿🇲 ChiNyanja / Chewa (Zambia)</div>
+              <div class="lang-option" data-lang="toi">🇿🇲 ChiTonga (Zambia)</div>
+              <div class="lang-option" data-lang="loz">🇿🇲 SiLozi (Zambia)</div>
             </div>
           </div>
 

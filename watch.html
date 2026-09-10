@@ -52,7 +52,16 @@
                       </div>
                       <span class="time-display" id="time-display">0:00 / 0:00</span>
                     </div>
-                    <div class="controls-right">
+                    <div class="controls-right" style="display:flex; align-items:center; gap:8px;">
+                      <!-- Quality Selector -->
+                      <div class="quality-selector-wrap" style="position:relative; display:inline-flex; align-items:center;">
+                        <select id="btn-watch-quality" title="Video Quality" style="background:rgba(0,0,0,0.6); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:4px; padding:4px 8px; font-size:12px; font-weight:700; cursor:pointer; outline:none;">
+                          <option value="1080p">1080p HD</option>
+                          <option value="720p" selected>720p HD</option>
+                          <option value="480p">480p</option>
+                          <option value="360p">360p</option>
+                        </select>
+                      </div>
                       <button class="control-btn" id="btn-theater-toggle" title="Theater Mode">
                         <svg viewBox="0 0 24 24"><path d="M19 6H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H5V8h14v8z"/></svg>
                       </button>
@@ -308,6 +317,13 @@
           videoEl.muted = true;
           updateVolUI(0, true);
         }
+      });
+
+      const qualitySelect = document.getElementById('btn-watch-quality');
+      qualitySelect?.addEventListener('change', (e) => {
+        const quality = e.target.value;
+        tokShell.showToast(`Resolution switched to ${quality} ✨`);
+        soundFX.playSwitchSound();
       });
 
       // Keyboard shortcut M for mute
