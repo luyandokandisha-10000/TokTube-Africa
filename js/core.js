@@ -2095,6 +2095,11 @@ class TokTubeShell {
           <span style="font-weight:800;font-size:16px;">More</span>
           <button onclick="tokShell.closeMobileDrawer()" class="mobile-drawer-close">&#x2715;</button>
         </div>
+        <a href="status.html" class="mobile-drawer-item ${page === 'status' ? 'active' : ''}">
+          <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--africa-green);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          <span style="color:var(--africa-green);font-weight:700;">Status Updates</span>
+          <span class="badge" style="background:var(--africa-green);color:#000;font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;margin-left:auto;">NEW</span>
+        </a>
         <a href="messages.html" class="mobile-drawer-item ${page === 'messages' ? 'active' : ''}">
           <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor;"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
           <span>Messages</span>
@@ -2378,11 +2383,11 @@ class TokTubeShell {
 
             <div>
               <label class="form-label">Choose Tip Amount</label>
-              <div style="display: flex; gap: 8px;">
-                <button class="btn-secondary tip-amount-btn active" data-amount="200 KES / 1,500 NGN">KES 200</button>
-                <button class="btn-secondary tip-amount-btn" data-amount="500 KES / 3,500 NGN">KES 500</button>
-                <button class="btn-secondary tip-amount-btn" data-amount="1,000 KES / 7,000 NGN">KES 1,000</button>
-                <button class="btn-secondary tip-amount-btn" data-amount="Custom">$5 USD</button>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                <button class="btn-secondary tip-amount-btn active" data-amount="K25 ZMW / KES 150">🇿🇲 ZMW 25 (~$1)</button>
+                <button class="btn-secondary tip-amount-btn" data-amount="K50 ZMW / KES 300">🇿🇲 ZMW 50 (~$2)</button>
+                <button class="btn-secondary tip-amount-btn" data-amount="K100 ZMW / KES 600">🇿🇲 ZMW 100 (~$4)</button>
+                <button class="btn-secondary tip-amount-btn" data-amount="Custom $5">$5 USD</button>
               </div>
             </div>
 
