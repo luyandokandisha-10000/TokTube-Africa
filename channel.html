@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Channel - TokTube Africa</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/modal.css" />
+  <style>
+    :root {
+      --accent: #ff3b5c;
+      --bg: #0f0f0f;
+      --surface: #181818;
+      --surface-2: #242424;
+      --surface-3: #2d2d2d;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #2e2e2e;
+      --gold: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-y: auto !important;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      background: rgba(15, 15, 15, 0.92);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      backdrop-filter: blur(14px);
+    }
+    .nav-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    .nav-back-btn:hover {
+      background: var(--surface-3);
+      transform: translateX(-2px);
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ff3b5c, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Creator Banner */
+    .ch-banner-wrapper {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #1e293b 50%, #0f172a 100%);
+      overflow: hidden;
+    }
+    .ch-banner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.3s ease;
+    }
+    .ch-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(15,15,15,0.1), rgba(15,15,15,0.85));
+    }
+
+    /* Creator Profile Section */
+    .ch-main-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+    .ch-profile-header {
+      display: flex;
+      gap: 1.8rem;
+      align-items: flex-start;
+      margin-top: -60px;
+      position: relative;
+      z-index: 10;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ch-avatar-wrap {
+      flex-shrink: 0;
+      position: relative;
+    }
+    .ch-avatar {
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      border: 4px solid var(--bg);
+      object-fit: cover;
+      background: var(--surface-2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      display: block;
+    }
+    .ch-details {
+      flex: 1;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .ch-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .ch-name-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .ch-name {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #fff;
+    }
+    .ch-verified {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #38bdf8;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 900;
+    }
+    .ch-handle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* Action Buttons Row */
+    .ch-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: 9999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      user-select: none;
+    }
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+    .btn-follow {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-follow:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+    .btn-following {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: #3f3f46;
+    }
+    .btn-friend {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-friend:hover:not(:disabled) {
+      background: var(--surface-3);
+      border-color: #52525b;
+      transform: translateY(-1px);
+    }
+    .btn-friend-sent {
+      background: #182234;
+      color: #93c5fd;
+      border-color: #1e3a8a;
+    }
+    .btn-friends-badge {
+      background: #064e3b;
+      color: #6ee7b7;
+      border-color: #047857;
+    }
+    .btn-tip {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      font-weight: 700;
+    }
+    .btn-tip:hover:not(:disabled) {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Stats & Bio */
+    .ch-stats {
+      display: flex;
+      gap: 1.6rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+    .ch-stats span strong {
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.98rem;
+    }
+    .ch-bio {
+      color: #d1d5db;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      max-width: 780px;
+    }
+
+    /* Channel Tabs (All / Tube Videos / Toks) */
+    .ch-tabs-bar {
+      display: flex;
+      gap: 1rem;
+      margin: 1.2rem 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .ch-tab-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.65rem 0.4rem;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s;
+    }
+    .ch-tab-btn:hover { color: #fff; }
+    .ch-tab-btn.active {
+      color: #fff;
+    }
+    .ch-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Video Grid & Cards */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.4rem;
+      margin-bottom: 4rem;
+    }
+    .video-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      border-color: #4a4a4a;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+    }
+    .video-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      background: #141414;
+      overflow: hidden;
+    }
+    .video-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+    .video-card:hover .video-thumb {
+      transform: scale(1.03);
+    }
+    .video-type-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #fff;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .badge-tok { background: rgba(255, 59, 92, 0.95); }
+    .badge-tube { background: rgba(124, 58, 237, 0.95); }
+
+    .video-info {
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      flex: 1;
+    }
+    .video-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #f3f4f6;
+    }
+    .video-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: auto;
+      padding-top: 0.2rem;
+    }
+
+    /* Modal backdrop safety */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      background: #27272a;
+      color: #fff;
+      padding: 0.75rem 1.6rem;
+      border-radius: 9999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      border: 1px solid #3f3f46;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+      z-index: 1000;
+    }
+    .toast.active {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .state-msg {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--muted);
+      font-size: 1rem;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+      .ch-profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-top: -45px;
+      }
+      .ch-name { justify-content: center; }
+      .ch-action-bar { justify-content: center; }
+      .ch-stats { justify-content: center; }
+      .ch-tabs-bar { justify-content: center; }
+    }
+  </style>
+</head>
+<body data-page="channel">
+
+  <!-- Top bar -->
+  <header class="top-nav">
+    <a href="index.html" class="nav-back-btn">
+      <span>←</span>
+      <span>Back</span>
+    </a>
+    <span class="brand-title">TokTube Africa</span>
+    <div style="width: 70px;"></div>
+  </header>
+
+  <!-- Banner -->
+  <div class="ch-banner-wrapper">
+    <div class="ch-banner" id="ch-banner"></div>
+    <div class="ch-banner-overlay"></div>
+  </div>
+
+  <div class="ch-main-container">
+    <!-- Creator Profile Header -->
+    <section class="ch-profile-header">
+      <div class="ch-avatar-wrap">
+        <img id="ch-avatar" class="ch-avatar" src="" alt="Avatar" />
+      </div>
+      <div class="ch-details">
+        <div class="ch-title-row">
+          <div class="ch-name-group">
+            <h1 class="ch-name" id="ch-name">Loading...</h1>
+            <div class="ch-handle" id="ch-handle"></div>
+          </div>
+          <div class="ch-action-bar" id="ch-actions" style="display: none;">
+            <button class="btn btn-friend" id="btn-friend">
+              <span>👋</span>
+              <span id="btn-friend-text">Friend Request</span>
+            </button>
+            <button class="btn btn-follow" id="btn-follow">
+              <span id="btn-follow-text">Follow</span>
+            </button>
+            <button class="btn btn-tip" id="btn-tip">
+              <span>⚡</span>
+              <span>Tip</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ch-stats" id="ch-stats"></div>
+        <p class="ch-bio" id="ch-bio"></p>
+      </div>
+    </section>
+
+    <!-- Channel Tabs -->
+    <div class="ch-tabs-bar">
+      <button class="ch-tab-btn active" data-tab="all">All Videos (<span id="tab-all-count">0</span>)</button>
+      <button class="ch-tab-btn" data-tab="tube">Long-Form Tube (<span id="tab-tube-count">0</span>)</button>
+      <button class="ch-tab-btn" data-tab="tok">Toks Shorts (<span id="tab-tok-count">0</span>)</button>
+    </div>
+
+    <!-- Videos Grid -->
+    <div class="video-grid" id="video-grid">
+      <div class="state-msg">Loading videos...</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast-msg"></div>
+
+  <!-- Shared core library (provides storage and UI coordinator) -->
+  <script src="js/core.js"></script>
+
+  <script>
+    (function () {
+      function qs(sel) { return document.querySelector(sel); }
+
+      function showToast(msg) {
+        const toast = qs('#toast-msg');
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.classList.add('active');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('active'), 2800);
+      }
+
+      function formatNum(n) {
+        if (!n && n !== 0) return '0';
+        if (typeof n === 'string') return n;
+        const num = Number(n);
+        if (isNaN(num)) return String(n);
+        if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+        if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+        return String(num);
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const creatorId = params.get('id');
+
+      if (!creatorId) {
+        qs('#ch-name').textContent = 'Channel Not Found';
+        qs('#ch-handle').textContent = 'Missing creator identifier in URL.';
+        qs('#video-grid').innerHTML = '<div class="state-msg">Please specify a creator ID (e.g. ?id=ch-amina).</div>';
+        return;
+      }
+
+      function initChannel() {
+        if (typeof storage === 'undefined') {
+          setTimeout(initChannel, 50);
+          return;
+        }
+
+        const creator = storage.getCreatorById(creatorId);
+        if (!creator) {
+          qs('#ch-name').textContent = 'Creator Not Found';
+          qs('#ch-handle').textContent = 'No creator registered with ID: ' + creatorId;
+          qs('#video-grid').innerHTML = '<div class="state-msg">This creator does not exist or has been removed.</div>';
+          return;
+        }
+
+        // Render Banner
+        if (creator.banner) {
+          qs('#ch-banner').style.backgroundImage = `url('${creator.banner}')`;
+        }
+
+        // Render Avatar & Identity
+        const avatarEl = qs('#ch-avatar');
+        avatarEl.src = creator.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120';
+        avatarEl.alt = creator.name;
+
+        qs('#ch-name').innerHTML = `${creator.name} ${creator.verified ? '<span class="ch-verified">✓</span>' : ''}`;
+        qs('#ch-handle').textContent = `${creator.handle || ''} ${creator.country ? '• ' + creator.country : ''}`;
+        qs('#ch-bio').textContent = creator.bio || '';
+
+        // Render Stats
+        qs('#ch-stats').innerHTML = `
+          <span><strong>${formatNum(creator.followers)}</strong> Followers</span>
+          <span><strong>${formatNum(creator.following || 0)}</strong> Following</span>
+          <span><strong>${formatNum(creator.likes || 0)}</strong> Likes</span>
+        `;
+
+        const actionsEl = qs('#ch-actions');
+        actionsEl.style.display = 'flex';
+
+        const currentUser = storage.getCurrentUser ? storage.getCurrentUser() : { id: 'usr-me' };
+
+        // 1. Friend Request Button Wiring
+        const btnFriend = qs('#btn-friend');
+        const btnFriendText = qs('#btn-friend-text');
+
+        function updateFriendBtnState() {
+          if (currentUser.id === creatorId) {
+            btnFriend.style.display = 'none';
+            return;
+          }
+
+          if (storage.areFriends && storage.areFriends(currentUser.id, creatorId)) {
+            btnFriend.className = 'btn btn-friends-badge';
+            btnFriend.disabled = true;
+            btnFriendText.textContent = 'Friends ✓';
+            return;
+          }
+
+          const outgoing = storage.getOutgoingRequestsFor ? storage.getOutgoingRequestsFor(currentUser.id) : [];
+          const isPending = outgoing.some(r => r.targetId === creatorId);
+
+          if (isPending) {
+            btnFriend.className = 'btn btn-friend-sent';
+            btnFriend.disabled = true;
+            btnFriendText.textContent = 'Request Sent';
+          } else {
+            btnFriend.className = 'btn btn-friend';
+            btnFriend.disabled = false;
+            btnFriendText.textContent = 'Friend Request';
+          }
+        }
+        updateFriendBtnState();
+
+        btnFriend.addEventListener('click', () => {
+          if (storage.addFriendRequest) {
+            const success = storage.addFriendRequest(currentUser.id, creatorId);
+            if (success) {
+              showToast(`Friend request sent to ${creator.name}!`);
+            } else {
+              showToast('Friend request already sent or pending.');
+            }
+            updateFriendBtnState();
+          }
+        });
+
+        // 2. Follow / Subscribe Button Wiring
+        const btnFollow = qs('#btn-follow');
+        const btnFollowText = qs('#btn-follow-text');
+
+        function updateFollowBtnState() {
+          const isSubbed = storage.isSubscribed ? storage.isSubscribed(creatorId) : false;
+          if (isSubbed) {
+            btnFollow.className = 'btn btn-following';
+            btnFollowText.textContent = 'Following ✓';
+          } else {
+            btnFollow.className = 'btn btn-follow';
+            btnFollowText.textContent = 'Follow';
+          }
+        }
+        updateFollowBtnState();
+
+        btnFollow.addEventListener('click', () => {
+          if (storage.toggleSubscribe) {
+            const nowSubbed = storage.toggleSubscribe(creatorId);
+            showToast(nowSubbed ? `Followed ${creator.name}` : `Unfollowed ${creator.name}`);
+            updateFollowBtnState();
+          }
+        });
+
+        // 3. Tip Button Wiring
+        const btnTip = qs('#btn-tip');
+        btnTip.addEventListener('click', () => {
+          if (typeof tokShell !== 'undefined' && tokShell.openTippingModal) {
+            tokShell.openTippingModal(creatorId);
+          } else {
+            showToast(`Tip modal opened for ${creator.name}`);
+          }
+        });
+
+        // 4. Render Creator Videos with Tab Filtering
+        const videos = storage.getVideosByCreatorId ? storage.getVideosByCreatorId(creatorId) : [];
+        const tubeVideos = videos.filter(v => !v.creator);
+        const tokVideos = videos.filter(v => !!v.creator);
+
+        // Update tab counts
+        const allCountEl = qs('#tab-all-count');
+        const tubeCountEl = qs('#tab-tube-count');
+        const tokCountEl = qs('#tab-tok-count');
+        if (allCountEl) allCountEl.textContent = videos.length;
+        if (tubeCountEl) tubeCountEl.textContent = tubeVideos.length;
+        if (tokCountEl) tokCountEl.textContent = tokVideos.length;
+
+        const grid = qs('#video-grid');
+        let currentFilter = 'all';
+
+        function renderFilteredVideos() {
+          let list = videos;
+          if (currentFilter === 'tube') list = tubeVideos;
+          if (currentFilter === 'tok') list = tokVideos;
+
+          if (list.length === 0) {
+            grid.innerHTML = '<div class="state-msg">No videos found in this category.</div>';
+            return;
+          }
+
+          grid.innerHTML = list.map(v => {
+            const isTok = !!v.creator;
+            const link = isTok ? `toks.html?id=${v.id}` : `watch.html?v=${v.id}`;
+            const badgeClass = isTok ? 'badge-tok' : 'badge-tube';
+            const badgeText = isTok ? 'TOK' : 'TUBE';
+            const statText = isTok ? `${formatNum(v.likes)} likes` : `${formatNum(v.views)} views`;
+            const timeText = v.timestamp ? `• ${v.timestamp}` : '';
+
+            return `
+              <a href="${link}" class="video-card">
+                <div class="video-thumb-wrap">
+                  <img src="${v.thumbnail || ''}" alt="${v.title || ''}" class="video-thumb" loading="lazy" />
+                  <span class="video-type-badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="video-info">
+                  <h3 class="video-title">${v.title || 'Untitled Video'}</h3>
+                  <div class="video-meta">
+                    <span>${statText}</span>
+                    <span>${timeText}</span>
+                  </div>
+                </div>
+              </a>
+            `;
+          }).join('');
+        }
+
+        // Tab click listeners
+        document.querySelectorAll('.ch-tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.ch-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.tab;
+            renderFilteredVideos();
+          });
+        });
+
+        renderFilteredVideos();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChannel);
+      } else {
+        initChannel();
+      }
+    })();
+  </script>
+</body>
+</html>

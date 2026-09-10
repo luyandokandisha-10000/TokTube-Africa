@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status Updates - TokTube Africa</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/features.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <style>
+    .status-page { display:flex; flex-direction:column; height:calc(100vh - var(--nav-height)); overflow:hidden; }
+    .status-header { padding:18px 24px 14px; border-bottom:1px solid var(--border-subtle); }
+    .status-header h2 { font-size:20px; font-weight:800; }
+    .status-header p { font-size:13px; color:var(--text-muted); margin-top:4px; }
+    .my-status-row { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid var(--border-subtle); cursor:pointer; transition:background var(--transition-fast); }
+    .my-status-row:hover { background:var(--bg-elevated); }
+    .status-ring-wrap { position:relative; flex-shrink:0; }
+    .status-avatar-ring { width:52px; height:52px; border-radius:50%; padding:2px; background:conic-gradient(var(--tt-pink),var(--tt-cyan),var(--africa-green),var(--africa-gold),var(--tt-pink)); display:flex; align-items:center; justify-content:center; }
+    .status-avatar-ring.no-status { background:#444; }
+    .status-avatar-inner { width:46px; height:46px; border-radius:50%; background:var(--brand-gradient); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; border:2px solid var(--bg-surface); overflow:hidden; }
+    .add-dot { position:absolute; bottom:0; right:0; width:22px; height:22px; border-radius:50%; background:var(--africa-green); border:2px solid var(--bg-surface); display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:900; color:#fff; }
+    .status-section-title { padding:10px 20px 6px; font-size:11px; font-weight:800; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; background:var(--bg-surface); }
+    .status-item { display:flex; align-items:center; gap:14px; padding:12px 20px; cursor:pointer; transition:background var(--transition-fast); border-bottom:1px solid rgba(255,255,255,0.03); }
+    .status-item:hover { background:var(--bg-elevated); }
+    .status-item-name { font-size:14px; font-weight:700; }
+    .status-item-preview { font-size:12px; color:var(--text-muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:220px; }
+    .status-item-time { font-size:11px; color:var(--text-muted); margin-left:auto; flex-shrink:0; }
+    @keyframes statusRingSpin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+    .status-avatar-ring.unviewed { animation:statusRingSpin 4s linear infinite; }
+
+    /* Viewer */
+    #sv-overlay { position:fixed; inset:0; background:#000; z-index:9000; display:none; flex-direction:column; }
+    #sv-overlay.open { display:flex; }
+    .sv-pbars { display:flex; gap:3px; padding:10px 14px 6px; }
+    .sv-pbar-seg { flex:1; height:3px; background:rgba(255,255,255,0.3); border-radius:2px; overflow:hidden; }
+    .sv-pbar-fill { height:100%; background:#fff; width:0%; transition:width linear; }
+    .sv-header { display:flex; align-items:center; gap:12px; padding:10px 14px; }
+    .sv-av { width:40px; height:40px; border-radius:50%; border:2px solid var(--tt-pink); object-fit:cover; }
+    .sv-name { font-size:15px; font-weight:700; flex:1; }
+    .sv-ts { font-size:11px; color:rgba(255,255,255,0.55); }
+    .sv-content { flex:1; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .sv-text-card { width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:40px; }
+    .sv-text-msg { font-size:clamp(15px,4vw,24px); font-weight:700; text-align:center; color:#fff; line-height:1.45; text-shadow:0 2px 12px rgba(0,0,0,0.5); }
+    .sv-media-img { max-width:100%; max-height:100%; object-fit:contain; }
+    .sv-nav { position:absolute; top:0; bottom:0; width:40%; cursor:pointer; z-index:2; }
+    .sv-nav-left { left:0; }
+    .sv-nav-right { right:0; }
+    .sv-caption { padding:10px 18px; font-size:13px; color:rgba(255,255,255,0.9); background:rgba(0,0,0,0.55); }
+    .sv-reactions { display:flex; gap:8px; padding:6px 14px; }
+    .sv-emoji { font-size:24px; cursor:pointer; transition:transform 0.15s; user-select:none; }
+    .sv-emoji:hover { transform:scale(1.4); }
+    .sv-reply-bar { display:flex; gap:8px; align-items:center; padding:10px 14px; background:rgba(0,0,0,0.6); border-top:1px solid rgba(255,255,255,0.1); }
+    .sv-reply-input { flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:9999px; padding:8px 16px; color:#fff; font-size:13px; outline:none; }
+    .sv-close { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; }
+
+    /* Create modal */
+    #cs-modal { position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:8500; display:none; align-items:center; justify-content:center; padding:20px; }
+    #cs-modal.open { display:flex; }
+    .cs-box { background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; }
+    .cs-type-tabs { display:flex; gap:8px; margin-bottom:16px; }
+    .cs-tab { flex:1; padding:8px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); background:var(--bg-card); cursor:pointer; font-size:12px; font-weight:700; text-align:center; }
+    .cs-tab.active { background:var(--tt-pink); border-color:var(--tt-pink); color:#fff; }
+    .cs-bg-swatches { display:flex; flex-wrap:wrap; gap:10px; margin-top:6px; }
+    .cs-swatch { width:36px; height:36px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition:border-color 0.2s; }
+    .cs-swatch.active { border-color:#fff; }
+    .cs-drop { border:2px dashed var(--border-subtle); border-radius:var(--radius-md); padding:28px; text-align:center; cursor:pointer; background:var(--bg-card); }
+  </style>
+</head>
+<body data-page="status">
+<div id="app">
+  <div id="navbar-container"></div>
+  <div id="main-content">
+    <div id="sidebar-container"></div>
+    <main class="page-main" style="padding:0;">
+      <div class="status-page">
+        <div class="status-header">
+          <h2>📸 Status Updates</h2>
+          <p>Moments shared with your followers — disappear after 24 hours.</p>
+        </div>
+        <div class="my-status-row" id="my-status-row-container">
+          <div class="status-ring-wrap" onclick="window.handleMyStatusClick()">
+            <div class="status-avatar-ring no-status" id="my-status-ring">
+              <div class="status-avatar-inner" id="my-status-av">P</div>
+            </div>
+            <div class="add-dot" onclick="event.stopPropagation(); window.openCreateStatus();" title="Add status">+</div>
+          </div>
+          <div style="flex:1; cursor:pointer;" onclick="window.handleMyStatusClick()">
+            <div style="font-size:15px;font-weight:700;">My Status</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="my-status-hint">Tap to add a status</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="btn-view-my-status" class="btn-secondary" style="display:none; padding:6px 14px; font-size:12px;" onclick="event.stopPropagation(); window.openSV('my-status')">
+              👁️ View
+            </button>
+            <button class="btn-primary" style="padding:6px 14px; font-size:12px;" onclick="event.stopPropagation(); window.openCreateStatus()">
+              + Add
+            </button>
+          </div>
+        </div>
+        <div class="status-section-title">Recent Updates from Creators You Follow</div>
+        <div id="status-feed" style="overflow-y:auto;flex:1;"></div>
+      </div>
+    </main>
+  </div>
+  <div id="mobile-bottom-nav-container"></div>
+</div>
+
+<!-- STATUS VIEWER -->
+<div id="sv-overlay">
+  <div class="sv-pbars" id="sv-pbars"></div>
+  <div class="sv-header">
+    <img class="sv-av" id="sv-av" src="">
+    <div>
+      <div class="sv-name" id="sv-name">Creator</div>
+      <div class="sv-ts" id="sv-ts">Just now</div>
+    </div>
+    <button class="sv-close" onclick="window.closeSV()">✕</button>
+  </div>
+  <div class="sv-content" id="sv-content">
+    <div class="sv-nav sv-nav-left" onclick="window.svPrev()"></div>
+    <div class="sv-nav sv-nav-right" onclick="window.svNext()"></div>
+  </div>
+  <div id="sv-caption" class="sv-caption" style="display:none;"></div>
+  <div class="sv-reactions">
+    <span class="sv-emoji" onclick="window.svReact('❤️')">❤️</span>
+    <span class="sv-emoji" onclick="window.svReact('🔥')">🔥</span>
+    <span class="sv-emoji" onclick="window.svReact('😂')">😂</span>
+    <span class="sv-emoji" onclick="window.svReact('🙏')">🙏</span>
+    <span class="sv-emoji" onclick="window.svReact('👏')">👏</span>
+    <span class="sv-emoji" onclick="window.svReact('🌍')">🌍</span>
+    <span class="sv-emoji" onclick="window.svReact('💃')">💃</span>
+  </div>
+  <div class="sv-reply-bar">
+    <input class="sv-reply-input" id="sv-ri" placeholder="Reply to status...">
+    <button class="btn-primary" style="padding:8px 14px;font-size:13px;" onclick="window.svReply()">Send</button>
+  </div>
+</div>
+
+<!-- CREATE STATUS MODAL -->
+<div id="cs-modal">
+  <div class="cs-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-size:17px;font-weight:800;">New Status Update</h3>
+      <button onclick="document.getElementById('cs-modal').classList.remove('open')" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div class="cs-type-tabs">
+      <div class="cs-tab active" id="ctab-text" onclick="window.csType('text')">📝 Text</div>
+      <div class="cs-tab" id="ctab-photo" onclick="window.csType('photo')">📸 Photo</div>
+      <div class="cs-tab" id="ctab-video" onclick="window.csType('video')">📱 Video</div>
+    </div>
+    <!-- Text form -->
+    <div id="cs-text-form">
+      <div class="form-group">
+        <label class="form-label">What's happening? <span id="cs-cc" style="color:var(--text-muted);float:right;">0/280</span></label>
+        <textarea id="cs-text" class="form-textarea" rows="4" maxlength="280" placeholder="Share something with Africa... 🌍"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Background</label>
+        <div class="cs-bg-swatches" id="cs-bgs">
+          <div class="cs-swatch active" data-bg="linear-gradient(135deg,#00C853,#1de9b6)" style="background:linear-gradient(135deg,#00C853,#1de9b6)"></div>
+          <div class="cs-swatch" data-bg="linear-gradient(135deg,#FE2C55,#FF5F79)" style="background:linear-gradient(135deg,#FE2C55,#FF5F79)"></div>
+          <div class="cs-swatch" data-bg="linear-gradient(135deg,#FFB800,#FF6B00)" style="background:linear-gradient(135deg,#FFB800,#FF6B00)"></div>
+          <div class="cs-swatch" data-bg="linear-gradient(135deg,#3A1C71,#D76D77,#FFAF7B)" style="background:linear-gradient(135deg,#3A1C71,#D76D77,#FFAF7B)"></div>
+          <div class="cs-swatch" data-bg="linear-gradient(135deg,#25D366,#128C7E)" style="background:linear-gradient(135deg,#25D366,#128C7E)"></div>
+          <div class="cs-swatch" data-bg="#1a1a1a" style="background:#1a1a1a;border-color:#555;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Media form -->
+    <div id="cs-media-form" style="display:none;">
+      <div class="cs-drop" id="cs-drop" onclick="document.getElementById('cs-media-input').click()">
+        <div style="font-size:32px;" id="cs-drop-icon">📸</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-top:6px;" id="cs-drop-label">Tap to pick photo</p>
+        <input type="file" id="cs-media-input" accept="image/*,video/*" style="display:none;">
+        <img id="cs-preview" style="display:none;max-width:100%;max-height:200px;object-fit:contain;border-radius:var(--radius-md);margin-top:10px;" src="">
+        <video id="cs-video-preview" controls playsinline muted style="display:none;max-width:100%;max-height:200px;object-fit:contain;border-radius:var(--radius-md);margin-top:10px;background:#000;"></video>
+      </div>
+      <div id="cs-video-presets" style="display:none; margin-top:10px;">
+        <span style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:6px;">Or select a quick test video clip:</span>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button type="button" class="btn-secondary" style="font-size:11px; padding:6px 10px; text-align:left;" onclick="window.pickDemoVideo('https://vjs.zencdn.net/v/oceans.mp4', 'African Oceans & Maritime 🌊')">🌊 Ocean Clip</button>
+          <button type="button" class="btn-secondary" style="font-size:11px; padding:6px 10px; text-align:left;" onclick="window.pickDemoVideo('https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4', 'African AgriTech Bloom 🌱')">🌱 Agri Clip</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Caption (optional)</label>
+        <input type="text" id="cs-caption" class="form-input" placeholder="Add a caption...">
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;padding:12px;margin-top:14px;font-size:15px;" onclick="window.publishStatus()">🚀 Share Status</button>
+  </div>
+</div>
+
+<script src="js/core.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const user = storage.getUserProfile();
+  const myAv = document.getElementById('my-status-av');
+  if (user.avatarUrl) myAv.innerHTML = `<img src="${user.avatarUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+  else myAv.textContent = user.avatarLetter || 'P';
+
+  // Sample statuses
+  const sampleStatuses = [
+    {
+      id:'s1', name:'Amina Mwangi', handle:'@amina_tech',
+      avatar:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop',
+      unviewed:true,
+      items:[
+        {type:'text',content:'Just shipped solar tracker code to 12 rural clinics in Kenya! Green energy is the future 🌍⚡',bg:'linear-gradient(135deg,#00C853,#1de9b6)',time:'5m ago'},
+        {type:'image',content:'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=800&auto=format&fit=crop',caption:'Solar panels in Kisumu 🌅',time:'1h ago'}
+      ]
+    },
+    {
+      id:'s2', name:'Babatunde Adeleke', handle:'@tunde_ai',
+      avatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop',
+      unviewed:true,
+      items:[
+        {type:'text',content:'Trained an AI that understands Yoruba, Igbo AND Swahili simultaneously 🧠 African NLP is here 🇳🇬',bg:'linear-gradient(135deg,#3A1C71,#D76D77,#FFAF7B)',time:'1h ago'}
+      ]
+    },
+    {
+      id:'s3', name:'Zola Dlamini', handle:'@zola_amapiano',
+      avatar:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop',
+      unviewed:true,
+      items:[
+        {type:'image',content:'https://images.unsplash.com/photo-1574169208507-84376144848b?w=800&auto=format&fit=crop',caption:'Studio sessions in Johannesburg 🎵🇿🇦',time:'2h ago'},
+        {type:'text',content:'3 new Amapiano beats produced this weekend. African music is the future of the world — drop a 🌍 if you agree!',bg:'linear-gradient(135deg,#FFB800,#FF6B00)',time:'2h ago'}
+      ]
+    },
+    {
+      id:'s4', name:'Fatima Al-Hassan', handle:'@fatima_cairo',
+      avatar:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop',
+      unviewed:false,
+      items:[
+        {type:'image',content:'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop',caption:'Pan-African AI Summit in Cairo 🌐',time:'8h ago'}
+      ]
+    }
+  ];
+
+  // My statuses from localStorage
+  let myStatuses = [];
+  try { myStatuses = JSON.parse(localStorage.getItem('toktube_my_statuses')) || []; } catch(e){}
+
+  const statusMap = {};
+  sampleStatuses.forEach(s => statusMap[s.id] = s);
+
+  function syncMyStatusUI() {
+    const viewBtn = document.getElementById('btn-view-my-status');
+    const ringEl = document.getElementById('my-status-ring');
+    const hintEl = document.getElementById('my-status-hint');
+
+    if (myStatuses.length > 0) {
+      hintEl.textContent = `${myStatuses.length} update${myStatuses.length > 1 ? 's' : ''} • Tap to view`;
+      ringEl.classList.remove('no-status');
+      ringEl.style.background = 'conic-gradient(var(--tt-pink),var(--tt-cyan),var(--africa-green),var(--africa-gold),var(--tt-pink))';
+      if (viewBtn) viewBtn.style.display = 'inline-flex';
+
+      // Register in statusMap so viewer can display user's own status
+      statusMap['my-status'] = {
+        id: 'my-status',
+        name: (user.name || 'You') + ' (My Status)',
+        avatar: user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        items: myStatuses
+      };
+    } else {
+      hintEl.textContent = 'Tap to add a status';
+      ringEl.classList.add('no-status');
+      ringEl.style.background = '#333';
+      if (viewBtn) viewBtn.style.display = 'none';
+      delete statusMap['my-status'];
+    }
+  }
+
+  syncMyStatusUI();
+
+  window.handleMyStatusClick = function() {
+    if (myStatuses.length > 0) {
+      window.openSV('my-status');
+    } else {
+      window.openCreateStatus();
+    }
+  };
+
+  const feedEl = document.getElementById('status-feed');
+  feedEl.innerHTML = sampleStatuses.map(s => `
+    <div class="status-item" onclick="window.openSV('${s.id}')">
+      <div class="status-ring-wrap">
+        <div class="status-avatar-ring ${s.unviewed?'unviewed':''}" style="width:52px;height:52px;padding:2px;background:${s.unviewed?'conic-gradient(var(--tt-pink),var(--tt-cyan),var(--africa-green),var(--africa-gold),var(--tt-pink))':'#444'};">
+          <img src="${s.avatar}" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--bg-surface);">
+        </div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div class="status-item-name">${s.name}</div>
+        <div class="status-item-preview">${s.items[0].type==='text'?s.items[0].content:'📸 '+(s.items[0].caption||'Media update')}</div>
+      </div>
+      <div class="status-item-time">${s.items[0].time}</div>
+    </div>
+  `).join('');
+
+  let svItems=[], svIdx=0, svTimer=null, svStatus=null;
+
+  window.openSV = function(id) {
+    const s = statusMap[id];
+    if (!s) return;
+    svStatus = s; svItems = s.items; svIdx = 0;
+    document.getElementById('sv-av').src = s.avatar;
+    document.getElementById('sv-name').textContent = s.name;
+    renderSVFrame();
+    document.getElementById('sv-overlay').classList.add('open');
+    startSVTimer();
+  };
+
+  function renderSVFrame() {
+    const item = svItems[svIdx];
+    if (!item) return;
+    document.getElementById('sv-ts').textContent = item.time || 'Just now';
+
+    // Progress bars
+    document.getElementById('sv-pbars').innerHTML = svItems.map((_,i) =>
+      `<div class="sv-pbar-seg"><div class="sv-pbar-fill" id="svpf-${i}" style="width:${i<svIdx?'100%':'0%'};"></div></div>`
+    ).join('');
+
+    let html = '';
+    if (item.type === 'text') {
+      html = `<div class="sv-text-card" style="background:${item.bg||'#111'};width:100%;height:100%;"><p class="sv-text-msg">${item.content}</p></div>`;
+    } else if (item.type === 'image') {
+      html = `<img class="sv-media-img" src="${item.content}">`;
+    } else if (item.type === 'video') {
+      html = `<video id="sv-active-video" src="${item.content}" autoplay muted loop playsinline style="max-width:100%;max-height:100%;object-fit:contain;"></video>`;
+      if (item.isBlob && item.id) {
+        storage.getVideoBlob(item.id).then(blobUrl => {
+          if (blobUrl) {
+            const v = document.getElementById('sv-active-video');
+            if (v) {
+              v.src = blobUrl;
+              v.play().catch(() => {});
+            }
+          }
+        }).catch(() => {});
+      }
+    }
+
+    const cEl = document.getElementById('sv-content');
+    cEl.innerHTML = `<div class="sv-nav sv-nav-left" onclick="window.svPrev()"></div>${html}<div class="sv-nav sv-nav-right" onclick="window.svNext()"></div>`;
+
+    const cap = document.getElementById('sv-caption');
+    if (item.caption) { cap.textContent = item.caption; cap.style.display='block'; }
+    else cap.style.display='none';
+  }
+
+  function startSVTimer() {
+    clearTimeout(svTimer);
+    const fill = document.getElementById(`svpf-${svIdx}`);
+    if (fill) { fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }
+    svTimer = setTimeout(() => window.svNext(), 5000);
+  }
+
+  window.svNext = function() {
+    clearTimeout(svTimer);
+    if (svIdx < svItems.length-1) { svIdx++; renderSVFrame(); startSVTimer(); }
+    else window.closeSV();
+  };
+  window.svPrev = function() {
+    clearTimeout(svTimer);
+    if (svIdx > 0) { svIdx--; renderSVFrame(); startSVTimer(); }
+  };
+  window.closeSV = function() {
+    clearTimeout(svTimer);
+    document.getElementById('sv-overlay').classList.remove('open');
+    if (svStatus) svStatus.unviewed = false;
+    feedEl.querySelectorAll('.status-avatar-ring.unviewed').forEach(r => r.classList.remove('unviewed'));
+  };
+  window.svReact = function(e) { soundFX.playLikeSound(); tokShell.showToast('Reacted '+e+'!'); };
+  window.svReply = function() {
+    const val = document.getElementById('sv-ri').value.trim();
+    if (!val) return;
+    tokShell.showToast('Reply sent! 💬'); soundFX.playSubscribeSound();
+    document.getElementById('sv-ri').value = '';
+  };
+
+  // Keyboard for viewer
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('sv-overlay').classList.contains('open')) return;
+    if (e.key==='Escape') window.closeSV();
+    if (e.key==='ArrowRight') window.svNext();
+    if (e.key==='ArrowLeft') window.svPrev();
+  });
+
+  // Touch swipe
+  let tx=0;
+  document.getElementById('sv-overlay').addEventListener('touchstart', e => tx=e.changedTouches[0].clientX);
+  document.getElementById('sv-overlay').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx)>50) dx<0?window.svNext():window.svPrev();
+  });
+
+  // CREATE STATUS
+  let csType='text', csBg='linear-gradient(135deg,#00C853,#1de9b6)', csMedia='', csVideoBlob=null;
+
+  window.openCreateStatus = function() {
+    document.getElementById('cs-modal').classList.add('open');
+    window.csType('text');
+  };
+
+  window.csType = function(t) {
+    csType = t;
+    ['text','photo','video'].forEach(x => {
+      document.getElementById('ctab-'+x).classList.toggle('active', x===t);
+    });
+    document.getElementById('cs-text-form').style.display = t==='text'?'block':'none';
+    document.getElementById('cs-media-form').style.display = t!=='text'?'block':'none';
+
+    const presets = document.getElementById('cs-video-presets');
+    if (presets) presets.style.display = t==='video'?'block':'none';
+
+    const imgPrev = document.getElementById('cs-preview');
+    const vidPrev = document.getElementById('cs-video-preview');
+    if (imgPrev) imgPrev.style.display = 'none';
+    if (vidPrev) { vidPrev.style.display = 'none'; vidPrev.src = ''; }
+    csMedia = '';
+    csVideoBlob = null;
+
+    if (t!=='text') {
+      document.getElementById('cs-drop-icon').textContent = t==='photo'?'📸':'📱';
+      document.getElementById('cs-drop-label').textContent = t==='photo'?'Tap to pick photo':'Tap to pick video (MP4/WebM)';
+      document.getElementById('cs-media-input').accept = t==='photo'?'image/*':'video/*';
+    }
+  };
+
+  document.getElementById('cs-bgs').addEventListener('click', e => {
+    const sw = e.target.closest('.cs-swatch');
+    if (!sw) return;
+    csBg = sw.dataset.bg;
+    document.querySelectorAll('.cs-swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+  });
+
+  document.getElementById('cs-text').addEventListener('input', function() {
+    document.getElementById('cs-cc').textContent = this.value.length+'/280';
+  });
+
+  document.getElementById('cs-media-input').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+      const file = this.files[0];
+      const imgPrev = document.getElementById('cs-preview');
+      const vidPrev = document.getElementById('cs-video-preview');
+      const dropLabel = document.getElementById('cs-drop-label');
+
+      if (csType === 'video') {
+        csVideoBlob = file;
+        const objUrl = URL.createObjectURL(file);
+        csMedia = objUrl;
+        if (vidPrev) {
+          vidPrev.src = objUrl;
+          vidPrev.style.display = 'block';
+          vidPrev.play().catch(() => {});
+        }
+        if (imgPrev) imgPrev.style.display = 'none';
+        if (dropLabel) dropLabel.textContent = `Selected: ${file.name} (${(file.size / (1024*1024)).toFixed(1)} MB)`;
+      } else {
+        csVideoBlob = null;
+        const r = new FileReader();
+        r.onload = e => {
+          csMedia = e.target.result;
+          if (imgPrev) {
+            imgPrev.src = csMedia;
+            imgPrev.style.display = 'block';
+          }
+          if (vidPrev) vidPrev.style.display = 'none';
+          if (dropLabel) dropLabel.textContent = `Selected: ${file.name}`;
+        };
+        r.readAsDataURL(file);
+      }
+    }
+  });
+
+  window.pickDemoVideo = function(url, caption) {
+    csVideoBlob = null;
+    csMedia = url;
+    const vidPrev = document.getElementById('cs-video-preview');
+    const imgPrev = document.getElementById('cs-preview');
+    const dropLabel = document.getElementById('cs-drop-label');
+    const capInput = document.getElementById('cs-caption');
+
+    if (vidPrev) {
+      vidPrev.src = url;
+      vidPrev.style.display = 'block';
+      vidPrev.play().catch(() => {});
+    }
+    if (imgPrev) imgPrev.style.display = 'none';
+    if (dropLabel) dropLabel.textContent = 'Selected demo clip';
+    if (capInput && !capInput.value) capInput.value = caption || '';
+    tokShell.showToast('Test clip loaded! 📱');
+  };
+
+  window.publishStatus = async function() {
+    let item = null;
+    const statusId = 'status-' + Date.now();
+
+    if (csType === 'text') {
+      const t = document.getElementById('cs-text').value.trim();
+      if (!t) { tokShell.showToast('Write something first! ✍️'); return; }
+      item = { id: statusId, type: 'text', content: t, bg: csBg, time: 'Just now' };
+    } else if (csType === 'video') {
+      if (!csMedia && !csVideoBlob) { tokShell.showToast('Please pick a video first! 📱'); return; }
+      const cap = document.getElementById('cs-caption').value.trim();
+
+      if (csVideoBlob) {
+        try {
+          await storage.saveVideoBlob(statusId, csVideoBlob);
+        } catch (err) {
+          console.warn('Could not save to IndexedDB:', err);
+        }
+        item = {
+          id: statusId,
+          type: 'video',
+          isBlob: true,
+          content: 'https://vjs.zencdn.net/v/oceans.mp4',
+          caption: cap,
+          time: 'Just now'
+        };
+      } else {
+        item = {
+          id: statusId,
+          type: 'video',
+          content: csMedia,
+          caption: cap,
+          time: 'Just now'
+        };
+      }
+    } else {
+      if (!csMedia) { tokShell.showToast('Pick a photo first! 📸'); return; }
+      const cap = document.getElementById('cs-caption').value.trim();
+      item = { id: statusId, type: 'image', content: csMedia, caption: cap, time: 'Just now' };
+    }
+
+    let ms = [];
+    try { ms = JSON.parse(localStorage.getItem('toktube_my_statuses')) || []; } catch(e){}
+    ms.unshift(item);
+    try {
+      localStorage.setItem('toktube_my_statuses', JSON.stringify(ms.slice(0, 10)));
+    } catch(err) {
+      console.warn('Storage quota safeguard:', err);
+      localStorage.setItem('toktube_my_statuses', JSON.stringify(ms.slice(0, 3)));
+    }
+    myStatuses = ms.slice(0, 10);
+    document.getElementById('cs-modal').classList.remove('open');
+    syncMyStatusUI();
+    tokShell.showToast(csType === 'video' ? 'Video status shared! Visible for 24h 📱✨' : 'Status shared! Visible for 24h 🌍');
+    soundFX.playSubscribeSound();
+  };
+});
+</script>
+</body>
+</html>

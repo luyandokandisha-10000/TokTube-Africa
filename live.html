@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Streams - TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF0000'><circle cx='12' cy='12' r='8'/></svg>">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/features.css">
+  <style>
+    .live-top-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(28,20,24,0.95), rgba(18,18,28,0.95));
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--yt-red);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      margin: 14px 20px 0 20px;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .live-fullscreen-btn {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: all 0.2s ease;
+    }
+    .live-fullscreen-btn:hover {
+      background: var(--yt-red);
+      border-color: var(--yt-red);
+      transform: scale(1.08);
+    }
+    .live-fullscreen-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+    .live-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      align-items: start;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1024px) {
+      .live-layout {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+      .live-top-banner {
+        margin: 12px;
+      }
+    }
+    .live-player-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+    .live-video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      transition: aspect-ratio 0.3s ease, max-width 0.3s ease;
+    }
+    .live-video-wrapper.format-short {
+      aspect-ratio: 9/16;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .live-format-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .live-format-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-format-card:hover {
+      border-color: rgba(255,0,0,0.6);
+      transform: translateY(-2px);
+    }
+    .live-format-card.active {
+      border-color: var(--yt-red);
+      background: rgba(255,0,0,0.12);
+      box-shadow: 0 0 12px rgba(255,0,0,0.25);
+    }
+    .live-format-card .format-icon {
+      font-size: 26px;
+    }
+    .live-format-card .format-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .live-format-card .format-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .live-video-el {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .live-tag-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--yt-red);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 10px rgba(255,0,0,0.5);
+      z-index: 10;
+    }
+    .live-viewers-count {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      z-index: 10;
+    }
+    .live-meta-section {
+      padding: 16px 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .live-chat-panel {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      height: 620px;
+      max-height: calc(100vh - 120px);
+      position: sticky;
+      top: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .live-chat-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .live-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      scroll-behavior: smooth;
+    }
+    .live-msg {
+      position: relative;
+      font-size: 13px;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .live-msg:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    .live-msg-author {
+      font-weight: 700;
+      color: var(--tt-cyan);
+      white-space: nowrap;
+    }
+    .live-msg-text {
+      flex: 1;
+      word-break: break-word;
+    }
+    .btn-block-user {
+      margin-left: auto;
+      opacity: 0;
+      background: rgba(255,50,50,0.15);
+      border: 1px solid rgba(255,50,50,0.35);
+      color: #ff6b6b;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .live-msg:hover .btn-block-user {
+      opacity: 1;
+    }
+    .btn-block-user:hover {
+      background: var(--yt-red);
+      color: #fff;
+    }
+    .live-chat-input-row {
+      padding: 12px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 8px;
+      background: var(--bg-card);
+    }
+    .live-reaction-bar {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+    }
+    .btn-reaction {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn-reaction:hover {
+      transform: scale(1.2);
+    }
+    .other-streams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .stream-thumb-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--border-subtle);
+      transition: transform 0.15s;
+    }
+    .stream-thumb-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--tt-pink);
+    }
+    .stream-thumb-card.active {
+      border-color: var(--yt-red);
+      box-shadow: 0 0 10px rgba(255,0,0,0.3);
+    }
+  </style>
+</head>
+<body data-page="live">
+  <div id="app">
+    <div id="navbar-container"></div>
+    <div id="main-content">
+      <div id="sidebar-container"></div>
+      <main class="page-main" style="overflow-y:auto; flex:1;">
+        <!-- TOP PROMINENT GO LIVE & DISCOVERY BANNER -->
+        <div class="live-top-banner">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="width:42px; height:42px; border-radius:var(--radius-sm); background:rgba(255,0,0,0.15); display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,0,0,0.3); flex-shrink:0;">
+              <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:var(--yt-red);"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            </div>
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h1 style="font-size:18px; font-weight:800; letter-spacing:0.2px;">Pan-African Live Broadcasts</h1>
+                <span class="live-tag-badge" style="position:static; box-shadow:none; padding:2px 8px; font-size:10px;"><span class="live-pulse-dot"></span> ON AIR</span>
+              </div>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+                Watch Pan-African streams or broadcast your own: Video Live (16:9) or Short Live (9:16).
+              </p>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;" id="live-header-actions">
+            <button id="btn-banner-go-live" class="btn-primary" onclick="goLiveClick(event)" style="background:var(--yt-red); border-radius:var(--radius-full); padding:8px 18px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:8px; box-shadow:0 2px 10px rgba(255,0,0,0.35);">
+              <span class="live-pulse-dot" style="background:#fff; box-shadow:0 0 6px #fff;"></span>
+              <span>Go Live</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="live-layout">
+          <!-- Main Player Column -->
+          <div class="live-player-card">
+            <div class="live-video-wrapper" id="main-video-wrapper">
+              <span class="live-tag-badge"><span class="live-pulse-dot"></span> LIVE</span>
+              <span class="live-viewers-count" id="live-viewer-badge">👁️ 14,820 watching</span>
+              <video id="active-live-video" class="live-video-el" autoplay loop playsinline></video>
+              
+              <!-- Fullscreen button -->
+              <button id="btn-live-fullscreen" class="live-fullscreen-btn" title="Toggle Fullscreen">
+                <svg class="fs-icon-enter" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                <svg class="fs-icon-exit" viewBox="0 0 24 24" style="display:none;"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+              </button>
+            </div>
+
+            <div class="live-meta-section">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span id="live-stream-format-badge" style="font-size:11px; font-weight:800; padding:2px 8px; border-radius:4px; background:var(--bg-elevated); border:1px solid var(--border-subtle); color:var(--text-secondary);">📺 Video Live (16:9)</span>
+                    <span id="live-stream-category-badge" style="font-size:11px; color:var(--africa-gold); font-weight:700;">🎵 Music & Culture</span>
+                  </div>
+                  <h1 id="live-stream-title" style="font-size:18px; font-weight:800; line-height:1.3;">Lagos Afrobeats Live Jam & Freestyle Cypher 🎧🇳🇬</h1>
+                  <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+                    <img id="live-streamer-avatar" src="" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                    <div>
+                      <h3 id="live-streamer-name" style="font-size:14px; font-weight:700;">Kwame Mensah & Friends</h3>
+                      <span id="live-streamer-loc" style="font-size:12px; color:var(--text-muted);">Lagos / Accra</span>
+                    </div>
+                    <button class="tok-follow-btn" id="btn-follow-streamer" style="margin-left:8px;">+ Follow</button>
+                  </div>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;" id="live-meta-actions">
+                  <button id="btn-go-live-now" class="btn-primary" onclick="goLiveClick(event)" style="background:var(--yt-red); box-shadow:0 0 12px rgba(255,0,0,0.4);"><span class="live-pulse-dot" style="margin-right:6px;"></span> Go Live</button>
+                  <button id="btn-tip-live" class="btn-primary" style="background:linear-gradient(135deg,#FFB800,#FF8800);">☕ Send Tip (M-Pesa/MoMo)</button>
+                  <button id="btn-share-live" class="btn-secondary">↗️ Share</button>
+                </div>
+              </div>
+
+              <div style="margin-top:20px;">
+                <h3 style="font-size:15px; font-weight:700; margin-bottom:8px;">Quick Switch Stream</h3>
+                <div class="other-streams-grid" id="other-streams-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Chat Column -->
+          <div class="live-chat-panel">
+            <div class="live-chat-header">
+              <span style="font-weight:700; font-size:14px;">💬 Live Stream Chat</span>
+              <span style="font-size:12px; color:var(--africa-green); font-weight:700;">● Active</span>
+            </div>
+
+            <div class="live-chat-messages" id="live-chat-box">
+              <div class="live-msg"><span class="live-msg-author">Faraji_Tech:</span><span>Greetings from Nairobi! Great rhythms Kwame 🇰🇪🔥</span></div>
+              <div class="live-msg"><span class="live-msg-author">Adaeze_Dev:</span><span>The audio quality is crystal clear over TokTube!</span></div>
+              <div class="live-msg"><span class="live-msg-author">Kofi_Accra:</span><span>Shoutout to everyone building African STEM tech 🇬🇭💻</span></div>
+            </div>
+
+            <div class="live-reaction-bar">
+              <button class="btn-reaction" onclick="spawnReaction('❤️')">❤️</button>
+              <button class="btn-reaction" onclick="spawnReaction('🔥')">🔥</button>
+              <button class="btn-reaction" onclick="spawnReaction('👏')">👏</button>
+              <button class="btn-reaction" onclick="spawnReaction('💡')">💡</button>
+              <button class="btn-reaction" onclick="spawnReaction('🌱')">🌱</button>
+            </div>
+
+            <div class="live-chat-input-row">
+              <input type="text" id="live-msg-input" placeholder="Say something live..." style="flex:1; background:var(--bg-input); border:1px solid var(--border-subtle); border-radius:var(--radius-full); padding:8px 14px; color:#fff; font-size:13px; outline:none;">
+              <button id="btn-send-live-msg" class="btn-primary" style="padding:8px 14px;">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FULL SCROLLABLE LIVE STREAMS FEED -->
+        <div style="padding: 10px 20px 40px 20px; max-width: 1600px; margin: 0 auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:18px; border-bottom:1px solid var(--border-subtle); padding-bottom:14px;">
+            <div>
+              <h2 style="font-size:20px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                <span>📡</span> Explore All African Live Streams (Scrollable Feed)
+              </h2>
+              <p style="font-size:13px; color:var(--text-muted); margin-top:3px;">
+                Scroll and discover live channels across Africa — filter by landscape Video Live or vertical Short Live
+              </p>
+            </div>
+            <!-- Format Filter Tabs -->
+            <div style="display:flex; gap:8px;" id="live-filter-tabs">
+              <button class="btn-secondary live-filter-btn active" data-filter="all" style="padding:7px 16px; font-size:12px; border-radius:var(--radius-full); border-color:var(--yt-red); color:#fff;">All Live Streams</button>
+              <button class="btn-secondary live-filter-btn" data-filter="video" style="padding:7px 16px; font-size:12px; border-radius:var(--radius-full);">📺 Video Live (16:9)</button>
+              <button class="btn-secondary live-filter-btn" data-filter="short" style="padding:7px 16px; font-size:12px; border-radius:var(--radius-full);">📱 Short Live (9:16)</button>
+            </div>
+          </div>
+
+          <!-- Grid of All Live Streams with infinite scroll feel -->
+          <div id="full-live-streams-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:20px;"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- GO LIVE MODAL WITH VIDEO LIVE & SHORT LIVE OPTIONS -->
+    <div id="go-live-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+      <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); width:100%; max-width:560px; padding:24px; max-height:90vh; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:22px;">🔴</span>
+            <h2 style="font-size:18px; font-weight:800;">Go Live on TokTube</h2>
+          </div>
+          <button type="button" id="btn-close-live-modal" style="background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+        </div>
+
+        <!-- TWO GO LIVE OPTIONS: VIDEO LIVE & SHORT LIVE -->
+        <div style="margin-bottom:18px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">
+            1. Select Live Stream Format
+          </label>
+          <div class="live-format-selector">
+            <div class="live-format-card active" id="choice-format-video">
+              <div class="format-icon">📺</div>
+              <div class="format-title">Video Live</div>
+              <div class="format-desc">16:9 Landscape • Great for podcasts, coding, gaming & shows</div>
+            </div>
+            <div class="live-format-card" id="choice-format-short">
+              <div class="format-icon">📱</div>
+              <div class="format-title">Short Live</div>
+              <div class="format-desc">9:16 Portrait • TikTok / Toks style for mobile, selfies & quick chats</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">2. Stream Title</label>
+          <input type="text" id="live-setup-title" class="form-input" placeholder="e.g., Live Coding Python & AI in Nairobi 🚀🇰🇪" value="My Live African Broadcast 🔴">
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">3. Stream Category</label>
+          <select id="live-setup-category" class="form-input">
+            <option value="Music & Culture">🎵 Music & Culture</option>
+            <option value="STEM & Robotics">⚡ STEM & Robotics</option>
+            <option value="Coding & AI">💻 Coding & AI</option>
+            <option value="African Comedy">😂 African Comedy</option>
+            <option value="AgriTech">🌱 AgriTech & Food</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">4. Camera / Video Source</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <button type="button" class="btn-secondary" id="btn-source-camera" style="padding:10px; font-size:12px; border-color:var(--yt-red); color:#fff;">
+              📹 Use Device Camera
+            </button>
+            <button type="button" class="btn-secondary" id="btn-source-test" style="padding:10px; font-size:12px;">
+              📡 Simulated Feed
+            </button>
+          </div>
+        </div>
+
+        <div id="live-cam-preview-box" style="position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:var(--radius-md); overflow:hidden; margin-bottom:20px; border:1px solid var(--border-subtle); transition:all 0.3s ease;">
+          <video id="live-modal-preview" style="width:100%; height:100%; object-fit:cover;" autoplay muted playsinline></video>
+          <div id="cam-status-label" style="position:absolute; bottom:8px; left:8px; font-size:11px; background:rgba(0,0,0,0.6); padding:2px 8px; border-radius:4px; color:#fff;">
+            Camera preview standby
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button type="button" id="btn-cancel-live" class="btn-secondary" style="flex:1; justify-content:center;">Cancel</button>
+          <button type="button" id="btn-start-broadcast" class="btn-primary" onclick="window.startBroadcast(event)" style="flex:2; justify-content:center; background:var(--yt-red); font-size:15px; font-weight:800; cursor:pointer;">
+            🔴 Go Live Now
+          </button>
+        </div>
+      </div>
+    </div>
+
+  <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script>
+    // Defined at parse time — always available for onclick attributes
+    window.startBroadcast = function(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (typeof window._execStartBroadcast === 'function') {
+        window._execStartBroadcast(e);
+      }
+    };
+
+    window.goLiveClick = function(e) {
+      if (e) e.preventDefault();
+      // Auth gate — must be signed in to go live
+      if (typeof auth !== 'undefined' && auth.isAuthenticated && !auth.isAuthenticated()) {
+        openAuthModal('signin');
+        if (typeof tokShell !== 'undefined') tokShell.showToast('Sign in to go live 🔴');
+        return;
+      }
+      // Delegate to the live-page handler if it's ready, otherwise show modal directly
+      if (typeof window._handleGoLive === 'function') {
+        window._handleGoLive(e);
+      } else {
+        const modal = document.getElementById('go-live-modal');
+        if (modal) modal.style.display = 'flex';
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const streamId = urlParams.get('stream') || 'live-1';
+      let streams = (typeof storage !== 'undefined' && storage.getLiveStreams) ? storage.getLiveStreams() : [];
+      let currentStream = streams.find(s => s.id === streamId) || streams[0];
+
+      const videoEl = document.getElementById('active-live-video');
+      const videoWrapper = document.getElementById('main-video-wrapper');
+      const formatBadge = document.getElementById('live-stream-format-badge');
+      const categoryBadge = document.getElementById('live-stream-category-badge');
+      const titleEl = document.getElementById('live-stream-title');
+      const avatarEl = document.getElementById('live-streamer-avatar');
+      const nameEl = document.getElementById('live-streamer-name');
+      const locEl = document.getElementById('live-streamer-loc');
+      const viewerEl = document.getElementById('live-viewer-badge');
+      const followBtn = document.getElementById('btn-follow-streamer');
+      const tipBtn = document.getElementById('btn-tip-live');
+      const shareBtn = document.getElementById('btn-share-live');
+      const chatBox = document.getElementById('live-chat-box');
+      const chatInput = document.getElementById('live-msg-input');
+      const sendBtn = document.getElementById('btn-send-live-msg');
+      const otherList = document.getElementById('other-streams-list');
+      const fullGrid = document.getElementById('full-live-streams-grid');
+      let activeBroadcastStream = null;
+      let broadcastCanvasAnimId = null;
+      let isUserBroadcasting = false;
+      const blockedUsers = new Set();
+
+      function setBroadcastingUI(isBroadcasting) {
+        const bannerGoLive = document.getElementById('btn-banner-go-live');
+        const metaGoLive = document.getElementById('btn-go-live-now');
+        const navGoLive = document.getElementById('btn-nav-golive');
+
+        if (isBroadcasting) {
+          if (bannerGoLive) {
+            bannerGoLive.innerHTML = '<span style="font-size:14px;">⏹️</span> <span>End Stream</span>';
+            bannerGoLive.style.background = '#b30000';
+            bannerGoLive.style.boxShadow = '0 2px 12px rgba(179,0,0,0.6)';
+            bannerGoLive.title = 'End your live stream';
+          }
+          if (metaGoLive) {
+            metaGoLive.innerHTML = '<span style="font-size:14px; margin-right:6px;">⏹️</span> End Stream';
+            metaGoLive.style.background = '#b30000';
+            metaGoLive.style.boxShadow = '0 0 14px rgba(179,0,0,0.7)';
+            metaGoLive.title = 'End your live stream';
+          }
+          if (navGoLive) {
+            navGoLive.innerHTML = '<span style="font-size:12px;">⏹️</span> <span>End Stream</span>';
+            navGoLive.style.background = '#b30000';
+            navGoLive.style.borderColor = '#ff3333';
+            navGoLive.title = 'End your live stream';
+          }
+        } else {
+          if (bannerGoLive) {
+            bannerGoLive.innerHTML = '<span class="live-pulse-dot" style="background:#fff; box-shadow:0 0 6px #fff;"></span> <span>Go Live</span>';
+            bannerGoLive.style.background = 'var(--yt-red)';
+            bannerGoLive.style.boxShadow = '0 2px 10px rgba(255,0,0,0.35)';
+            bannerGoLive.title = 'Go live on TokTube';
+          }
+          if (metaGoLive) {
+            metaGoLive.innerHTML = '<span class="live-pulse-dot" style="margin-right:6px;"></span> Go Live';
+            metaGoLive.style.background = 'var(--yt-red)';
+            metaGoLive.style.boxShadow = '0 0 12px rgba(255,0,0,0.4)';
+            metaGoLive.title = 'Go live on TokTube';
+          }
+          if (navGoLive) {
+            navGoLive.innerHTML = '<svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg> <span>Go Live</span>';
+            navGoLive.style.background = '';
+            navGoLive.style.borderColor = '';
+            navGoLive.title = 'Start Live Broadcast';
+          }
+        }
+      }
+
+      function endLiveStream() {
+        if (!confirm("Are you sure you want to end your live broadcast?")) return;
+        if (broadcastCanvasAnimId) {
+          cancelAnimationFrame(broadcastCanvasAnimId);
+          broadcastCanvasAnimId = null;
+        }
+        if (activeBroadcastStream) {
+          activeBroadcastStream.getTracks().forEach(t => t.stop());
+          activeBroadcastStream = null;
+        }
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(t => t.stop());
+          cameraStream = null;
+        }
+        isUserBroadcasting = false;
+        setBroadcastingUI(false);
+        tokShell.showToast("Live broadcast ended ⏹️");
+        addChatMessage('System', `⏹️ Your broadcast has ended. Thanks for streaming on TokTube Africa!`, false);
+
+        // Remove user broadcast from live list
+        const allLive = storage.getLiveStreams().filter(item => !item.isLiveUser);
+        localStorage.setItem('toktube_live_streams', JSON.stringify(allLive));
+        streams = storage.getLiveStreams();
+
+        const fallback = streams[0] || allLive[0];
+        if (fallback) loadStream(fallback);
+      }
+
+      // Fullscreen support for live player
+      const fsBtn = document.getElementById('btn-live-fullscreen');
+      const fsIconEnter = fsBtn?.querySelector('.fs-icon-enter');
+      const fsIconExit = fsBtn?.querySelector('.fs-icon-exit');
+
+      fsBtn?.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          if (videoWrapper.requestFullscreen) {
+            videoWrapper.requestFullscreen().catch(() => {});
+          } else if (videoWrapper.webkitRequestFullscreen) {
+            videoWrapper.webkitRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        const isFs = !!document.fullscreenElement;
+        if (fsIconEnter && fsIconExit) {
+          fsIconEnter.style.display = isFs ? 'none' : 'block';
+          fsIconExit.style.display = isFs ? 'block' : 'none';
+        }
+      });
+
+      function loadStream(s) {
+        if (!s) return;
+        currentStream = s;
+
+        // If this is the user's active broadcast, use the active stream directly!
+        if (s.isLiveUser && activeBroadcastStream) {
+          videoEl.removeAttribute('src');
+          videoEl.srcObject = activeBroadcastStream;
+          videoEl.muted = true; // Always mute self to prevent microphone audio loop and ensure 100% autoplay
+          const p = videoEl.play();
+          if (p && p.catch) p.catch(() => {});
+        } else {
+          if (broadcastCanvasAnimId) {
+            cancelAnimationFrame(broadcastCanvasAnimId);
+            broadcastCanvasAnimId = null;
+          }
+          videoEl.srcObject = null;
+          videoEl.src = s.videoUrl;
+          videoEl.muted = false;
+          videoEl.play().catch(() => {
+            videoEl.muted = true;
+            videoEl.play().catch(() => {});
+          });
+        }
+
+        // Adapt player wrapper to stream format (Video Live 16:9 vs Short Live 9:16)
+        if (s.format === 'short') {
+          videoWrapper.classList.add('format-short');
+          formatBadge.textContent = '📱 Short Live (9:16)';
+          formatBadge.style.borderColor = 'var(--tt-pink)';
+          formatBadge.style.color = 'var(--tt-pink)';
+        } else {
+          videoWrapper.classList.remove('format-short');
+          formatBadge.textContent = '📺 Video Live (16:9)';
+          formatBadge.style.borderColor = 'var(--border-subtle)';
+          formatBadge.style.color = 'var(--text-secondary)';
+        }
+
+        categoryBadge.textContent = s.category ? `• ${s.category}` : '';
+        titleEl.textContent = s.title;
+        avatarEl.src = s.streamer.avatar;
+        nameEl.textContent = s.streamer.name;
+        locEl.textContent = s.streamer.location;
+        viewerEl.textContent = s.isLiveUser ? '👁️ 1 watching (You are LIVE)' : `👁️ ${(s.viewers || 10000).toLocaleString()} watching`;
+
+        const isFollowed = storage.isSubscribed(s.streamer.id);
+        followBtn.textContent = isFollowed ? 'Following ✓' : '+ Follow';
+        followBtn.classList.toggle('following', isFollowed);
+        followBtn.style.display = s.isLiveUser ? 'none' : 'inline-block';
+
+        renderOtherStreams();
+        renderFullStreams(currentFilter);
+      }
+
+      function renderOtherStreams() {
+        otherList.innerHTML = streams.map(s => `
+          <div class="stream-thumb-card ${s.id === currentStream.id ? 'active' : ''}" onclick="window.location.href='live.html?stream=${s.id}'">
+            <div style="position:relative; aspect-ratio:${s.format === 'short' ? '9/16' : '16/9'}; max-height:140px; overflow:hidden;">
+              <img src="${s.thumbnail}" style="width:100%; height:100%; object-fit:cover;">
+              <span style="position:absolute; top:6px; left:6px; background:var(--yt-red); color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:3px;">LIVE</span>
+              <span style="position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.7); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:3px;">
+                ${s.format === 'short' ? '📱 Short' : '📺 16:9'}
+              </span>
+            </div>
+            <div style="padding:8px 10px;">
+              <h4 style="font-size:12px; font-weight:700; line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${s.title}</h4>
+              <span style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">${s.streamer.name}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Scrollable full streams feed rendering with format filter
+      let currentFilter = 'all';
+      function renderFullStreams(filter = 'all') {
+        currentFilter = filter;
+        const allLive = storage.getLiveStreams();
+        const filtered = allLive.filter(s => {
+          if (filter === 'all') return true;
+          if (filter === 'video') return s.format !== 'short';
+          if (filter === 'short') return s.format === 'short';
+          return true;
+        });
+
+        if (!filtered.length) {
+          fullGrid.innerHTML = `<div style="grid-column:1/-1; padding:30px; text-align:center; color:var(--text-muted);">No live streams found in this category right now. Start one with Go Live!</div>`;
+          return;
+        }
+
+        fullGrid.innerHTML = filtered.map(s => {
+          const isCurrent = s.id === currentStream.id;
+          const isShort = s.format === 'short';
+          return `
+            <div class="stream-thumb-card ${isCurrent ? 'active' : ''}" style="display:flex; flex-direction:column; border-radius:var(--radius-lg); overflow:hidden; background:var(--bg-card); cursor:pointer;" onclick="loadStreamDirectly('${s.id}')">
+              <div style="position:relative; width:100%; aspect-ratio:16/9; background:#000; overflow:hidden;">
+                <img src="${s.thumbnail}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <span class="live-tag-badge" style="top:10px; left:10px; font-size:11px; padding:3px 8px;"><span class="live-pulse-dot"></span> LIVE</span>
+                <span class="live-viewers-count" style="top:10px; right:10px; font-size:11px; padding:3px 8px;">👁️ ${(s.viewers || 500).toLocaleString()}</span>
+                <span style="position:absolute; bottom:10px; left:10px; background:rgba(0,0,0,0.8); border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(4px); font-size:11px; font-weight:700; color:#fff; padding:3px 8px; border-radius:4px;">
+                  ${isShort ? '📱 Short Live (9:16)' : '📺 Video Live (16:9)'}
+                </span>
+              </div>
+              <div style="padding:14px; display:flex; gap:12px; flex:1;">
+                <img src="${s.streamer.avatar}" style="width:42px; height:42px; border-radius:50%; object-fit:cover; flex-shrink:0;">
+                <div style="flex:1; min-width:0;">
+                  <h3 style="font-size:14px; font-weight:800; line-height:1.3; margin-bottom:4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${s.title}</h3>
+                  <div style="font-size:12px; font-weight:600; color:var(--text-secondary);">${s.streamer.name}</div>
+                  <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${s.streamer.location} • <span style="color:var(--africa-gold);">${s.category || 'Live'}</span></div>
+                  <div style="margin-top:10px;">
+                    <button class="btn-primary" style="padding:6px 14px; font-size:12px; background:${isCurrent ? 'var(--yt-red)' : 'var(--bg-elevated)'}; border:1px solid var(--border-subtle); color:#fff; width:100%; justify-content:center;">
+                      ${isCurrent ? '▶ Now Watching' : '🔴 Watch Live'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      window.loadStreamDirectly = function(id) {
+        const s = streams.find(item => item.id === id);
+        if (s) {
+          loadStream(s);
+          videoWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+
+      // Filter tabs event listeners
+      document.querySelectorAll('.live-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.live-filter-btn').forEach(b => {
+            b.classList.remove('active');
+            b.style.borderColor = 'var(--border-subtle)';
+            b.style.color = 'var(--text-secondary)';
+          });
+          btn.classList.add('active');
+          btn.style.borderColor = 'var(--yt-red)';
+          btn.style.color = '#fff';
+          renderFullStreams(btn.dataset.filter);
+        });
+      });
+
+      followBtn.addEventListener('click', () => {
+        soundFX.playSubscribeSound();
+        const nowSub = storage.toggleSubscribe(currentStream.streamer.id);
+        followBtn.textContent = nowSub ? 'Following ✓' : '+ Follow';
+        followBtn.classList.toggle('following', nowSub);
+        tokShell.showToast(nowSub ? 'Following streamer! 🌟' : 'Unfollowed');
+      });
+
+      tipBtn.addEventListener('click', () => {
+        tokShell.openTippingModal(currentStream.streamer.id);
+      });
+
+      shareBtn.addEventListener('click', () => {
+        tokShell.openShareModal(window.location.href, currentStream.title);
+      });
+
+      // Chat system with User Blocking functionality
+      function addChatMessage(author, text, isMe = false) {
+        if (blockedUsers.has(author)) return;
+        const div = document.createElement('div');
+        div.className = 'live-msg';
+        div.dataset.author = author;
+
+        // Only the streamer (when actively broadcasting) can see the block button
+        const blockBtn = (isUserBroadcasting && !isMe && author !== 'System')
+          ? `<button class="btn-block-user" onclick="event.stopPropagation(); window.blockChatUser('${author.replace(/'/g, "\\'")}')">🚫 Block</button>`
+          : '';
+
+        div.innerHTML = `
+          <span class="live-msg-author" style="${isMe ? 'color:var(--tt-pink);' : (author === 'System' ? 'color:var(--africa-gold);' : '')}">${author}:</span>
+          <span class="live-msg-text">${text}</span>
+          ${blockBtn}
+        `;
+        chatBox.appendChild(div);
+        requestAnimationFrame(() => {
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
+      }
+
+      window.blockChatUser = function(author) {
+        if (!confirm(`Block ${author} from commenting on this live stream?`)) return;
+        blockedUsers.add(author);
+        document.querySelectorAll(`.live-msg[data-author="${author}"]`).forEach(el => el.remove());
+        addChatMessage('System', `🚫 User @${author} has been blocked from commenting.`);
+        tokShell.showToast(`Blocked @${author} 🚫`);
+      };
+
+      sendBtn.addEventListener('click', () => {
+        const msg = chatInput.value.trim();
+        if (!msg) return;
+        const user = storage.getUserProfile();
+        addChatMessage(user.name, msg, true);
+        chatInput.value = '';
+        soundFX.playNotificationSound();
+      });
+
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendBtn.click();
+      });
+
+      // Periodic simulated chat
+      const simMessages = [
+        { author: "Zola_Agri", text: "Connecting autonomous drone telemetry now! 🚁" },
+        { author: "SolarNakuru", text: "Microgrid output is at 98% efficiency today ⚡" },
+        { author: "NairobiCoder", text: "Greetings to all Pan-African tech innovators!" },
+        { author: "Troll_Bots", text: "Spam link http://bad-link.com click now!" },
+        { author: "Moyo_Harare", text: "Loving this session! Great sound Kwame 🎧" }
+      ];
+      let msgIdx = 0;
+      setInterval(() => {
+        if (msgIdx < simMessages.length) {
+          const m = simMessages[msgIdx];
+          if (!blockedUsers.has(m.author)) {
+            addChatMessage(m.author, m.text);
+          }
+          msgIdx = (msgIdx + 1) % simMessages.length;
+        }
+      }, 5000);
+
+      window.spawnReaction = function(emoji) {
+        soundFX.playLikeSound();
+        const p = document.createElement('div');
+        p.className = 'reaction-particle';
+        p.textContent = emoji;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 2200);
+      };
+
+      // GO LIVE SETUP & BROADCAST LOGIC
+      const bannerGoLiveBtn = document.getElementById('btn-banner-go-live');
+      const goLiveBtn = document.getElementById('btn-go-live-now');
+      const goLiveModal = document.getElementById('go-live-modal');
+      const closeLiveModalBtn = document.getElementById('btn-close-live-modal');
+      const cancelLiveBtn = document.getElementById('btn-cancel-live');
+      const startBroadcastBtn = document.getElementById('btn-start-broadcast');
+      const sourceCamBtn = document.getElementById('btn-source-camera');
+      const sourceTestBtn = document.getElementById('btn-source-test');
+      const modalPreviewVid = document.getElementById('live-modal-preview');
+      const camPreviewBox = document.getElementById('live-cam-preview-box');
+      const camStatusLabel = document.getElementById('cam-status-label');
+
+      // Live Format Selection: Video Live (16:9) vs Short Live (9:16)
+      let selectedLiveFormat = 'video';
+      const choiceVideo = document.getElementById('choice-format-video');
+      const choiceShort = document.getElementById('choice-format-short');
+
+      function setLiveFormat(fmt) {
+        selectedLiveFormat = fmt;
+        if (fmt === 'short') {
+          choiceShort.classList.add('active');
+          choiceVideo.classList.remove('active');
+          camPreviewBox.style.aspectRatio = '9/16';
+          camPreviewBox.style.maxWidth = '260px';
+          camPreviewBox.style.margin = '0 auto 20px';
+        } else {
+          choiceVideo.classList.add('active');
+          choiceShort.classList.remove('active');
+          camPreviewBox.style.aspectRatio = '16/9';
+          camPreviewBox.style.maxWidth = '100%';
+          camPreviewBox.style.margin = '0 0 20px 0';
+        }
+      }
+
+      choiceVideo?.addEventListener('click', () => setLiveFormat('video'));
+      choiceShort?.addEventListener('click', () => setLiveFormat('short'));
+
+      let cameraStream = null;
+      let activeSourceMode = 'camera'; // 'camera' or 'simulated'
+
+      function createLiveBroadcastStream(name, title, format) {
+        if (broadcastCanvasAnimId) {
+          cancelAnimationFrame(broadcastCanvasAnimId);
+          broadcastCanvasAnimId = null;
+        }
+        let canvas = document.getElementById('live-broadcast-canvas');
+        if (!canvas) {
+          canvas = document.createElement('canvas');
+          canvas.id = 'live-broadcast-canvas';
+          canvas.style.display = 'none';
+          document.body.appendChild(canvas);
+        }
+        const isShort = format === 'short';
+        canvas.width = isShort ? 720 : 1280;
+        canvas.height = isShort ? 1280 : 720;
+        const ctx = canvas.getContext('2d');
+        const startTime = Date.now();
+
+        function draw() {
+          const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+          const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
+          const secs = String(elapsedSec % 60).padStart(2, '0');
+          const timerStr = `${mins}:${secs}`;
+          const t = (Date.now() - startTime) / 1000;
+
+          // Studio dark background gradient
+          const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+          grad.addColorStop(0, '#1a0b2e');
+          grad.addColorStop(0.5, '#0d0d1a');
+          grad.addColorStop(1, '#05050a');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Subtle studio grid
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+          ctx.lineWidth = 1;
+          for (let x = 0; x < canvas.width; x += 50) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+          }
+          for (let y = 0; y < canvas.height; y += 50) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+          }
+
+          // Live audio visualizer waveform in center
+          const cx = canvas.width / 2;
+          const cy = canvas.height / 2;
+          const numBars = isShort ? 24 : 36;
+          const barWidth = isShort ? 12 : 16;
+          const spacing = isShort ? 6 : 8;
+          const totalW = numBars * (barWidth + spacing);
+          const startX = cx - totalW / 2;
+
+          for (let i = 0; i < numBars; i++) {
+            const h = Math.abs(Math.sin(t * 3.2 + i * 0.4) * Math.cos(t * 2 + i * 0.2)) * (canvas.height * 0.2) + 14;
+            const barGrad = ctx.createLinearGradient(0, cy - h / 2, 0, cy + h / 2);
+            barGrad.addColorStop(0, '#FF0055');
+            barGrad.addColorStop(0.5, '#00F2FE');
+            barGrad.addColorStop(1, '#FFB800');
+            ctx.fillStyle = barGrad;
+            ctx.fillRect(startX + i * (barWidth + spacing), cy - h / 2, barWidth, h);
+          }
+
+          // Central creator monogram avatar
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(cx, cy - (isShort ? 150 : 110), isShort ? 55 : 45, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 0, 85, 0.2)';
+          ctx.fill();
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = '#FF0055';
+          ctx.stroke();
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = `bold ${isShort ? 36 : 30}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((name || 'U')[0].toUpperCase(), cx, cy - (isShort ? 150 : 110));
+          ctx.restore();
+
+          // Streamer Name
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = `bold ${isShort ? 32 : 26}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText(name, cx, cy - (isShort ? 70 : 45));
+
+          // Stream Title
+          ctx.fillStyle = '#FFB800';
+          ctx.font = `${isShort ? 22 : 18}px sans-serif`;
+          const displayTitle = title.length > 36 ? title.slice(0, 34) + '...' : title;
+          ctx.fillText(displayTitle, cx, cy + (isShort ? 140 : 100));
+
+          // Live indicator
+          ctx.fillStyle = '#FF0000';
+          ctx.beginPath();
+          ctx.arc(45, 45, 9, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = 'bold 20px sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText('LIVE ON AIR', 65, 52);
+
+          ctx.fillStyle = 'rgba(255,255,255,0.7)';
+          ctx.font = '16px monospace';
+          ctx.fillText(`REC ${timerStr}`, 215, 52);
+
+          // Footer telemetry
+          ctx.fillStyle = 'rgba(255,255,255,0.45)';
+          ctx.font = '13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`TokTube Africa • 1080p60 Live Broadcast`, cx, canvas.height - 25);
+
+          broadcastCanvasAnimId = requestAnimationFrame(draw);
+        }
+
+        draw();
+
+        if (canvas.captureStream) {
+          return canvas.captureStream(30);
+        } else if (canvas.mozCaptureStream) {
+          return canvas.mozCaptureStream(30);
+        }
+        return null;
+      }
+
+      async function startCameraPreview() {
+        activeSourceMode = 'camera';
+        if (sourceCamBtn) {
+          sourceCamBtn.style.borderColor = 'var(--yt-red)';
+          sourceCamBtn.style.color = '#fff';
+        }
+        if (sourceTestBtn) {
+          sourceTestBtn.style.borderColor = 'var(--border-subtle)';
+          sourceTestBtn.style.color = 'var(--text-secondary)';
+        }
+        if (camStatusLabel) camStatusLabel.textContent = 'Requesting camera access...';
+
+        try {
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            if (cameraStream) {
+              cameraStream.getTracks().forEach(t => t.stop());
+            }
+            cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            if (modalPreviewVid) {
+              modalPreviewVid.removeAttribute('src');
+              modalPreviewVid.srcObject = cameraStream;
+              modalPreviewVid.play().catch(() => {});
+            }
+            if (camStatusLabel) camStatusLabel.textContent = '● Live Camera Ready';
+          } else {
+            throw new Error('getUserMedia not supported');
+          }
+        } catch (err) {
+          if (camStatusLabel) camStatusLabel.textContent = 'Camera standby - simulated feed ready';
+          activeSourceMode = 'simulated';
+          if (modalPreviewVid) {
+            modalPreviewVid.removeAttribute('src');
+            const previewStream = createLiveBroadcastStream('You (Preview)', 'Live Standby Feed', selectedLiveFormat);
+            modalPreviewVid.srcObject = previewStream;
+            modalPreviewVid.play().catch(() => {});
+          }
+        }
+      }
+
+      function useSimulatedFeed() {
+        activeSourceMode = 'simulated';
+        if (sourceTestBtn) {
+          sourceTestBtn.style.borderColor = 'var(--yt-red)';
+          sourceTestBtn.style.color = '#fff';
+        }
+        if (sourceCamBtn) {
+          sourceCamBtn.style.borderColor = 'var(--border-subtle)';
+          sourceCamBtn.style.color = 'var(--text-secondary)';
+        }
+
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+        if (modalPreviewVid) {
+          modalPreviewVid.removeAttribute('src');
+          const previewStream = createLiveBroadcastStream('You (Simulated)', 'Simulated Live Broadcast Feed', selectedLiveFormat);
+          modalPreviewVid.srcObject = previewStream;
+          modalPreviewVid.play().catch(() => {});
+        }
+        if (camStatusLabel) camStatusLabel.textContent = '● High-Definition Live Feed Ready';
+      }
+
+      function openGoLiveModal() {
+        goLiveModal.style.display = 'flex';
+        setLiveFormat(selectedLiveFormat);
+        startCameraPreview();
+      }
+
+      function closeGoLiveModal(shouldStopCamera = true) {
+        goLiveModal.style.display = 'none';
+        if (shouldStopCamera && cameraStream) {
+          cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+        if (modalPreviewVid) {
+          modalPreviewVid.pause();
+          modalPreviewVid.removeAttribute('src');
+          modalPreviewVid.srcObject = null;
+        }
+      }
+
+      function handleLiveBtnClick(e) {
+        if (e) e.preventDefault();
+        if (isUserBroadcasting) {
+          endLiveStream();
+        } else {
+          openGoLiveModal();
+        }
+      }
+      // Expose globally so onclick attributes can reach it
+      window._handleGoLive = handleLiveBtnClick;
+
+      bannerGoLiveBtn?.addEventListener('click', handleLiveBtnClick);
+      goLiveBtn?.addEventListener('click', handleLiveBtnClick);
+      document.getElementById('btn-nav-golive')?.addEventListener('click', (e) => {
+        if (isUserBroadcasting) {
+          e.preventDefault();
+          endLiveStream();
+        }
+      });
+      closeLiveModalBtn?.addEventListener('click', () => closeGoLiveModal(true));
+      cancelLiveBtn?.addEventListener('click', () => closeGoLiveModal(true));
+      sourceCamBtn?.addEventListener('click', startCameraPreview);
+      sourceTestBtn?.addEventListener('click', useSimulatedFeed);
+
+      // Check if user came via ?action=golive
+      if (urlParams.get('action') === 'golive') {
+        openGoLiveModal();
+      }
+
+      let isStartingBroadcast = false;
+      function doStartBroadcast(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.stopPropagation) e.stopPropagation();
+
+        if (isStartingBroadcast) return;
+        isStartingBroadcast = true;
+
+        try {
+          const titleInput = document.getElementById('live-setup-title');
+          const categorySelect = document.getElementById('live-setup-category');
+          const title = (titleInput && titleInput.value.trim()) || 'My African Live Broadcast 🔴';
+          const category = (categorySelect && categorySelect.value) || 'Music & Culture';
+
+          // Get creator profile or auth user safely
+          let userName = 'TokTube Creator';
+          let userAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
+
+          try {
+            if (typeof auth !== 'undefined' && auth.getCurrentUser) {
+              const u = auth.getCurrentUser();
+              if (u) {
+                userName = u.displayName || u.username || userName;
+                if (u.avatarUrl) userAvatar = u.avatarUrl;
+              }
+            }
+          } catch (_) {}
+
+          try {
+            if (userName === 'TokTube Creator' && typeof storage !== 'undefined' && storage.getUserProfile) {
+              const p = storage.getUserProfile();
+              if (p && p.name) userName = p.name;
+              if (p && p.avatarUrl) userAvatar = p.avatarUrl;
+            }
+          } catch (_) {}
+
+          isUserBroadcasting = true;
+
+          // Check if device camera is actively producing live tracks
+          const hasLiveCamera = cameraStream && cameraStream.getVideoTracks && cameraStream.getVideoTracks().some(t => t.readyState === 'live');
+
+          if (activeSourceMode === 'camera' && hasLiveCamera) {
+            activeBroadcastStream = cameraStream;
+          } else {
+            // Generate live simulated broadcast stream via dynamic canvas
+            activeBroadcastStream = createLiveBroadcastStream(userName, title, selectedLiveFormat);
+          }
+
+          const myLiveStream = {
+            id: 'live-user-' + Date.now(),
+            title: title,
+            format: selectedLiveFormat,
+            isLiveUser: true,
+            streamer: {
+              id: 'ch-user',
+              name: userName,
+              avatar: userAvatar,
+              location: 'Broadcasting Live 🔴'
+            },
+            viewers: 1,
+            category: category,
+            videoUrl: 'https://vjs.zencdn.net/v/oceans.mp4',
+            thumbnail: userAvatar
+          };
+
+          // Save to storage and memory
+          storage.addNewLiveStream(myLiveStream);
+          streams = storage.getLiveStreams();
+
+          // Close the modal
+          closeGoLiveModal(false);
+
+          // Load user stream directly into active player
+          currentStream = myLiveStream;
+          loadStream(currentStream);
+
+          // Update buttons to "⏹️ End Stream"
+          setBroadcastingUI(true);
+
+          tokShell.showToast(`You are now LIVE on TokTube Africa (${selectedLiveFormat === 'short' ? 'Short Live' : 'Video Live'})! 🔴🎉`);
+          soundFX.playSubscribeSound();
+          addChatMessage('System', `🔴 ${userName} started broadcasting ${selectedLiveFormat === 'short' ? 'Short Live (9:16)' : 'Video Live (16:9)'}! Send a reaction to welcome them.`, false);
+
+          const mainWrapper = document.getElementById('main-video-wrapper');
+          if (mainWrapper) {
+            mainWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        } catch (err) {
+          console.error('Error starting broadcast:', err);
+          tokShell.showToast('Could not start live stream: ' + err.message);
+        } finally {
+          setTimeout(() => {
+            isStartingBroadcast = false;
+          }, 600);
+        }
+      }
+
+      window._execStartBroadcast = doStartBroadcast;
+      window.startBroadcast = doStartBroadcast;
+
+      loadStream(currentStream);
+      renderFullStreams('all');
+    });
+  </script>
+</body>
+</html>

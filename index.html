@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TokTube Africa - Pan-African Video, Shorts & Live Streaming Platform</title>
+  <meta name="description" content="TokTube Africa is the Pan-African video, short-form Toks, and live streaming platform. Watch, create, and connect across Africa. Afrobeats, STEM, Nollywood, gaming and more.">
+  <meta name="keywords" content="TokTube, Africa, Pan-African, video platform, live streaming, Afrobeats, Nollywood, STEM, African creators, Toks, shorts">
+  <meta name="author" content="TokTube Africa">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#FE2C55">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://toktube.africa/">
+  <meta property="og:title" content="TokTube Africa - Pan-African Video & Live Streaming">
+  <meta property="og:description" content="Watch, create and go live with African creators. Afrobeats, STEM, Nollywood, gaming, comedy and more — all on TokTube Africa.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@TokTubeAfrica">
+  <meta name="twitter:title" content="TokTube Africa - Pan-African Video & Live Streaming">
+  <meta name="twitter:description" content="Watch, create and go live with African creators.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200">
+
+  <!-- PWA / App -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 21c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 3c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 21c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 3c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z'/></svg>">
+
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/youtube.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/features.css">
+</head>
+<body data-page="home">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Home Content -->
+      <main class="page-main">
+        <div class="page-content">
+          <!-- Horizontal Category Filter Chips Bar with expanded categories -->
+          <div class="category-chips-bar" id="category-chips-bar">
+            <button class="category-chip active" data-category="All">All</button>
+            <button class="category-chip" data-category="Music">🎵 Afrobeats & Amapiano</button>
+            <button class="category-chip" data-category="Culture">🌍 African Heritage & Nollywood</button>
+            <button class="category-chip" data-category="Comedy">😂 African Comedy & Toks</button>
+            <button class="category-chip" data-category="Gaming">🎮 African Esports & Gaming</button>
+            <button class="category-chip" data-category="Fashion">👗 African Fashion & Streetwear</button>
+            <button class="category-chip" data-category="Food">🍲 Jollof & Pan-African Cuisine</button>
+            <button class="category-chip" data-category="STEM">🎓 EduBoost STEM</button>
+            <button class="category-chip" data-category="Coding">💻 Coding & AI</button>
+            <button class="category-chip" data-category="Agriculture">🌱 AgriTech & Drones</button>
+            <button class="category-chip" data-category="Clean Energy">⚡ Clean Energy</button>
+          </div>
+
+          <!-- Trending African Toks Shelf -->
+          <section class="shorts-shelf">
+            <div class="shorts-shelf-header">
+              <div class="shorts-shelf-title">
+                <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+                <span>Trending African Toks</span>
+              </div>
+              <a href="toks.html" class="shorts-shelf-more btn-secondary">
+                <span>Watch Toks</span> <span class="more-arrow">➔</span>
+              </a>
+            </div>
+            <div class="shorts-shelf-grid" id="shorts-preview-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </section>
+
+          <!-- Feed Title & Search Notice -->
+          <div class="feed-header-row">
+            <h2 id="feed-heading" class="feed-heading">Recommended Pan-African Videos</h2>
+            <span id="video-count-badge" class="feed-count-badge"></span>
+          </div>
+
+          <!-- Main Responsive Video Grid -->
+          <div class="video-grid" id="main-video-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const videoGrid = document.getElementById('main-video-grid');
+      const shortsGrid = document.getElementById('shorts-preview-grid');
+      const chipsBar = document.getElementById('category-chips-bar');
+      const feedHeading = document.getElementById('feed-heading');
+      const countBadge = document.getElementById('video-count-badge');
+
+      // Check URL query for search
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchParam = urlParams.get('search');
+      let activeCategory = 'All';
+
+      function renderVideos(query = '', category = 'All') {
+        let videos = storage.getYoutubeVideos();
+        const isKid = storage.isKidMode();
+
+        // Dual Algorithm: If Kid Mode active, filter to educational STEM content
+        if (isKid) {
+          videos = videos.filter(v => v.isEducational);
+          if (feedHeading) feedHeading.textContent = '🎓 EduBoost Kid & Student STEM Learning Feed';
+        } else if (query) {
+          videos = videos.filter(v => 
+            v.title.toLowerCase().includes(query.toLowerCase()) ||
+            v.description.toLowerCase().includes(query.toLowerCase()) ||
+            v.channel.name.toLowerCase().includes(query.toLowerCase())
+          );
+          if (feedHeading) feedHeading.textContent = `Search results for "${query}"`;
+        } else if (category !== 'All') {
+          videos = videos.filter(v => v.category === category || (category === 'STEM' && v.isEducational));
+          if (feedHeading) feedHeading.textContent = `${category} Videos`;
+        } else {
+          if (feedHeading) feedHeading.textContent = 'Recommended Pan-African Videos';
+        }
+
+        if (countBadge) countBadge.textContent = `${videos.length} videos`;
+
+        if (videos.length === 0) {
+          videoGrid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+              <div style="font-size: 48px; margin-bottom: 12px;">🌍</div>
+              <h3>No videos found matching "${query || category}"</h3>
+              <p style="margin-top: 8px;">Try searching for "Solar", "Python", "Amapiano", or "Lagos"!</p>
+            </div>
+          `;
+          return;
+        }
+
+        videoGrid.innerHTML = videos.map(video => {
+          const isLiked = storage.isLiked(video.id);
+          const isDownloaded = storage.isDownloaded(video.id);
+
+          return `
+            <div class="yt-card" onclick="window.location.href='watch.html?v=${video.id}'">
+              <div class="yt-thumb-wrap">
+                <img class="yt-thumb" src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                <span class="yt-duration">${video.duration}</span>
+                ${video.isEducational ? '<span class="yt-edu-badge">EduBoost</span>' : ''}
+              </div>
+              <div class="yt-card-body">
+                <img class="yt-avatar" src="${video.channel.avatar}" alt="${video.channel.name}" onclick="event.stopPropagation(); window.location.href='channel.html?id=${video.channel.id}'">
+                <div class="yt-meta">
+                  <h3 class="yt-title">${video.title}</h3>
+                  <div class="yt-channel-row">
+                    <span class="yt-channel" onclick="event.stopPropagation(); window.location.href='channel.html?id=${video.channel.id}'">${video.channel.name}${video.channel.verified ? ' <svg class="verified-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>' : ''}</span>
+                    <span class="yt-meta-dot">•</span>
+                    <span class="yt-stats">${(video.views || 0).toLocaleString()} views</span>
+                    <span class="yt-meta-dot">•</span>
+                    <span class="yt-time">${video.timestamp}</span>
+                  </div>
+                  <div class="yt-quick-actions" onclick="event.stopPropagation()">
+                    <button class="yt-action-pill ${isLiked ? 'active' : ''}" onclick="toggleCardLike(event, '${video.id}')" title="Like">
+                      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                      <span class="like-cnt">${(video.likes || 0).toLocaleString()}</span>
+                    </button>
+                    <button class="yt-action-pill" onclick="shareVideoCard(event, '${video.id}', '${encodeURIComponent(video.title)}')" title="Share">
+                      <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                      <span>Share</span>
+                    </button>
+                    <button class="yt-action-pill ${isDownloaded ? 'active' : ''}" onclick="toggleCardDownload(event, '${video.id}')" title="Save offline">
+                      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                      <span class="dl-text">${isDownloaded ? 'Saved' : 'Save'}</span>
+                    </button>
+                    <button class="yt-action-pill yt-action-tip" onclick="tokShell.openTippingModal('${video.channel.id}')" title="Tip creator">
+                      <span>☕</span>
+                      <span>Tip</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      }
+
+      function renderShortsPreview() {
+        if (!shortsGrid) return;
+        const reels = storage.getTiktokReels().slice(0, 8);
+        shortsGrid.innerHTML = reels.map(r => `
+          <div class="shorts-preview-card" onclick="window.location.href='toks.html'">
+            <div class="shorts-preview-thumb-wrap">
+              <img src="${r.thumbnail}" alt="${r.title || 'Tok preview'}" class="shorts-preview-img" loading="lazy">
+              <div class="shorts-preview-overlay">
+                <h4 class="shorts-preview-title">${r.title}</h4>
+                <span class="shorts-preview-stat">❤️ ${(r.likes || 0).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Filter chips click handling
+      if (chipsBar) {
+        chipsBar.querySelectorAll('.category-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            chipsBar.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            activeCategory = chip.dataset.category;
+            soundFX.playSwitchSound();
+            renderVideos('', activeCategory);
+          });
+        });
+      }
+
+      window.toggleCardLike = function(e, id) {
+        e.stopPropagation();
+        soundFX.playLikeSound();
+        const nowLiked = storage.toggleLike(id);
+        const btn = e.currentTarget;
+        btn.classList.toggle('active', nowLiked);
+        const cntEl = btn.querySelector('.like-cnt');
+        if (cntEl) {
+          const video = storage.getYoutubeVideoById(id);
+          const currentCount = video ? (video.likes || 0) : 0;
+          cntEl.textContent = (currentCount + (nowLiked ? 1 : 0)).toLocaleString();
+        }
+        tokShell.showToast(nowLiked ? 'Liked video ❤️' : 'Removed from Liked');
+      };
+
+      window.shareVideoCard = function(e, id, encodedTitle) {
+        e.stopPropagation();
+        soundFX.playNotificationSound();
+        const url = `${window.location.origin}/watch.html?v=${id}`;
+        const title = decodeURIComponent(encodedTitle || 'Watch on TokTube');
+        if (navigator.share) {
+          navigator.share({ title, url }).catch(() => {});
+        } else {
+          tokShell.openShareModal(url, title);
+        }
+      };
+
+      window.toggleCardDownload = function(e, id) {
+        e.stopPropagation();
+        soundFX.playNotificationSound();
+        const nowDown = storage.toggleOfflineDownload(id);
+        const btn = e.currentTarget;
+        btn.classList.toggle('active', nowDown);
+        const textEl = btn.querySelector('.dl-text');
+        if (textEl) textEl.textContent = nowDown ? 'Saved' : 'Save';
+        tokShell.showToast(nowDown ? 'Saved for offline viewing 📥' : 'Removed from offline storage');
+      };
+
+      window.tokFeed = {
+        render: (q) => renderVideos(q, 'All')
+      };
+
+      renderShortsPreview();
+      renderVideos(searchParam || '', 'All');
+    });
+  </script>
+
+  <style>
+    .btn-card-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all var(--transition-fast);
+    }
+    .btn-card-action:hover {
+      background: #333;
+      color: #fff;
+    }
+    .btn-card-action.active {
+      color: var(--tt-pink);
+      border-color: var(--tt-pink);
+      background: rgba(254, 44, 85, 0.12);
+    }
+  </style>
+
+  <script>
+    // Register service worker for offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
+

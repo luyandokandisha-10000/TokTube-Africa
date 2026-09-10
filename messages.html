@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct Messages - TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z'/></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/features.css">
+  <link rel="stylesheet" href="styles/modal.css">
+</head>
+<body data-page="messages">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Messages View (2-Pane Layout) -->
+      <main class="page-main" style="padding: 0; overflow: hidden; display: flex;">
+        <div class="messages-layout" id="messages-layout">
+          <!-- Left Pane: Conversations List -->
+          <div class="messages-sidebar" id="conversations-pane">
+            <div class="messages-sidebar-header" style="display:flex; flex-direction:column; gap:10px; padding:14px 16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <h2 style="font-size: 18px; font-weight: 800;" data-i18n="nav_messages">Messages</h2>
+                <button id="btn-create-group-modal" class="btn-secondary" style="font-size:12px; padding:4px 10px; display:flex; align-items:center; gap:4px;">
+                  <span>👥</span> New Group
+                </button>
+              </div>
+
+              <!-- WhatsApp style Tabs: Direct Chats vs Groups -->
+              <div style="display:flex; gap:6px; background:var(--bg-card); padding:3px; border-radius:var(--radius-md); border:1px solid var(--border-subtle); width:100%;">
+                <button id="tab-direct-chats" class="btn-secondary active" style="flex:1; font-size:12px; padding:6px; border:none; text-align:center; justify-content:center;">
+                  💬 Direct (<span id="direct-count">3</span>)
+                </button>
+                <button id="tab-groups-chats" class="btn-secondary" style="flex:1; font-size:12px; padding:6px; border:none; text-align:center; justify-content:center;">
+                  👥 Groups (<span id="groups-count">2</span>)
+                </button>
+              </div>
+            </div>
+            <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-subtle);">
+              <input type="text" id="conversations-search-input" class="form-input" placeholder="Search chats or groups..." style="font-size: 13px; padding: 6px 12px;">
+            </div>
+            <div class="conversations-list" id="conversations-list">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Right Pane: Active Chat Room Window -->
+          <div class="chat-window" id="chat-pane">
+            <!-- Mobile Back Button Row -->
+            <div id="mobile-back-row" style="display: none; padding: 8px 16px; background: #202020; border-bottom: 1px solid var(--border-subtle); align-items: center; gap: 8px; cursor: pointer;">
+              <span style="font-size: 18px;">←</span>
+              <span style="font-size: 13px; font-weight: 600;">Back to Conversations</span>
+            </div>
+
+            <!-- Chat Header -->
+            <div class="chat-header">
+              <div class="chat-header-user" id="chat-header-user">
+                <img id="chat-creator-avatar" src="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <div>
+                  <h3 id="chat-creator-name" style="font-size: 15px; font-weight: 700;">Creator Name</h3>
+                  <span style="font-size: 11px; color: var(--africa-green);" data-i18n="online">Online • TokTube Creator</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button id="btn-chat-tip" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; color: var(--africa-gold);">☕ Tip</button>
+                <button id="btn-chat-block" class="btn-block-user" data-i18n="block_user">Block User</button>
+              </div>
+            </div>
+
+            <!-- Messages Stream -->
+            <div class="chat-messages-body" id="chat-messages-body">
+              <!-- Injected dynamically -->
+            </div>
+
+            <!-- Chat Footer Input -->
+            <div class="chat-input-bar" style="padding: 14px 20px; border-top: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; gap: 10px; align-items: center;">
+              <input type="text" id="chat-msg-input" class="form-input" placeholder="Type a message to this African creator..." style="flex: 1;">
+              <button id="btn-send-message" class="btn-primary" style="padding: 8px 18px;" data-i18n="send">Send</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- WhatsApp-style CREATE GROUP MODAL -->
+  <div id="create-group-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); width:100%; max-width:480px; padding:24px; max-height:90vh; overflow-y:auto;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">👥</span>
+          <h2 style="font-size:18px; font-weight:800;">Create WhatsApp-style Group</h2>
+        </div>
+        <button id="btn-close-group-modal" style="background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Group Name</label>
+        <input type="text" id="input-group-name" class="form-input" placeholder="e.g., Lagos Python & AI Builders 🇳🇬">
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Group Description</label>
+        <input type="text" id="input-group-desc" class="form-input" placeholder="Pan-African developer collective">
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Add Members</label>
+        <div id="group-member-checkboxes" style="display:flex; flex-direction:column; gap:8px; max-height:160px; overflow-y:auto; padding:6px; background:var(--bg-card); border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+          <!-- Populated from storage.getCreators() -->
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button id="btn-cancel-group" class="btn-secondary" style="flex:1; justify-content:center;">Cancel</button>
+        <button id="btn-submit-create-group" class="btn-primary" style="flex:2; justify-content:center;">Create Group 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let conversations = storage.getConversations();
+      let activeTab = 'direct'; // 'direct' or 'groups'
+
+      // Initial sample WhatsApp-style Groups if not in localStorage
+      let groups = [];
+      try {
+        groups = JSON.parse(localStorage.getItem('toktube_groups')) || [];
+      } catch(e) { groups = []; }
+
+      if (groups.length === 0) {
+        groups = [
+          {
+            id: "grp-1",
+            name: "Pan-African STEM Innovators 🌍⚡",
+            desc: "Collaboration on solar microgrids, drone agriculture, and clean tech across Africa",
+            avatar: "🌍",
+            members: ["ch-amina", "ch-zola", "ch-fatima", "ch-user"],
+            lastMessage: "Amina: New solar telemetry dashboard is now online!",
+            time: "12m ago",
+            messages: [
+              { id: "gm-1", author: "Amina Mwangi", sender: "ch-amina", text: "Habari everyone! Welcome to the Pan-African STEM group.", time: "10:30 AM" },
+              { id: "gm-2", author: "Zola Dlamini", sender: "ch-zola", text: "Excited to share the latest drone aerial crop multispectral data.", time: "11:15 AM" },
+              { id: "gm-3", author: "Amina Mwangi", sender: "ch-amina", text: "New solar telemetry dashboard is now online!", time: "12m ago" }
+            ]
+          },
+          {
+            id: "grp-2",
+            name: "Nollywood & Afrobeats Creators 🎬🎵",
+            desc: "Scriptwriters, producers, sound engineers & Tok creators",
+            avatar: "🎵",
+            members: ["ch-kwame", "ch-tunde", "ch-user"],
+            lastMessage: "Kwame: FL Studio project file shared in the cloud.",
+            time: "1h ago",
+            messages: [
+              { id: "gm-4", author: "Kwame Mensah", sender: "ch-kwame", text: "Drop your Amapiano stems here for this week's cypher!", time: "Yesterday" },
+              { id: "gm-5", author: "Babatunde Adeleke", sender: "ch-tunde", text: "Working on Yoruba lyric generation with local LLMs 🇳🇬", time: "2h ago" },
+              { id: "gm-6", author: "Kwame Mensah", sender: "ch-kwame", text: "FL Studio project file shared in the cloud.", time: "1h ago" }
+            ]
+          }
+        ];
+        localStorage.setItem('toktube_groups', JSON.stringify(groups));
+      }
+
+      let activeConvId = conversations[0]?.id || "conv-1";
+      let activeGroupId = groups[0]?.id || "grp-1";
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const creatorParam = urlParams.get('creator');
+
+      if (creatorParam) {
+        let existing = conversations.find(c => c.creatorId === creatorParam);
+        if (!existing) {
+          existing = {
+            id: "conv-" + Date.now(),
+            creatorId: creatorParam,
+            lastMessage: "Started new conversation",
+            time: "Just now",
+            unread: false,
+            messages: [
+              { id: "m-" + Date.now(), sender: "me", text: "Habari! Connected with you on TokTube Africa.", time: "Just now" }
+            ]
+          };
+          conversations.unshift(existing);
+          localStorage.setItem('toktube_conversations', JSON.stringify(conversations));
+        }
+        activeConvId = existing.id;
+        activeTab = 'direct';
+      }
+
+      const listEl = document.getElementById('conversations-list');
+      const messagesBody = document.getElementById('chat-messages-body');
+      const msgInput = document.getElementById('chat-msg-input');
+      const sendBtn = document.getElementById('btn-send-message');
+      const blockBtn = document.getElementById('btn-chat-block');
+      const tipBtn = document.getElementById('btn-chat-tip');
+      const avatarEl = document.getElementById('chat-creator-avatar');
+      const nameEl = document.getElementById('chat-creator-name');
+      const searchInp = document.getElementById('conversations-search-input');
+      const tabDirect = document.getElementById('tab-direct-chats');
+      const tabGroups = document.getElementById('tab-groups-chats');
+      const directCountEl = document.getElementById('direct-count');
+      const groupsCountEl = document.getElementById('groups-count');
+
+      // Mobile Pane Switcher
+      const convPane = document.getElementById('conversations-pane');
+      const chatPane = document.getElementById('chat-pane');
+      const mobileBackRow = document.getElementById('mobile-back-row');
+
+      function isMobile() { return window.innerWidth <= 768; }
+      function showMobileChat() {
+        if (isMobile()) {
+          convPane.style.display = 'none';
+          chatPane.style.display = 'flex';
+          mobileBackRow.style.display = 'flex';
+        }
+      }
+      function showMobileList() {
+        if (isMobile()) {
+          convPane.style.display = 'flex';
+          chatPane.style.display = 'none';
+          mobileBackRow.style.display = 'none';
+        }
+      }
+      mobileBackRow.addEventListener('click', showMobileList);
+
+      function updateCounts() {
+        directCountEl.textContent = conversations.length;
+        groupsCountEl.textContent = groups.length;
+      }
+
+      function switchTab(tab) {
+        activeTab = tab;
+        tabDirect.classList.toggle('active', tab === 'direct');
+        tabGroups.classList.toggle('active', tab === 'groups');
+        searchInp.value = '';
+        renderList();
+        renderActiveChat();
+      }
+
+      tabDirect.addEventListener('click', () => switchTab('direct'));
+      tabGroups.addEventListener('click', () => switchTab('groups'));
+
+      function renderList(query = '') {
+        updateCounts();
+
+        if (activeTab === 'direct') {
+          let filtered = conversations;
+          if (query) {
+            filtered = filtered.filter(c => {
+              const cr = storage.getCreatorById(c.creatorId);
+              return cr && cr.name.toLowerCase().includes(query.toLowerCase());
+            });
+          }
+
+          listEl.innerHTML = filtered.map(c => {
+            const creator = storage.getCreatorById(c.creatorId) || { name: "Creator", avatar: "" };
+            const isActive = c.id === activeConvId;
+
+            return `
+              <div class="conversation-item ${isActive ? 'active' : ''}" data-id="${c.id}">
+                <img class="conversation-avatar" src="${creator.avatar}">
+                <div class="conversation-info">
+                  <div class="conversation-top-row">
+                    <span class="conversation-name">${creator.name}</span>
+                    <span class="conversation-time">${c.time}</span>
+                  </div>
+                  <span class="conversation-snippet">${c.lastMessage}</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          listEl.querySelectorAll('.conversation-item').forEach(item => {
+            item.addEventListener('click', () => {
+              activeConvId = item.dataset.id;
+              soundFX.playSwitchSound();
+              renderList();
+              renderActiveChat();
+              showMobileChat();
+            });
+          });
+        } else {
+          // Groups list
+          let filtered = groups;
+          if (query) {
+            filtered = filtered.filter(g => g.name.toLowerCase().includes(query.toLowerCase()));
+          }
+
+          listEl.innerHTML = filtered.map(g => {
+            const isActive = g.id === activeGroupId;
+            return `
+              <div class="conversation-item ${isActive ? 'active' : ''}" data-group-id="${g.id}">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--tt-pink), var(--africa-gold)); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+                  ${g.avatar || '👥'}
+                </div>
+                <div class="conversation-info">
+                  <div class="conversation-top-row">
+                    <span class="conversation-name">${g.name}</span>
+                    <span class="conversation-time">${g.time}</span>
+                  </div>
+                  <span class="conversation-snippet">${g.lastMessage}</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          listEl.querySelectorAll('.conversation-item[data-group-id]').forEach(item => {
+            item.addEventListener('click', () => {
+              activeGroupId = item.dataset.groupId;
+              soundFX.playSwitchSound();
+              renderList();
+              renderActiveChat();
+              showMobileChat();
+            });
+          });
+        }
+      }
+
+      function renderActiveChat() {
+        if (activeTab === 'direct') {
+          const conv = conversations.find(c => c.id === activeConvId) || conversations[0];
+          if (!conv) return;
+
+          const creator = storage.getCreatorById(conv.creatorId) || { id: "ch-creator", name: "Creator", avatar: "" };
+          avatarEl.src = creator.avatar;
+          avatarEl.style.display = 'block';
+          nameEl.textContent = creator.name;
+          tipBtn.style.display = 'block';
+          blockBtn.style.display = 'block';
+
+          // Block state
+          const isBlocked = storage.isUserBlocked(creator.id);
+          blockBtn.textContent = isBlocked ? i18n.t('unblock_user') : i18n.t('block_user');
+          blockBtn.classList.toggle('blocked', isBlocked);
+
+          blockBtn.onclick = () => {
+            const nowBlocked = storage.toggleBlockUser(creator.id);
+            soundFX.playNotificationSound();
+            blockBtn.textContent = nowBlocked ? i18n.t('unblock_user') : i18n.t('block_user');
+            blockBtn.classList.toggle('blocked', nowBlocked);
+            tokShell.showToast(nowBlocked ? 'User blocked 🚫' : 'User unblocked ✓');
+          };
+
+          tipBtn.onclick = () => {
+            tokShell.openTippingModal(creator.id);
+          };
+
+          // Render message bubbles
+          messagesBody.innerHTML = (conv.messages || []).map(m => `
+            <div class="chat-bubble ${m.sender === 'me' ? 'sent' : 'received'}">
+              <div>${m.text}</div>
+              <div class="chat-bubble-time" style="text-align: right; margin-top: 4px;">${m.time}</div>
+            </div>
+          `).join('');
+
+          messagesBody.scrollTop = messagesBody.scrollHeight;
+        } else {
+          // Active Group Chat
+          const grp = groups.find(g => g.id === activeGroupId) || groups[0];
+          if (!grp) return;
+
+          avatarEl.src = 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=100';
+          nameEl.innerHTML = `${grp.name} <span style="font-size:11px; font-weight:400; color:var(--text-muted);">(${grp.members.length} members)</span>`;
+          tipBtn.style.display = 'none';
+          blockBtn.style.display = 'none';
+
+          messagesBody.innerHTML = (grp.messages || []).map(m => {
+            const isMe = m.sender === 'me' || m.sender === 'ch-user';
+            return `
+              <div class="chat-bubble ${isMe ? 'sent' : 'received'}" style="position:relative;">
+                ${!isMe ? `<div style="font-size: 11px; font-weight: 800; color: var(--tt-cyan); margin-bottom: 2px;">${m.author || 'Member'}</div>` : ''}
+                <div>${m.text}</div>
+                <div class="chat-bubble-time" style="text-align: right; margin-top: 4px;">${m.time}</div>
+              </div>
+            `;
+          }).join('');
+
+          messagesBody.scrollTop = messagesBody.scrollHeight;
+        }
+      }
+
+      function sendMessage() {
+        const text = msgInput.value.trim();
+        if (!text) return;
+        const user = storage.getUserProfile();
+
+        if (activeTab === 'direct') {
+          const newMsg = storage.addMessageToConversation(activeConvId, text);
+          conversations = storage.getConversations();
+          msgInput.value = '';
+          soundFX.playNotificationSound();
+          renderList();
+          renderActiveChat();
+
+          // Simulate intelligent creator reply after 1.5s
+          setTimeout(() => {
+            const conv = conversations.find(c => c.id === activeConvId);
+            if (conv && !storage.isUserBlocked(conv.creatorId)) {
+              const replies = [
+                "Asante sana! Appreciate the support on TokTube Africa. 🚀",
+                "Great point! Will cover this in the upcoming video!",
+                "Habari! Let me know what you think of the open-source GitHub code.",
+                "Thank you! Africa is innovating fast 🌍💡"
+              ];
+              const replyText = replies[Math.floor(Math.random() * replies.length)];
+              conv.messages.push({
+                id: "reply-" + Date.now(),
+                sender: conv.creatorId,
+                text: replyText,
+                time: "Just now"
+              });
+              conv.lastMessage = replyText;
+              conv.time = "Just now";
+              localStorage.setItem('toktube_conversations', JSON.stringify(conversations));
+              soundFX.playNotificationSound();
+              renderList();
+              renderActiveChat();
+            }
+          }, 1500);
+        } else {
+          // Send to Group
+          const grp = groups.find(g => g.id === activeGroupId);
+          if (grp) {
+            const newMsg = {
+              id: "gm-" + Date.now(),
+              author: user.name,
+              sender: "me",
+              text: text,
+              time: "Just now"
+            };
+            grp.messages.push(newMsg);
+            grp.lastMessage = `${user.name}: ${text}`;
+            grp.time = "Just now";
+            localStorage.setItem('toktube_groups', JSON.stringify(groups));
+            msgInput.value = '';
+            soundFX.playNotificationSound();
+            renderList();
+            renderActiveChat();
+
+            // Simulate group member reaction/response after 2s
+            setTimeout(() => {
+              const memberAnswers = [
+                { author: "Amina Mwangi", sender: "ch-amina", text: "Great idea! Let's integrate that into our open hardware schematics. 💡" },
+                { author: "Babatunde Adeleke", sender: "ch-tunde", text: "Adding this into our AI sprint roadmap for the weekend! 🚀" },
+                { author: "Zola Dlamini", sender: "ch-zola", text: "Agreed! Will deploy drone testing tomorrow morning." }
+              ];
+              const ans = memberAnswers[Math.floor(Math.random() * memberAnswers.length)];
+              grp.messages.push({
+                id: "gm-sim-" + Date.now(),
+                author: ans.author,
+                sender: ans.sender,
+                text: ans.text,
+                time: "Just now"
+              });
+              grp.lastMessage = `${ans.author}: ${ans.text}`;
+              grp.time = "Just now";
+              localStorage.setItem('toktube_groups', JSON.stringify(groups));
+              soundFX.playNotificationSound();
+              renderList();
+              renderActiveChat();
+            }, 2000);
+          }
+        }
+      }
+
+      sendBtn.addEventListener('click', sendMessage);
+      msgInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+      searchInp.addEventListener('input', () => renderList(searchInp.value.trim()));
+
+      // ──── CREATE GROUP MODAL LOGIC ────
+      const createGroupModal = document.getElementById('create-group-modal');
+      const openGroupModalBtn = document.getElementById('btn-create-group-modal');
+      const closeGroupModalBtn = document.getElementById('btn-close-group-modal');
+      const cancelGroupBtn = document.getElementById('btn-cancel-group');
+      const submitGroupBtn = document.getElementById('btn-submit-create-group');
+      const memberCheckboxesContainer = document.getElementById('group-member-checkboxes');
+
+      function openCreateGroupModal() {
+        const creators = storage.getCreators();
+        memberCheckboxesContainer.innerHTML = creators.map(c => `
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13px; padding:4px 6px; border-radius:4px; hover:background:var(--bg-elevated);">
+            <input type="checkbox" value="${c.id}" class="group-member-cb" checked>
+            <img src="${c.avatar}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">
+            <span>${c.name} (${c.handle})</span>
+          </label>
+        `).join('');
+        createGroupModal.style.display = 'flex';
+      }
+
+      function closeCreateGroupModal() {
+        createGroupModal.style.display = 'none';
+        document.getElementById('input-group-name').value = '';
+        document.getElementById('input-group-desc').value = '';
+      }
+
+      openGroupModalBtn.addEventListener('click', openCreateGroupModal);
+      closeGroupModalBtn.addEventListener('click', closeCreateGroupModal);
+      cancelGroupBtn.addEventListener('click', closeCreateGroupModal);
+
+      submitGroupBtn.addEventListener('click', () => {
+        const name = document.getElementById('input-group-name').value.trim();
+        const desc = document.getElementById('input-group-desc').value.trim();
+        if (!name) {
+          tokShell.showToast('Please enter a group name!');
+          return;
+        }
+
+        const selectedMembers = Array.from(document.querySelectorAll('.group-member-cb:checked')).map(cb => cb.value);
+        selectedMembers.push('ch-user');
+
+        const newGroup = {
+          id: 'grp-' + Date.now(),
+          name: name,
+          desc: desc || "African community group",
+          avatar: "👥",
+          members: selectedMembers,
+          lastMessage: "Group created",
+          time: "Just now",
+          messages: [
+            { id: "gm-" + Date.now(), author: "System", sender: "system", text: `Group "${name}" created. Say habari to the members! 🌍`, time: "Just now" }
+          ]
+        };
+
+        groups.unshift(newGroup);
+        localStorage.setItem('toktube_groups', JSON.stringify(groups));
+        closeCreateGroupModal();
+        switchTab('groups');
+        activeGroupId = newGroup.id;
+        renderList();
+        renderActiveChat();
+        soundFX.playSubscribeSound();
+        tokShell.showToast(`Group "${name}" created! 👥🎉`);
+      });
+
+      renderList();
+      renderActiveChat();
+
+      if (isMobile() && creatorParam) {
+        showMobileChat();
+      }
+    });
+  </script>
+
+  <style>
+    @media (max-width: 768px) {
+      .messages-sidebar {
+        width: 100%;
+      }
+      .chat-window {
+        display: none;
+        width: 100%;
+      }
+    }
+  </style>
+</body>
+</html>

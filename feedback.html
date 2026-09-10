@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Feedback & Feature Requests - TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300F2FE'><path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z'/></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/features.css">
+  <link rel="stylesheet" href="styles/modal.css">
+</head>
+<body data-page="feedback">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Feedback Content -->
+      <main class="page-main">
+        <div class="page-content" style="max-width: 960px;">
+          <div style="margin-bottom: 28px;">
+            <h1 style="font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+              <span>💡 TokTube Community Feedback & Roadmaps</span>
+            </h1>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+              Help shape the future of African video streaming and STEM education. Your feedback directly guides new features!
+            </p>
+          </div>
+
+          <!-- Submit Feedback Card -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 36px;">
+            <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">Leave Your Rating & Suggestion</h2>
+
+            <!-- 5-Star Interactive Rating -->
+            <div style="margin-bottom: 20px;">
+              <label class="form-label" style="margin-bottom: 8px;">Rate TokTube Africa</label>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div id="star-rating-row" style="display: flex; gap: 6px; font-size: 28px; cursor: pointer; color: var(--border-active);">
+                  <span class="star-btn active" data-rating="1" style="color: var(--africa-gold);">★</span>
+                  <span class="star-btn active" data-rating="2" style="color: var(--africa-gold);">★</span>
+                  <span class="star-btn active" data-rating="3" style="color: var(--africa-gold);">★</span>
+                  <span class="star-btn active" data-rating="4" style="color: var(--africa-gold);">★</span>
+                  <span class="star-btn active" data-rating="5" style="color: var(--africa-gold);">★</span>
+                </div>
+                <span id="star-rating-label" style="font-size: 14px; font-weight: 700; color: var(--africa-gold); margin-left: 10px;">5 - Excellent!</span>
+              </div>
+            </div>
+
+            <!-- Category Selector Pills -->
+            <div style="margin-bottom: 20px;">
+              <label class="form-label" style="margin-bottom: 8px;">Category</label>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="feedback-categories-row">
+                <button class="feedback-cat-pill selected" data-cat="African Languages">🌍 African Languages</button>
+                <button class="feedback-cat-pill" data-cat="EduBoost STEM">🎓 EduBoost STEM</button>
+                <button class="feedback-cat-pill" data-cat="Creator Monetization">💰 Creator Monetization / M-Pesa</button>
+                <button class="feedback-cat-pill" data-cat="Video Streaming Speed">⚡ Streaming & Data Saver</button>
+                <button class="feedback-cat-pill" data-cat="General Suggestion">💡 General Idea</button>
+              </div>
+            </div>
+
+            <!-- Feedback text -->
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label class="form-label">Your Ideas / Feature Request</label>
+              <textarea id="feedback-text-input" class="form-textarea" rows="4" placeholder="Tell us what you'd like to see added to TokTube Africa (e.g. offline audio mode, more STEM kits in Swahili)..."></textarea>
+            </div>
+
+            <button id="btn-submit-feedback" class="btn-primary" style="padding: 12px 28px; font-size: 15px;">
+              Submit Suggestion 🚀
+            </button>
+          </div>
+
+          <!-- Community Feedback Board -->
+          <div>
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">
+              📢 Recent Community Suggestions & Ideas
+            </h2>
+            <div id="feedback-board-list" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let currentRating = 5;
+      let currentCat = "African Languages";
+
+      const starButtons = document.querySelectorAll('.star-btn');
+      const ratingLabel = document.getElementById('star-rating-label');
+      const catPills = document.querySelectorAll('.feedback-cat-pill');
+      const textInput = document.getElementById('feedback-text-input');
+      const submitBtn = document.getElementById('btn-submit-feedback');
+      const boardList = document.getElementById('feedback-board-list');
+
+      const labels = {
+        1: "1 - Needs Work",
+        2: "2 - Fair",
+        3: "3 - Good",
+        4: "4 - Very Good",
+        5: "5 - Excellent!"
+      };
+
+      starButtons.forEach(star => {
+        star.addEventListener('click', () => {
+          currentRating = parseInt(star.dataset.rating, 10);
+          starButtons.forEach((s, idx) => {
+            s.style.color = (idx < currentRating) ? 'var(--africa-gold)' : 'var(--border-active)';
+          });
+          ratingLabel.textContent = labels[currentRating];
+          soundFX.playLikeSound();
+        });
+      });
+
+      catPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          catPills.forEach(p => p.classList.remove('selected'));
+          pill.classList.add('selected');
+          currentCat = pill.dataset.cat;
+          soundFX.playSwitchSound();
+        });
+      });
+
+      function renderFeedbackBoard() {
+        const list = storage.getFeedbackList();
+        boardList.innerHTML = list.map(item => `
+          <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-weight: 700; font-size: 15px;">${item.author}</span>
+              <span style="color: var(--africa-gold); font-size: 15px;">${'★'.repeat(item.rating)}</span>
+            </div>
+            <div style="font-size: 12px; color: var(--tt-pink); font-weight: 700; margin-bottom: 6px;">${item.category}</div>
+            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.45;">${item.text}</p>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: 8px; display: block;">${item.date}</span>
+          </div>
+        `).join('');
+      }
+
+      submitBtn.addEventListener('click', () => {
+        const text = textInput.value.trim();
+        if (!text) {
+          tokShell.showToast('Please enter your suggestions or ideas!');
+          return;
+        }
+
+        const user = storage.getUserProfile();
+        storage.addFeedback({
+          id: "fb-" + Date.now(),
+          author: user.name,
+          rating: currentRating,
+          category: currentCat,
+          text: text,
+          date: "Just now"
+        });
+
+        textInput.value = '';
+        soundFX.playSubscribeSound();
+        renderFeedbackBoard();
+        tokShell.showToast('Asante sana! Feedback submitted to community board 🚀');
+      });
+
+      renderFeedbackBoard();
+    });
+  </script>
+</body>
+</html>

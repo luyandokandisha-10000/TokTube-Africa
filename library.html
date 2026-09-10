@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library & Offline Downloads - TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z'/></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/youtube.css">
+  <link rel="stylesheet" href="styles/modal.css">
+</head>
+<body data-page="library">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Library Content -->
+      <main class="page-main">
+        <div class="page-content">
+          <!-- Library Header Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h1 style="font-size: 24px; font-weight: 800;">📚 Your TokTube Library</h1>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Manage your watch history, offline saved videos, and favorites.</p>
+            </div>
+            <button id="btn-clear-history" class="btn-secondary" style="font-size: 13px;">
+              🗑️ Clear Watch History
+            </button>
+          </div>
+
+          <!-- Section 1: Offline Saved Videos (African Data Saver Mode) -->
+          <section style="margin-bottom: 36px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h2 style="font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span>📥 Offline Saved Videos (Data Saver Mode)</span>
+                <span class="badge badge-edu" style="font-size: 11px;">Zero Data Playback</span>
+              </h2>
+              <span id="downloads-count" style="font-size: 13px; color: var(--text-muted);"></span>
+            </div>
+            <div class="video-grid" id="downloads-video-grid">
+              <!-- Injected dynamically -->
+            </div>
+          </section>
+
+          <!-- Section 2: Watch History -->
+          <section style="margin-bottom: 36px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h2 style="font-size: 18px; font-weight: 700;">🕒 Watch History</h2>
+              <span id="history-count" style="font-size: 13px; color: var(--text-muted);"></span>
+            </div>
+            <div class="video-grid" id="history-video-grid">
+              <!-- Injected dynamically -->
+            </div>
+          </section>
+
+          <!-- Section 3: Liked Videos -->
+          <section style="margin-bottom: 36px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h2 style="font-size: 18px; font-weight: 700;">❤️ Liked Videos</h2>
+              <span id="liked-count" style="font-size: 13px; color: var(--text-muted);"></span>
+            </div>
+            <div class="video-grid" id="liked-video-grid">
+              <!-- Injected dynamically -->
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const historyGrid = document.getElementById('history-video-grid');
+      const likedGrid = document.getElementById('liked-video-grid');
+      const downGrid = document.getElementById('downloads-video-grid');
+      const histCount = document.getElementById('history-count');
+      const likedCount = document.getElementById('liked-count');
+      const downCount = document.getElementById('downloads-count');
+      const clearBtn = document.getElementById('btn-clear-history');
+
+      function createVideoCard(video) {
+        return `
+          <div class="video-card" onclick="window.location.href='watch.html?v=${video.id}'">
+            <div class="video-thumbnail-wrapper">
+              <img class="video-thumbnail" src="${video.thumbnail}" alt="${video.title}">
+              <span class="badge badge-duration">${video.duration}</span>
+              ${video.isEducational ? '<span class="badge badge-edu" style="position: absolute; top: 8px; left: 8px;">EduBoost</span>' : ''}
+            </div>
+            <div class="video-info" style="display: flex; gap: 10px; margin-top: 10px;">
+              <img src="${video.channel.avatar}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+              <div style="flex: 1; min-width: 0;">
+                <h3 style="font-size: 14px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${video.title}</h3>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${video.channel.name}</div>
+                <div style="font-size: 11px; color: var(--text-muted);">${(video.views || 0).toLocaleString()} views</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderLibrary() {
+        const allVideos = storage.getYoutubeVideos();
+        const historyIds = storage.getHistoryIds();
+        const likedIds = storage.getLikedIds();
+        const downIds = storage.getOfflineDownloads();
+
+        const historyVids = allVideos.filter(v => historyIds.includes(v.id));
+        const likedVids = allVideos.filter(v => likedIds.includes(v.id));
+        const downVids = allVideos.filter(v => downIds.includes(v.id));
+
+        histCount.textContent = `${historyVids.length} videos`;
+        likedCount.textContent = `${likedVids.length} videos`;
+        downCount.textContent = `${downVids.length} videos saved`;
+
+        // Render Offline Downloads
+        if (downVids.length === 0) {
+          downGrid.innerHTML = `<p style="grid-column: 1 / -1; color: var(--text-muted); font-size: 14px; padding: 12px 0;">No offline videos downloaded yet. Tap 'Save Offline' on any video to watch without mobile data!</p>`;
+        } else {
+          downGrid.innerHTML = downVids.map(createVideoCard).join('');
+        }
+
+        // Render History
+        if (historyVids.length === 0) {
+          historyGrid.innerHTML = `<p style="grid-column: 1 / -1; color: var(--text-muted); font-size: 14px; padding: 12px 0;">Your watch history is clear.</p>`;
+        } else {
+          historyGrid.innerHTML = historyVids.map(createVideoCard).join('');
+        }
+
+        // Render Liked
+        if (likedVids.length === 0) {
+          likedGrid.innerHTML = `<p style="grid-column: 1 / -1; color: var(--text-muted); font-size: 14px; padding: 12px 0;">No liked videos yet. Tap ❤️ on videos you enjoy!</p>`;
+        } else {
+          likedGrid.innerHTML = likedVids.map(createVideoCard).join('');
+        }
+      }
+
+      clearBtn.addEventListener('click', () => {
+        storage.clearHistory();
+        soundFX.playNotificationSound();
+        renderLibrary();
+        tokShell.showToast('Watch history cleared! 🗑️');
+      });
+
+      renderLibrary();
+    });
+  </script>
+</body>
+</html>

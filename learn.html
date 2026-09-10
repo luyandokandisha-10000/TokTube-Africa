@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduBoost - Pan-African STEM & Learning Portal | TokTube</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFB800'><path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3z'/></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/youtube.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/features.css">
+</head>
+<body data-page="learn">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Learning Portal Content -->
+      <main class="page-main">
+        <div class="page-content">
+          <!-- EduBoost Hero Banner & Learning Streak -->
+          <div class="eduboost-hero-banner" style="background: linear-gradient(135deg, rgba(255, 184, 0, 0.15), rgba(0, 200, 83, 0.1)); border: 1px solid var(--africa-gold); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 28px; position: relative; overflow: hidden;">
+            <div style="max-width: 780px;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span class="badge badge-edu" style="font-size: 13px; padding: 4px 10px;">EduBoost Algorithm</span>
+                <span style="font-size: 13px; color: var(--africa-gold); font-weight: 700;">Pan-African Youth STEM Initiative</span>
+              </div>
+              <h1 style="font-size: 28px; font-weight: 800; line-height: 1.25; margin-bottom: 12px;">
+                Empowering 500 Million Young African Innovators 🌍💡
+              </h1>
+              <p style="font-size: 15px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 20px;">
+                EduBoost prioritizes robotics, clean solar energy, African AI language models, automated agriculture, and software engineering. Learn everyday and build your streak!
+              </p>
+
+              <!-- Interactive Daily Streak Card -->
+              <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 12px 20px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 32px;">🔥</span>
+                  <div>
+                    <div id="page-streak-counter" style="font-size: 20px; font-weight: 800; color: var(--africa-gold);">4 Days</div>
+                    <span style="font-size: 12px; color: var(--text-muted);">Current Learning Streak</span>
+                  </div>
+                </div>
+
+                <button id="btn-complete-stem-challenge" class="btn-primary" style="padding: 12px 24px; font-size: 14px; background: linear-gradient(135deg, var(--africa-gold), #FF8800);">
+                  🎯 Complete Today's STEM Challenge (+1 Day)
+                </button>
+
+                <button id="btn-toggle-eduboost" class="btn-secondary" style="padding: 12px 20px; font-size: 14px;">
+                  EduBoost Algorithm: <strong id="eduboost-status-label" style="color: var(--africa-green); margin-left: 4px;">ACTIVE</strong>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject Tracks Chips -->
+          <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px;">
+            <button class="category-chip active" data-topic="All">All STEM Courses</button>
+            <button class="category-chip" data-topic="Robotics & Clean Energy">⚡ Solar & Robotics</button>
+            <button class="category-chip" data-topic="Software Architecture">💻 AI & Software</button>
+            <button class="category-chip" data-topic="AgriTech & Drones">🌱 Drone Agriculture</button>
+          </div>
+
+          <!-- Educational Video Grid -->
+          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">
+            🎓 Certified Educational Lectures & Workshops
+          </h2>
+
+          <div class="video-grid" id="learn-video-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('learn-video-grid');
+      const streakEl = document.getElementById('page-streak-counter');
+      const challengeBtn = document.getElementById('btn-complete-stem-challenge');
+      const toggleBtn = document.getElementById('btn-toggle-eduboost');
+      const statusLabel = document.getElementById('eduboost-status-label');
+
+      let currentStreak = storage.getEduStreak();
+      streakEl.textContent = `${currentStreak} Days`;
+
+      function renderEduVideos(topic = 'All') {
+        let videos = storage.getYoutubeVideos().filter(v => v.isEducational);
+        if (topic !== 'All') {
+          videos = videos.filter(v => v.eduTopic === topic);
+        }
+
+        grid.innerHTML = videos.map(v => `
+          <div class="video-card" onclick="window.location.href='watch.html?v=${v.id}'">
+            <div class="video-thumbnail-wrapper">
+              <img class="video-thumbnail" src="${v.thumbnail}" alt="${v.title}">
+              <span class="badge badge-duration">${v.duration}</span>
+              <span class="badge badge-edu" style="position: absolute; top: 8px; left: 8px;">EduBoost Certified</span>
+            </div>
+            <div class="video-info" style="display: flex; gap: 12px; margin-top: 10px;">
+              <img class="video-channel-avatar" src="${v.channel.avatar}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+              <div style="flex: 1; min-width: 0;">
+                <h3 style="font-size: 14px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${v.title}</h3>
+                <div style="font-size: 12px; color: var(--africa-gold); font-weight: 700; margin-top: 2px;">${v.eduTopic || 'STEM'}</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${v.channel.name} • ${(v.views || 0).toLocaleString()} views</div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Complete Daily Challenge
+      challengeBtn.addEventListener('click', () => {
+        const nextStreak = storage.incrementEduStreak();
+        streakEl.textContent = `${nextStreak} Days`;
+        soundFX.playSubscribeSound();
+        tokShell.showToast(`🎉 STEM Challenge completed! Streak updated to ${nextStreak} days!`);
+
+        // update header streak pill
+        const headerStreak = document.getElementById('streak-counter');
+        if (headerStreak) headerStreak.textContent = `${nextStreak}d Streak`;
+      });
+
+      // Toggle EduBoost
+      toggleBtn.addEventListener('click', () => {
+        const active = storage.toggleEduBoost();
+        statusLabel.textContent = active ? 'ACTIVE' : 'OFF';
+        statusLabel.style.color = active ? 'var(--africa-green)' : 'var(--text-muted)';
+        soundFX.playNotificationSound();
+        tokShell.showToast(active ? 'EduBoost Algorithm Activated! 🎓' : 'EduBoost Algorithm Paused');
+      });
+
+      // Filter chips
+      document.querySelectorAll('.category-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          soundFX.playSwitchSound();
+          renderEduVideos(chip.dataset.topic);
+        });
+      });
+
+      renderEduVideos();
+    });
+  </script>
+</body>
+</html>

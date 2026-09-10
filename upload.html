@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creator Studio - Upload Video | TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'/></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/features.css">
+</head>
+<body data-page="upload">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Creator Studio Upload Content -->
+      <main class="page-main">
+        <div class="page-content" style="max-width: 900px;">
+          <div style="margin-bottom: 24px;">
+            <h1 style="font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+              <svg viewBox="0 0 24 24" style="width: 28px; height: 28px; fill: var(--tt-pink);"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+              <span>TokTube Creator Studio</span>
+            </h1>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+              Publish high-impact African videos, STEM masterclasses, or vertical Tok reels to millions of viewers.
+            </p>
+          </div>
+
+          <!-- Video Type Selection Card -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">1. Choose Content Format</h3>
+            <div class="upload-type-picker" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+              <div class="type-choice-card active" id="choice-tok" style="padding: 18px; background: var(--bg-card); border: 2px solid var(--tt-pink); border-radius: var(--radius-md); cursor: pointer;">
+                <div style="font-size: 24px; margin-bottom: 6px;">📱</div>
+                <h4 style="font-size: 15px; font-weight: 700;">Tok (Vertical 9:16 Reel)</h4>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Short-form immersive video under 3 minutes for mobile feed.</p>
+              </div>
+              <div class="type-choice-card" id="choice-tube" style="padding: 18px; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer;">
+                <div style="font-size: 24px; margin-bottom: 6px;">📺</div>
+                <h4 style="font-size: 15px; font-weight: 700;">Tube (Horizontal 16:9 Video)</h4>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">In-depth tutorials, STEM masterclasses, or documentaries.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Dropzone with Custom Thumbnail Feature -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">2. Media & Custom Thumbnail</h3>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <!-- Video File Upload Box -->
+              <div id="dropzone" style="border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 30px 16px; text-align: center; background: rgba(0,0,0,0.2); cursor: pointer; transition: all var(--transition-fast);">
+                <div style="font-size: 36px; margin-bottom: 8px;">📁</div>
+                <h4 style="font-size: 15px; font-weight: 700;">Select Video File</h4>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">MP4, WebM, MOV</p>
+                <button class="btn-secondary" style="margin-top: 10px; font-size: 12px; pointer-events: none;">Browse Video</button>
+                <input type="file" id="file-input" style="display: none;" accept="video/*">
+                <div id="file-selected-label" style="display: none; margin-top: 10px; font-size: 12px; color: var(--tt-cyan); font-weight: 700;"></div>
+              </div>
+
+              <!-- Custom Thumbnail Upload Box (Especially for long-form tube videos) -->
+              <div id="thumb-dropzone" style="border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 30px 16px; text-align: center; background: rgba(0,0,0,0.2); cursor: pointer; transition: all var(--transition-fast); position: relative; overflow: hidden;">
+                <div id="thumb-placeholder">
+                  <div style="font-size: 36px; margin-bottom: 8px;">🖼️</div>
+                  <h4 style="font-size: 15px; font-weight: 700;">Custom Thumbnail (16:9 / 9:16)</h4>
+                  <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Upload custom poster cover image</p>
+                  <button class="btn-secondary" style="margin-top: 10px; font-size: 12px; pointer-events: none;">Choose Image</button>
+                </div>
+                <img id="thumb-preview" src="" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; border-radius:var(--radius-md);">
+                <input type="file" id="thumb-file-input" style="display: none;" accept="image/*">
+                <div id="thumb-selected-label" style="display: none; margin-top: 10px; font-size: 12px; color: var(--africa-green); font-weight: 700;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Metadata Form -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">3. Video Information</h3>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label">Video Title</label>
+              <input type="text" id="upload-title" class="form-input" placeholder="e.g., How to build an automated solar irrigation system in Kisumu">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label">Description / Captions & Hashtags</label>
+              <textarea id="upload-desc" class="form-textarea" rows="4" placeholder="Describe your video, tag African creators, and add hashtags (#EduBoost, #STEM, #KenyaTech)..."></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+              <div class="form-group">
+                <label class="form-label">Primary Category</label>
+                <select id="upload-category" class="form-input" style="cursor: pointer;">
+                  <option value="Music">🎵 Afrobeats & Amapiano</option>
+                  <option value="Culture">🌍 African Heritage & Nollywood</option>
+                  <option value="Comedy">😂 African Comedy & Toks</option>
+                  <option value="Gaming">🎮 African Esports & Gaming</option>
+                  <option value="Fashion">👗 African Fashion & Streetwear</option>
+                  <option value="Food">🍲 Jollof & African Cuisine</option>
+                  <option value="STEM">🎓 EduBoost STEM (Educational)</option>
+                  <option value="Coding">💻 Coding & AI Tech</option>
+                  <option value="Agriculture">🌱 AgriTech & Drone Farming</option>
+                  <option value="Clean Energy">⚡ Clean Energy</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">African Language Tag</label>
+                <select id="upload-lang" class="form-input" style="cursor: pointer;">
+                  <option value="en">🇬🇧 English</option>
+                  <option value="sw">🇰🇪 Kiswahili</option>
+                  <option value="yo">🇳🇬 Yorùbá</option>
+                  <option value="ha">🇳🇬 Hausa</option>
+                  <option value="ig">🇳🇬 Igbo</option>
+                  <option value="am">🇪🇹 አማርኛ (Amharic)</option>
+                  <option value="zu">🇿🇦 isiZulu</option>
+                  <option value="fr">🇨🇮 Français</option>
+                  <option value="ar">🇪🇬 العربية</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- EduBoost for Kid/Student accounts only; Hidden for standard creators -->
+            <div id="eduboost-toggle-wrapper" style="display: none; align-items: center; gap: 10px; padding: 12px; background: rgba(255, 184, 0, 0.1); border: 1px solid var(--africa-gold); border-radius: var(--radius-md); margin-bottom: 24px;">
+              <input type="checkbox" id="upload-is-eduboost" style="width: 18px; height: 18px; cursor: pointer;">
+              <label for="upload-is-eduboost" style="font-size: 13px; font-weight: 600; cursor: pointer;">
+                🎓 Feature in EduBoost Educational Portal (Kid/Student Accounts)
+              </label>
+            </div>
+
+            <!-- Upload Progress Indicator (Simulated) -->
+            <div id="upload-progress-container" style="display: none; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
+                <span id="upload-status-text">Uploading to TokTube Africa Cloud...</span>
+                <span id="upload-pct-text">0%</span>
+              </div>
+              <div style="width: 100%; height: 8px; background: var(--bg-card); border-radius: 4px; overflow: hidden;">
+                <div id="upload-progress-bar" style="width: 0%; height: 100%; background: var(--brand-gradient); transition: width 0.2s ease;"></div>
+              </div>
+            </div>
+
+            <button id="btn-publish-video" class="btn-primary" style="width: 100%; justify-content: center; padding: 14px; font-size: 16px;">
+              🚀 Publish to TokTube Africa
+            </button>
+          </div>
+
+          <!-- My Published Videos & Toks Dashboard -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="font-size: 18px; font-weight: 800;">📁 Your Uploaded Content</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">Manage and preview all videos and Toks you have published.</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-secondary active" id="filter-my-all" style="font-size: 12px; padding: 5px 12px;">All Content</button>
+                <button class="btn-secondary" id="filter-my-toks" style="font-size: 12px; padding: 5px 12px;">📱 Toks</button>
+                <button class="btn-secondary" id="filter-my-tubes" style="font-size: 12px; padding: 5px 12px;">📺 Videos</button>
+              </div>
+            </div>
+
+            <div id="my-uploads-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let selectedType = 'tok'; // 'tok' or 'tube'
+      const tokChoice = document.getElementById('choice-tok');
+      const tubeChoice = document.getElementById('choice-tube');
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('file-input');
+      const fileLabel = document.getElementById('file-selected-label');
+      const thumbDropzone = document.getElementById('thumb-dropzone');
+      const thumbFileInput = document.getElementById('thumb-file-input');
+      const thumbPreview = document.getElementById('thumb-preview');
+      const thumbPlaceholder = document.getElementById('thumb-placeholder');
+      const thumbLabel = document.getElementById('thumb-selected-label');
+      let customThumbnailUrl = '';
+
+      // Check if user is in Kid mode to display EduBoost option
+      if (storage.isKidMode()) {
+        const eduWrap = document.getElementById('eduboost-toggle-wrapper');
+        if (eduWrap) {
+          eduWrap.style.display = 'flex';
+          document.getElementById('upload-is-eduboost').checked = true;
+        }
+      }
+
+      thumbDropzone.addEventListener('click', () => thumbFileInput.click());
+
+      thumbFileInput.addEventListener('change', () => {
+        if (thumbFileInput.files && thumbFileInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            customThumbnailUrl = e.target.result;
+            thumbPreview.src = customThumbnailUrl;
+            thumbPreview.style.display = 'block';
+            thumbPlaceholder.style.display = 'none';
+            thumbDropzone.style.borderColor = 'var(--africa-green)';
+            soundFX.playNotificationSound();
+          };
+          reader.readAsDataURL(thumbFileInput.files[0]);
+        }
+      });
+      const publishBtn = document.getElementById('btn-publish-video');
+      const progressContainer = document.getElementById('upload-progress-container');
+      const progressBar = document.getElementById('upload-progress-bar');
+      const progressPct = document.getElementById('upload-pct-text');
+      const statusText = document.getElementById('upload-status-text');
+
+      tokChoice.addEventListener('click', () => {
+        selectedType = 'tok';
+        tokChoice.style.borderColor = 'var(--tt-pink)';
+        tubeChoice.style.borderColor = 'var(--border-subtle)';
+        soundFX.playSwitchSound();
+      });
+
+      tubeChoice.addEventListener('click', () => {
+        selectedType = 'tube';
+        tubeChoice.style.borderColor = 'var(--tt-cyan)';
+        tokChoice.style.borderColor = 'var(--border-subtle)';
+        soundFX.playSwitchSound();
+      });
+
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          fileLabel.textContent = `✓ Selected: ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
+          fileLabel.style.display = 'block';
+          dropzone.style.borderColor = 'var(--tt-cyan)';
+          soundFX.playNotificationSound();
+        }
+      });
+
+      publishBtn.addEventListener('click', () => {
+        const title = document.getElementById('upload-title').value.trim();
+        const desc = document.getElementById('upload-desc').value.trim();
+        const category = document.getElementById('upload-category').value;
+        const isEdu = document.getElementById('upload-is-eduboost').checked;
+
+        if (!title) {
+          tokShell.showToast('Please enter a video title!');
+          return;
+        }
+
+        publishBtn.disabled = true;
+        progressContainer.style.display = 'block';
+
+        let pct = 0;
+        const interval = setInterval(() => {
+          pct += 15;
+          if (pct > 100) pct = 100;
+          progressBar.style.width = `${pct}%`;
+          progressPct.textContent = `${pct}%`;
+
+          if (pct === 100) {
+            clearInterval(interval);
+            statusText.textContent = 'Processing & Transcoding Video...';
+
+            setTimeout(async () => {
+              const user = storage.getUserProfile();
+              const selectedFile = (fileInput.files && fileInput.files.length > 0) ? fileInput.files[0] : null;
+
+              // Create an object URL if local file selected, with dependable fallback
+              let mediaUrl = "";
+              if (selectedFile) {
+                try {
+                  mediaUrl = URL.createObjectURL(selectedFile);
+                } catch(e) {
+                  mediaUrl = "";
+                }
+              }
+
+              if (selectedType === 'tok') {
+                const newId = "tok-" + Date.now();
+                const reliableTokUrl = mediaUrl || "https://vjs.zencdn.net/v/oceans.mp4";
+                const reelThumb = customThumbnailUrl || "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600";
+
+                if (selectedFile) {
+                  await storage.saveVideoBlob(newId, selectedFile);
+                }
+
+                storage.addNewReel({
+                  id: newId,
+                  title: title,
+                  videoUrl: reliableTokUrl,
+                  thumbnail: reelThumb,
+                  likes: 1,
+                  commentsCount: 0,
+                  shares: 0,
+                  musicTitle: "Original Sound - " + user.name,
+                  musicArtist: user.name,
+                  isEducational: isEdu,
+                  creator: {
+                    id: "ch-user",
+                    name: user.name,
+                    handle: user.handle,
+                    avatar: user.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+                  },
+                  comments: []
+                });
+                soundFX.playSubscribeSound();
+                tokShell.showToast('Tok published successfully! 🚀');
+                setTimeout(() => window.location.href = 'toks.html', 800);
+              } else {
+                const newId = "tube-" + Date.now();
+                const reliableTubeUrl = mediaUrl || "https://vjs.zencdn.net/v/oceans.mp4";
+                const videoThumb = customThumbnailUrl || "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=800";
+
+                if (selectedFile) {
+                  await storage.saveVideoBlob(newId, selectedFile);
+                }
+
+                storage.addNewVideo({
+                  id: newId,
+                  title: title,
+                  description: desc || "Published by " + user.name,
+                  videoUrl: reliableTubeUrl,
+                  thumbnail: videoThumb,
+                  duration: "12:30",
+                  views: 1,
+                  likes: 1,
+                  timestamp: "Just now",
+                  category: category,
+                  isEducational: isEdu,
+                  eduTopic: category,
+                  channel: {
+                    id: "ch-user",
+                    name: user.name,
+                    avatar: user.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+                    subscribers: "1"
+                  },
+                  comments: []
+                });
+                soundFX.playSubscribeSound();
+                tokShell.showToast('Video published successfully! 🚀');
+                setTimeout(() => window.location.href = `watch.html?v=${newId}`, 800);
+              }
+            }, 800);
+          }
+        }, 150);
+      });
+
+      // Render My Uploads Section
+      function renderMyUploads(filter = 'all') {
+        const grid = document.getElementById('my-uploads-grid');
+        if (!grid) return;
+
+        const allVideos = storage.getYoutubeVideos();
+        const allReels = storage.getTiktokReels();
+
+        // User uploads have channel.id === 'ch-user' or creator.id === 'ch-user' or id starting with tok- / tube- with numeric timestamp
+        const myVideos = allVideos.filter(v => v.channel && v.channel.id === 'ch-user').map(v => ({ ...v, type: 'tube' }));
+        const myReels = allReels.filter(r => r.creator && r.creator.id === 'ch-user').map(r => ({ ...r, type: 'tok' }));
+
+        let items = [];
+        if (filter === 'all') items = [...myReels, ...myVideos];
+        else if (filter === 'tok') items = myReels;
+        else if (filter === 'tube') items = myVideos;
+
+        if (items.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 36px 16px; color: var(--text-muted);">
+              <div style="font-size: 36px; margin-bottom: 8px;">🎬</div>
+              <p style="font-size: 14px; font-weight: 600;">No uploaded videos yet in this tab.</p>
+              <p style="font-size: 12px; margin-top: 4px;">Use the upload form above to publish your first African Tok or video!</p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = items.map(item => {
+          const isTok = item.type === 'tok';
+          const link = isTok ? 'toks.html' : `watch.html?v=${item.id}`;
+          const poster = item.thumbnail || '';
+
+          return `
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column;">
+              <div style="position: relative; aspect-ratio: ${isTok ? '9/16' : '16/9'}; max-height: 220px; background: #000; overflow: hidden; cursor: pointer;" onclick="window.location.href='${link}'">
+                <video data-video-id="${item.id}" src="${item.videoUrl}" poster="${poster}" preload="metadata" style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <span style="position: absolute; top: 8px; left: 8px; background: ${isTok ? 'var(--tt-pink)' : 'var(--yt-red)'}; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">
+                  ${isTok ? '📱 Tok Reel' : '📺 Video'}
+                </span>
+                ${item.isEducational ? '<span style="position: absolute; top: 8px; right: 8px; background: var(--africa-gold); color: #000; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">EduBoost</span>' : ''}
+              </div>
+              <div style="padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <h4 style="font-size: 14px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px;">
+                    ${item.title}
+                  </h4>
+                  <div style="font-size: 12px; color: var(--text-muted);">
+                    ❤️ ${(item.likes || 0).toLocaleString()} likes
+                  </div>
+                </div>
+                <div style="margin-top: 10px; display: flex; gap: 8px;">
+                  <button class="btn-primary" style="flex: 1; padding: 6px; font-size: 12px;" onclick="window.location.href='${link}'">
+                    ▶ Play
+                  </button>
+                  <button class="btn-secondary" style="padding: 6px 10px; font-size: 12px;" onclick="tokShell.openShareModal(window.location.origin + '/${link}', '${item.title}')">
+                    ↗️ Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Resolve any stored IndexedDB video blobs for accurate creator preview
+        grid.querySelectorAll('video[data-video-id]').forEach(async (vid) => {
+          const vidId = vid.dataset.videoId;
+          if (vidId) {
+            const blobUrl = await storage.getVideoBlob(vidId);
+            if (blobUrl) {
+              vid.src = blobUrl;
+            }
+          }
+        });
+      }
+
+      document.getElementById('filter-my-all')?.addEventListener('click', (e) => {
+        document.querySelectorAll('#filter-my-all, #filter-my-toks, #filter-my-tubes').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderMyUploads('all');
+      });
+
+      document.getElementById('filter-my-toks')?.addEventListener('click', (e) => {
+        document.querySelectorAll('#filter-my-all, #filter-my-toks, #filter-my-tubes').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderMyUploads('tok');
+      });
+
+      document.getElementById('filter-my-tubes')?.addEventListener('click', (e) => {
+        document.querySelectorAll('#filter-my-all, #filter-my-toks, #filter-my-tubes').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        renderMyUploads('tube');
+      });
+
+      renderMyUploads('all');
+    });
+  </script>
+</body>
+</html>
+
+

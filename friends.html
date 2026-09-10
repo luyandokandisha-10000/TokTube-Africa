@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends & African Creators - TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/features.css">
+  <link rel="stylesheet" href="styles/modal.css">
+</head>
+<body data-page="friends">
+  <div id="app">
+    <!-- Injected Global Header -->
+    <div id="navbar-container"></div>
+
+    <div id="main-content">
+      <!-- Injected Global Sidebar -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Friends & Creators Content -->
+      <main class="page-main">
+        <div class="page-content">
+          <!-- Invite Friends Banner -->
+          <div class="invite-banner-card">
+            <div class="invite-banner-header">
+              <div>
+                <h2 style="font-size: 22px; font-weight: 800;">🚀 Connect Your Circle to TokTube Africa</h2>
+                <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+                  Share African innovation, STEM tutorials, and trending Toks with your friends across the continent.
+                </p>
+              </div>
+            </div>
+
+            <!-- WhatsApp, Telegram, SMS Invites -->
+            <div class="invite-buttons-row">
+              <button id="btn-invite-wa" class="btn-invite-app whatsapp" style="background: #25D366; color: #fff;">
+                <span style="font-size: 18px;">💬</span>
+                <span>Invite on WhatsApp</span>
+              </button>
+              <button id="btn-invite-tg" class="btn-invite-app telegram" style="background: #0088cc; color: #fff;">
+                <span style="font-size: 18px;">✈️</span>
+                <span>Invite on Telegram</span>
+              </button>
+              <button id="btn-invite-sms" class="btn-invite-app sms" style="background: #333; color: #fff;">
+                <span style="font-size: 18px;">📱</span>
+                <span>SMS Invite</span>
+              </button>
+              <button id="btn-invite-copy" class="btn-invite-app copy" style="background: var(--bg-card); color: #fff;">
+                <span style="font-size: 18px;">📋</span>
+                <span>Copy Referral Link</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time User & Friend Search (Cloud Firestore) -->
+          <div class="user-search-section" style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:20px;margin-bottom:28px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+              <div>
+                <h3 style="font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;">
+                  <span>🔍 Find Friends Across Devices</span>
+                  <span style="font-size:10px;background:var(--africa-green);color:#000;font-weight:800;padding:2px 6px;border-radius:4px;">LIVE CLOUD</span>
+                </h3>
+                <p style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Search for any registered TokTube creator or friend by username, display name, or handle.</p>
+              </div>
+            </div>
+            
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div style="flex:1;position:relative;">
+                <input type="text" id="input-friend-search" class="form-input" placeholder="Search by name, handle (@nexen), or email..." style="width:100%;padding:12px 16px;font-size:14px;border-radius:var(--radius-md);">
+              </div>
+              <button id="btn-search-friends" class="btn-primary" style="padding:12px 20px;font-weight:700;font-size:14px;">Search</button>
+            </div>
+
+            <!-- Search Results Container -->
+            <div id="search-results-area" style="display:none;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-subtle);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h4 style="font-size:14px;font-weight:700;color:var(--text-secondary);">Search Results</h4>
+                <span id="search-results-count" style="font-size:12px;color:var(--text-muted);"></span>
+              </div>
+              <div id="cloud-friends-results-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:16px;"></div>
+            </div>
+          </div>
+
+          <!-- Pan-African Creators Spotlight -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-size: 22px; font-weight: 800;">🌍 Featured African Creators & Engineers</h2>
+            <span style="font-size: 13px; color: var(--text-muted);">Verified Pioneers</span>
+          </div>
+
+          <!-- Creators Grid -->
+          <div class="friends-creators-grid" id="friends-creators-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- TikTok-Style Creator Profile Modal -->
+    <div id="creator-profile-modal" class="modal-backdrop">
+      <div class="modal-window tiktok-profile-window" style="max-width: 540px; padding: 0; overflow: hidden;">
+        <div style="position: relative;">
+          <div id="tt-profile-hero-banner" style="height: 160px; background-size: cover; background-position: center; background-color: #222;"></div>
+          <button class="modal-close-btn" style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6);" onclick="closeCreatorProfileModal()">✕</button>
+          <img id="tt-profile-avatar" src="" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #000; position: absolute; bottom: -40px; left: 24px; object-fit: cover;">
+        </div>
+
+        <div style="padding: 48px 24px 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h2 id="tt-profile-name" style="font-size: 20px; font-weight: 800;">Creator Name</h2>
+              <span id="tt-profile-handle" style="font-size: 13px; color: var(--africa-gold);">@handle</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-modal-follow" class="btn-primary" style="padding: 6px 16px; font-size: 13px;">Follow</button>
+              <button id="btn-modal-message" class="btn-secondary" style="padding: 6px 14px; font-size: 13px;">💬 Message</button>
+              <button id="btn-modal-tip" class="btn-secondary" style="padding: 6px 14px; font-size: 13px; color: var(--africa-gold);">☕ Tip</button>
+            </div>
+          </div>
+
+          <p id="tt-profile-bio" style="font-size: 14px; line-height: 1.4; color: var(--text-secondary); margin-top: 14px;"></p>
+
+          <div style="display: flex; gap: 24px; margin-top: 16px; padding: 12px 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+            <div><strong id="tt-stat-followers" style="font-size: 16px;">340K</strong> <span style="font-size: 12px; color: var(--text-muted);">Followers</span></div>
+            <div><strong id="tt-stat-following" style="font-size: 16px;">142</strong> <span style="font-size: 12px; color: var(--text-muted);">Following</span></div>
+            <div><strong id="tt-stat-likes" style="font-size: 16px;">2.8M</strong> <span style="font-size: 12px; color: var(--text-muted);">Likes</span></div>
+          </div>
+
+          <h4 style="font-size: 14px; font-weight: 700; margin-top: 16px; margin-bottom: 10px;">Recent Toks</h4>
+          <div id="tt-profile-videos-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Injected Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <!-- Shared Core Scripts -->
+  <script src="js/core.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('friends-creators-grid');
+      const creators = storage.getCreators();
+
+      function renderCreators() {
+        grid.innerHTML = creators.map(c => {
+          const isSub = storage.isSubscribed(c.id);
+
+          return `
+            <div class="creator-card" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 20px; text-align: center; cursor: pointer; transition: transform var(--transition-fast);" onclick="openCreatorModal('${c.id}')">
+              <img src="${c.avatar}" alt="${c.name}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; border: 2px solid var(--tt-cyan);">
+              <h3 style="font-size: 16px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                ${c.name}
+                ${c.verified ? '<svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: var(--tt-cyan);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>' : ''}
+              </h3>
+              <div style="font-size: 12px; color: var(--africa-gold); font-weight: 700; margin-top: 2px;">${c.country} • ${c.city}</div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${c.bio}</p>
+              <div style="display: flex; justify-content: center; gap: 8px; margin-top: 16px;" onclick="event.stopPropagation();">
+                <button class="btn-primary" style="padding: 6px 16px; font-size: 12px;" onclick="toggleFollowCreator(event, '${c.id}', this)">
+                  ${isSub ? 'Following ✓' : 'Follow'}
+                </button>
+                <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="window.location.href='messages.html?creator=${c.id}'">
+                  💬 Chat
+                </button>
+                <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="tokShell.openTippingModal('${c.id}')" title="Tip with Mobile Money">
+                  ☕ Tip
+                </button>
+                <!-- Friend Request Button -->
+                <button id="friend-btn-${c.id}" class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="handleFriendButton(event, '${c.id}')">
+                  ${(() => {
+                    const current = storage.getCurrentUser().id;
+                    if (storage.areFriends(current, c.id)) return 'Friends';
+                    const outgoing = storage.getOutgoingRequestsFor(current).some(r => r.targetId === c.id);
+                    if (outgoing) return 'Request Sent';
+                    return 'Add Friend';
+                  })()}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      window.toggleFollowCreator = function(e, id, btn) {
+        soundFX.playSubscribeSound();
+        const nowSub = storage.toggleSubscribe(id);
+        btn.textContent = nowSub ? 'Following ✓' : 'Follow';
+        tokShell.showToast(nowSub ? 'Following creator ✓' : 'Unfollowed');
+      };
+
+      // Modal functions
+      const modal = document.getElementById('creator-profile-modal');
+      let currentModalCreatorId = null;
+
+      window.openCreatorModal = function(id) {
+        currentModalCreatorId = id;
+        const c = storage.getCreatorById(id);
+        if (!c) return;
+
+        document.getElementById('tt-profile-hero-banner').style.backgroundImage = `url('${c.banner}')`;
+        document.getElementById('tt-profile-avatar').src = c.avatar;
+        document.getElementById('tt-profile-name').textContent = c.name;
+        document.getElementById('tt-profile-handle').textContent = c.handle;
+        document.getElementById('tt-profile-bio').textContent = c.bio;
+        document.getElementById('tt-stat-followers').textContent = c.followers;
+        document.getElementById('tt-stat-following').textContent = c.following;
+        document.getElementById('tt-stat-likes').textContent = c.likes;
+
+        const followBtn = document.getElementById('btn-modal-follow');
+        const isSub = storage.isSubscribed(c.id);
+        followBtn.textContent = isSub ? 'Following ✓' : 'Follow';
+        followBtn.onclick = () => {
+          soundFX.playSubscribeSound();
+          const nowSub = storage.toggleSubscribe(c.id);
+          followBtn.textContent = nowSub ? 'Following ✓' : 'Follow';
+          renderCreators();
+        };
+
+        document.getElementById('btn-modal-message').onclick = () => {
+          window.location.href = `messages.html?creator=${c.id}`;
+        };
+
+        document.getElementById('btn-modal-tip').onclick = () => {
+          tokShell.openTippingModal(c.id);
+        };
+
+        const vGrid = document.getElementById('tt-profile-videos-grid');
+        const reels = storage.getTiktokReels().slice(0, 3);
+        vGrid.innerHTML = reels.map(r => `
+          <div style="aspect-ratio: 9/16; border-radius: var(--radius-sm); overflow: hidden; background: #000; cursor: pointer;" onclick="window.location.href='toks.html'">
+            <img src="${r.thumbnail}" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        `).join('');
+
+        modal.classList.add('open');
+        soundFX.playSwitchSound();
+      };
+
+      window.closeCreatorProfileModal = function() {
+        modal.classList.remove('open');
+      };
+
+      // Invite buttons
+      document.getElementById('btn-invite-wa')?.addEventListener('click', () => {
+        const text = encodeURIComponent("Join me on TokTube Africa! The Pan-African video & learning community: https://toktube.africa");
+        window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+      });
+
+      document.getElementById('btn-invite-tg')?.addEventListener('click', () => {
+        const text = encodeURIComponent("Join me on TokTube Africa! https://toktube.africa");
+        window.open(`https://t.me/share/url?url=https://toktube.africa&text=${text}`, '_blank');
+      });
+
+      document.getElementById('btn-invite-sms')?.addEventListener('click', () => {
+        window.open(`sms:?body=Join%20TokTube%20Africa!%20https://toktube.africa`, '_blank');
+      });
+
+      document.getElementById('btn-invite-copy')?.addEventListener('click', () => {
+        navigator.clipboard.writeText('https://toktube.africa/join?ref=pulse').then(() => {
+          soundFX.playNotificationSound();
+          tokShell.showToast('Referral link copied to clipboard! 📋');
+        });
+      });
+
+      // ==========================================
+      // CLOUD FIRESTORE FRIEND SEARCH
+      // ==========================================
+      const searchInput = document.getElementById('input-friend-search');
+      const searchBtn = document.getElementById('btn-search-friends');
+      const searchResultsArea = document.getElementById('search-results-area');
+      const searchResultsGrid = document.getElementById('cloud-friends-results-grid');
+      const searchCount = document.getElementById('search-results-count');
+
+      async function searchCloudFriends() {
+        const query = (searchInput.value || '').trim().toLowerCase();
+        if (!query) {
+          searchResultsArea.style.display = 'none';
+          return;
+        }
+
+        searchResultsArea.style.display = 'block';
+        searchResultsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);">Searching TokTube cloud users...</div>';
+
+        let users = [];
+
+        // Query Firestore if connected
+        if (window.tokFirebase && window.tokFirebase.db) {
+          try {
+            const snap = await window.tokFirebase.db.collection('users').get();
+            snap.forEach(doc => {
+              const u = doc.data();
+              const dName = (u.displayName || '').toLowerCase();
+              const hName = (u.handle || '').toLowerCase();
+              const eName = (u.email || '').toLowerCase();
+              if (dName.includes(query) || hName.includes(query) || eName.includes(query)) {
+                users.push(u);
+              }
+            });
+          } catch (err) {
+            console.warn('Firestore user search error:', err);
+          }
+        }
+
+        // Also check local storage users as backup
+        try {
+          const localUsers = JSON.parse(localStorage.getItem('toktube_users') || '[]');
+          localUsers.forEach(lu => {
+            const dName = (lu.displayName || '').toLowerCase();
+            const eName = (lu.email || '').toLowerCase();
+            if ((dName.includes(query) || eName.includes(query)) && !users.some(u => u.email === lu.email)) {
+              users.push({
+                displayName: lu.displayName || lu.email.split('@')[0],
+                email: lu.email,
+                handle: '@' + (lu.displayName || lu.email.split('@')[0]).toLowerCase().replace(/[^a-z0-9]/g, ''),
+                avatarLetter: (lu.displayName || lu.email)[0].toUpperCase(),
+                avatarUrl: lu.avatarUrl || ''
+              });
+            }
+          });
+        } catch(e) {}
+
+        const currentSession = auth.getCurrentUser() || {};
+        // Filter out current user from results
+        users = users.filter(u => u.email !== currentSession.email);
+
+        if (searchCount) searchCount.textContent = users.length + ' found';
+
+        if (users.length === 0) {
+          searchResultsGrid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:24px;background:var(--bg-elevated);border-radius:var(--radius-md);">
+              <div style="font-size:32px;margin-bottom:8px;">🔍</div>
+              <p style="font-weight:700;color:var(--text-primary);margin-bottom:4px;">No creators or friends matching "${query}"</p>
+              <p style="font-size:12px;color:var(--text-muted);">Invite them to sign up with the links above!</p>
+            </div>
+          `;
+          return;
+        }
+
+        searchResultsGrid.innerHTML = users.map(u => {
+          const name = u.displayName || u.email.split('@')[0];
+          const handle = u.handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''));
+          const letter = (name[0] || 'U').toUpperCase();
+          const avatarHtml = u.avatarUrl
+            ? `<img src="${u.avatarUrl}" style="width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--tt-pink);margin:0 auto 10px;">`
+            : `<div style="width:54px;height:54px;border-radius:50%;background:var(--brand-gradient);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;margin:0 auto 10px;">${letter}</div>`;
+
+          return `
+            <div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:16px;text-align:center;">
+              ${avatarHtml}
+              <h4 style="font-size:15px;font-weight:700;margin-bottom:2px;">${name}</h4>
+              <div style="font-size:12px;color:var(--africa-gold);font-weight:600;margin-bottom:6px;">${handle}</div>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">${u.bio || 'TokTube Member'}</p>
+              <div style="display:flex;gap:6px;justify-content:center;">
+                <button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="tokShell.showToast('Friend request sent to ${name} ✨');this.textContent='Requested ✓';this.disabled=true;">
+                  Add Friend
+                </button>
+                <button class="btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="window.location.href='messages.html'">
+                  💬 Chat
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (searchBtn) searchBtn.addEventListener('click', searchCloudFriends);
+      if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') searchCloudFriends();
+        });
+      }
+
+      renderCreators();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+/* TokTube Africa - Main Stylesheet & Design System */
+:root {
+  /* Brand Colors - Pan-African Vibrancy + TokTube Gradient */
+  --yt-red: #FF0000;
+  --yt-red-hover: #CC0000;
+  --tt-cyan: #00F2FE;
+  --tt-pink: #FE2C55;
+  --tt-pink-hover: #E0264A;
+  --africa-gold: #FFB800;
+  --africa-green: #00C853;
+  --brand-gradient: linear-gradient(135deg, #FE2C55 0%, #FF0000 45%, #FFB800 80%, #00F2FE 100%);
+  --brand-glow: 0 0 20px rgba(254, 44, 85, 0.4);
+
+  /* Dark Theme Colors */
+  --bg-base: #0F0F0F;
+  --bg-surface: #181818;
+  --bg-elevated: #222222;
+  --bg-card: #282828;
+  --bg-input: #121212;
+  --border-subtle: #303030;
+  --border-active: #4E4E4E;
+
+  /* Typography Colors */
+  --text-primary: #F1F1F1;
+  --text-secondary: #AAAAAA;
+  --text-muted: #717171;
+  --text-inverse: #0F0F0F;
+
+  /* UI Heights & Spacing */
+  --nav-height: 60px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 76px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+/* App Shell Layout */
+#app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+/* Main Content Area */
+#main-content {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - var(--nav-height));
+  position: relative;
+  overflow: hidden;
+}
+
+/* View Containers */
+.view-container {
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+}
+
+.view-container.active {
+  display: block;
+}
+
+/* Common Interactive Buttons */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  outline: none;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background: var(--brand-gradient);
+  color: #fff;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(254, 44, 85, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(254, 44, 85, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-secondary:hover {
+  background: #353535;
+  border-color: var(--border-active);
+}
+
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  position: relative;
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Badges */
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.badge-live {
+  background: var(--yt-red);
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.badge-tok {
+  background: linear-gradient(90deg, var(--tt-cyan), var(--tt-pink));
+  color: #000;
+  font-weight: 800;
+}
+
+.badge-edu {
+  background: linear-gradient(90deg, var(--africa-gold), var(--africa-green));
+  color: #000;
+  font-weight: 800;
+}
+
+.badge-duration {
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}
+
+/* EduBoost Streak Pill (in Navbar) */
+.eduboost-streak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 184, 0, 0.12);
+  border: 1px solid var(--africa-gold);
+  color: var(--africa-gold);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.eduboost-streak-pill:hover {
+  background: rgba(255, 184, 0, 0.22);
+  transform: scale(1.03);
+}
+
+/* Language Selector Dropdown */
+.lang-selector-wrapper {
+  position: relative;
+}
+
+.lang-select-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lang-select-btn:hover {
+  background: #333;
+}
+
+.lang-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: rgba(26, 26, 26, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 6px 0;
+  min-width: 170px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.8);
+  z-index: 2000;
+}
+
+.lang-dropdown-menu.open {
+  display: flex;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.lang-option:hover {
+  background: var(--bg-elevated);
+}
+
+.lang-option.active {
+  color: var(--tt-cyan);
+  font-weight: 700;
+}
+
+/* Translation Action Button on Cards/Comments */
+.btn-translate-caption {
+  font-size: 11px;
+  color: var(--tt-cyan);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.btn-translate-caption:hover {
+  text-decoration: underline;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(34, 34, 34, 0.95);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1), toastOut 0.3s 2.9s forwards;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(16px); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  :root {
+    --nav-height: 56px;
+    --sidebar-width: 0px;
+  }
+}
+
+/* Multi-Page Shell Layouts */
+.page-main {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  background-color: var(--bg-base);
+}
+
+.page-content {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 32px 80px 32px;
+}
+
+@media (max-width: 900px) {
+  .page-content {
+    padding: 16px 16px 80px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-content {
+    padding: 12px 10px 80px 10px;
+  }
+}
+
+/* Voice Search Pulse */
+.voice-pulse-ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--brand-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 0 rgba(254, 44, 85, 0.7);
+  animation: pulseRing 1.5s infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(254, 44, 85, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 20px rgba(254, 44, 85, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(254, 44, 85, 0);
+  }
+}
+
+/* Tipping & Payment Provider Buttons */
+.tip-provider-btn.active,
+.tip-amount-btn.active {
+  border-color: var(--africa-gold) !important;
+  color: var(--africa-gold) !important;
+  background: rgba(255, 184, 0, 0.12) !important;
+  font-weight: 700;
+}
+
+/* Floating Live Reaction Particles */
+.reaction-particle {
+  position: absolute;
+  bottom: 80px;
+  right: 24px;
+  font-size: 28px;
+  pointer-events: none;
+  animation: floatReaction 2.2s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  z-index: 100;
+}
+
+@keyframes floatReaction {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.6) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-120px) scale(1.2) rotate(15deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) scale(1) rotate(-15deg);
+  }
+}
+
+/* Kid Mode Indicators */
+.kid-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #00F2FE, #00C853);
+  color: #000;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.badge-green {
+  background: #00C853 !important;
+  color: #000 !important;
+}
+
+.account-mode-choice-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.account-mode-choice-btn:hover {
+  border-color: var(--tt-pink);
+}
+
+.account-mode-choice-btn.active {
+  border-color: var(--tt-pink);
+  background: rgba(254, 44, 85, 0.15) !important;
+  box-shadow: 0 0 12px rgba(254, 44, 85, 0.25);
+}
+
+.account-mode-choice-btn[data-mode="kid"].active {
+  border-color: #00E676;
+  background: rgba(0, 230, 118, 0.15) !important;
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
+}
+
+
+

@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications - TokTube Africa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z'/></svg>">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/navbar.css">
+  <link rel="stylesheet" href="styles/modal.css">
+  <link rel="stylesheet" href="styles/features.css">
+  <style>
+    .notif-page-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+    .notif-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .notif-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      overflow-x: auto;
+    }
+    .notif-tab {
+      padding: 12px 18px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+    }
+    .notif-tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--tt-pink);
+    }
+    .notif-full-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .notif-full-item:hover {
+      background: var(--bg-elevated);
+    }
+    .notif-full-item.unread {
+      background: rgba(254,44,85,0.06);
+      border-left: 4px solid var(--tt-pink);
+    }
+    .notif-icon-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body data-page="notifications">
+  <div id="app">
+    <div id="navbar-container"></div>
+    <div id="main-content">
+      <div id="sidebar-container"></div>
+      <main class="page-main" style="overflow-y:auto; flex:1;">
+        <div class="notif-page-container">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div>
+              <h1 style="font-size:24px; font-weight:800;">🔔 Notifications</h1>
+              <p style="font-size:13px; color:var(--text-secondary); margin-top:2px;">Stay updated on live streams, creator uploads, and EduBoost milestones.</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button id="btn-page-mark-read" class="btn-secondary" style="font-size:12px;">Mark all read</button>
+              <button id="btn-page-clear-notifs" class="btn-secondary" style="font-size:12px; color:var(--text-muted);">Clear</button>
+            </div>
+          </div>
+
+          <div class="notif-card">
+            <div class="notif-tabs">
+              <button class="notif-tab active" data-filter="all">All</button>
+              <button class="notif-tab" data-filter="live">🔴 Live</button>
+              <button class="notif-tab" data-filter="creator">🎬 Creators</button>
+              <button class="notif-tab" data-filter="eduboost">🎓 EduBoost</button>
+              <button class="notif-tab" data-filter="tip">💰 Tips</button>
+            </div>
+
+            <div id="notifs-full-list"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div id="mobile-bottom-nav-container"></div>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const listEl = document.getElementById('notifs-full-list');
+      const tabs = document.querySelectorAll('.notif-tab');
+      const markBtn = document.getElementById('btn-page-mark-read');
+      const clearBtn = document.getElementById('btn-page-clear-notifs');
+      let currentFilter = 'all';
+
+      function render() {
+        const notifs = storage.getNotifications();
+        const filtered = currentFilter === 'all' ? notifs : notifs.filter(n => n.type === currentFilter);
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `
+            <div style="padding:48px 20px; text-align:center; color:var(--text-muted);">
+              <div style="font-size:36px; margin-bottom:8px;">🔔</div>
+              <h3>No notifications in this tab</h3>
+            </div>
+          `;
+          return;
+        }
+
+        listEl.innerHTML = filtered.map(n => `
+          <div class="notif-full-item ${n.unread ? 'unread' : ''}" onclick="window.location.href='${n.link}'">
+            <div class="notif-icon-bubble">${n.icon || '🔔'}</div>
+            <div style="flex:1;">
+              <h4 style="font-size:14px; font-weight:700; color:var(--text-primary);">${n.title}</h4>
+              <p style="font-size:13px; color:var(--text-secondary); margin-top:3px; line-height:1.4;">${n.body}</p>
+              <span style="font-size:11px; color:var(--text-muted); margin-top:4px; display:block;">${n.time}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentFilter = tab.dataset.filter;
+          render();
+        });
+      });
+
+      markBtn.addEventListener('click', () => {
+        storage.markAllNotificationsRead();
+        render();
+        tokShell.showToast('All marked as read ✓');
+      });
+
+      clearBtn.addEventListener('click', () => {
+        storage.clearNotifications();
+        render();
+        tokShell.showToast('Notifications cleared');
+      });
+
+      render();
+    });
+  </script>
+</body>
+</html>
