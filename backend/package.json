@@ -1,7 +1,7 @@
-{
-  "name": "toktube-tip-backend",
+﻿{
+  "name": "toktube-payment-backend",
   "version": "1.0.0",
-  "description": "Mock backend for handling tip payments (M-Pesa, Airtel Money)",
+  "description": "MTN MoMo & Airtel Money Backend for TokTube Africa",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

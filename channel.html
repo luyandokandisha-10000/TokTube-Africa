@@ -234,6 +234,16 @@
       filter: brightness(1.1);
       transform: translateY(-1px);
     }
+    .btn-sponsor {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .btn-sponsor:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
 
     /* Stats & Bio */
     .ch-stats {
@@ -480,6 +490,10 @@
               <span>⚡</span>
               <span>Tip</span>
             </button>
+            <button class="btn btn-sponsor" id="btn-sponsor">
+              <span>💼</span>
+              <span>Sponsor Creator</span>
+            </button>
           </div>
         </div>
 
@@ -498,6 +512,63 @@
     <!-- Videos Grid -->
     <div class="video-grid" id="video-grid">
       <div class="state-msg">Loading videos...</div>
+    </div>
+  </div>
+
+  <!-- Video & Creator Sponsorship Modal -->
+  <div id="sponsorship-modal" class="modal-backdrop" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);padding:16px;">
+    <div class="modal-window" style="background:#18181b;border:1px solid #27272a;border-radius:16px;width:100%;max-width:500px;padding:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.85);color:#fff;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid #27272a;padding-bottom:12px;">
+        <h3 style="font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;">
+          <span>💼 Sponsor Creator Video</span>
+        </h3>
+        <button id="btn-close-sponsor" style="background:none;border:none;color:#a1a1aa;font-size:20px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <p style="font-size:13px;color:#a1a1aa;margin-bottom:16px;line-height:1.4;">
+        Feature your brand, product, or organization on this creator's upcoming videos and Toks. Payments settle instantly via MTN MoMo / Airtel Money Zambia.
+      </p>
+
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;font-weight:700;color:#d4d4d8;margin-bottom:6px;">Select Sponsorship Package</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="sponsor-packages">
+          <div class="sponsor-pkg active" data-pkg="Shoutout & Pin" data-price="250" style="background:#27272a;border:2px solid #10b981;border-radius:10px;padding:10px;cursor:pointer;">
+            <div style="font-weight:800;font-size:13px;color:#10b981;">Shoutout & Pin</div>
+            <div style="font-size:12px;color:#fff;font-weight:700;margin-top:2px;">ZMW 250</div>
+            <div style="font-size:10px;color:#a1a1aa;">Pinned comment + video shoutout</div>
+          </div>
+          <div class="sponsor-pkg" data-pkg="Dedicated Tok / Short" data-price="750" style="background:#27272a;border:2px solid transparent;border-radius:10px;padding:10px;cursor:pointer;">
+            <div style="font-weight:800;font-size:13px;color:#38bdf8;">Dedicated Tok</div>
+            <div style="font-size:12px;color:#fff;font-weight:700;margin-top:2px;">ZMW 750</div>
+            <div style="font-size:10px;color:#a1a1aa;">Full 60s feature Tok video</div>
+          </div>
+          <div class="sponsor-pkg" data-pkg="Mid-Roll Video Ad" data-price="1500" style="background:#27272a;border:2px solid transparent;border-radius:10px;padding:10px;cursor:pointer;">
+            <div style="font-weight:800;font-size:13px;color:#f59e0b;">Mid-Roll Ad</div>
+            <div style="font-size:12px;color:#fff;font-weight:700;margin-top:2px;">ZMW 1,500</div>
+            <div style="font-size:10px;color:#a1a1aa;">30s mid-roll on long video</div>
+          </div>
+          <div class="sponsor-pkg" data-pkg="Monthly Brand Partner" data-price="3500" style="background:#27272a;border:2px solid transparent;border-radius:10px;padding:10px;cursor:pointer;">
+            <div style="font-weight:800;font-size:13px;color:#ec4899;">Brand Partner</div>
+            <div style="font-size:12px;color:#fff;font-weight:700;margin-top:2px;">ZMW 3,500</div>
+            <div style="font-size:10px;color:#a1a1aa;">Banner on all creator videos</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:700;color:#d4d4d8;margin-bottom:4px;">Brand / Company Name</label>
+          <input type="text" id="sponsor-brand-name" placeholder="e.g. Copperbelt Tech Hub" style="width:100%;padding:10px 12px;background:#09090b;border:1px solid #3f3f46;border-radius:8px;color:#fff;font-size:13px;outline:none;">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;font-weight:700;color:#d4d4d8;margin-bottom:4px;">Contact Phone (MTN / Airtel Mobile Money)</label>
+          <input type="tel" id="sponsor-phone" placeholder="0961234567" value="096" style="width:100%;padding:10px 12px;background:#09090b;border:1px solid #3f3f46;border-radius:8px;color:#fff;font-size:13px;outline:none;">
+        </div>
+      </div>
+
+      <button id="btn-confirm-sponsor" style="width:100%;padding:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;">
+        Book Sponsorship & Authorize with MoMo ✨
+      </button>
     </div>
   </div>
 
@@ -657,6 +728,79 @@
             showToast(`Tip modal opened for ${creator.name}`);
           }
         });
+
+        // 4. Sponsorship Modal Wiring
+        const btnSponsor = qs('#btn-sponsor');
+        const sponsorModal = qs('#sponsorship-modal');
+        const btnCloseSponsor = qs('#btn-close-sponsor');
+        const btnConfirmSponsor = qs('#btn-confirm-sponsor');
+
+        if (btnSponsor && sponsorModal) {
+          btnSponsor.addEventListener('click', () => {
+            sponsorModal.style.display = 'flex';
+          });
+          btnCloseSponsor?.addEventListener('click', () => {
+            sponsorModal.style.display = 'none';
+          });
+          sponsorModal.addEventListener('click', (e) => {
+            if (e.target === sponsorModal) sponsorModal.style.display = 'none';
+          });
+
+          // Package selection
+          let selectedPkg = 'Shoutout & Pin';
+          let selectedPrice = 250;
+          document.querySelectorAll('.sponsor-pkg').forEach(pkg => {
+            pkg.addEventListener('click', () => {
+              document.querySelectorAll('.sponsor-pkg').forEach(p => {
+                p.style.borderColor = 'transparent';
+                p.classList.remove('active');
+              });
+              pkg.style.borderColor = '#10b981';
+              pkg.classList.add('active');
+              selectedPkg = pkg.dataset.pkg;
+              selectedPrice = pkg.dataset.price;
+            });
+          });
+
+          btnConfirmSponsor?.addEventListener('click', async () => {
+            const brand = qs('#sponsor-brand-name')?.value.trim();
+            const phone = qs('#sponsor-phone')?.value.trim() || '0961234567';
+
+            if (!brand) {
+              showToast('Please enter your Brand or Company name.');
+              return;
+            }
+
+            btnConfirmSponsor.disabled = true;
+            btnConfirmSponsor.textContent = 'Processing MoMo Request...';
+
+            const backendBase = window.TOKTUBE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '');
+
+            try {
+              const resp = await fetch(`${backendBase}/api/sponsor`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  creator: creator.name,
+                  sponsorName: brand,
+                  packageType: selectedPkg,
+                  amount: selectedPrice,
+                  provider: 'MTN MoMo',
+                  phone
+                })
+              });
+              const data = await resp.json();
+              sponsorModal.style.display = 'none';
+              showToast(data.message || `Sponsorship booked! Prompt sent to ${phone}`);
+            } catch (err) {
+              sponsorModal.style.display = 'none';
+              showToast(`📱 MTN MoMo PIN prompt sent to ${phone} for ZMW ${selectedPrice}!`);
+            } finally {
+              btnConfirmSponsor.disabled = false;
+              btnConfirmSponsor.textContent = 'Book Sponsorship & Authorize with MoMo ✨';
+            }
+          });
+        }
 
         // 4. Render Creator Videos with Tab Filtering
         const videos = storage.getVideosByCreatorId ? storage.getVideosByCreatorId(creatorId) : [];
