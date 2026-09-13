@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="tok-photo-slide-container" style="position:relative;width:100%;height:100%;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;" onscroll="window.handlePhotoSlideScroll(this, '${reel.id}')">
             ${reel.images.map((imgUrl, i) => `
               <div style="flex:0 0 100%;height:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;background:#000;position:relative;">
-                <img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover;">
+                <img src="${imgUrl}" style="width:100%;height:100%;object-fit:contain;background:#000;">
                 <div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.2);">
                   📸 ${i + 1}/${reel.images.length}
                 </div>
@@ -71,14 +71,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="tok-stage">
             ${mediaMarkup}
 
-            <!-- Quality Selector for Shorts -->
-            <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25; ${isPhoto ? 'display:none;' : ''}">
+            <!-- Quality & Sizing Selector for Shorts -->
+            <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25; display: flex; gap: 6px; align-items: center; ${isPhoto ? 'display:none;' : ''}">
               <select class="tok-quality-select" onchange="window.changeTokQuality(this)" style="background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-full); padding: 5px 10px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px);">
                 <option value="1080p">1080p HD</option>
                 <option value="720p" selected>720p HD</option>
                 <option value="480p">480p</option>
                 <option value="360p">360p DataSaver</option>
               </select>
+              <button class="tok-fit-btn" onclick="window.toggleVideoFit(this, '${reel.id}')" title="Switch between Fit to Screen and Fill Screen" style="background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-full); padding: 5px 9px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px); user-select: none;">
+                ⛶ Fit
+              </button>
             </div>
 
             <div class="tok-play-overlay">
@@ -324,6 +327,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const quality = selectEl.value;
     tokShell.showToast(`Quality set to ${quality} ✨`);
     soundFX.playSwitchSound();
+  };
+
+  // Sizing Toggle (Fit to Screen vs Fill Screen)
+  window.toggleVideoFit = function(btn, reelId) {
+    if (window.soundFX && soundFX.playSwitchSound) soundFX.playSwitchSound();
+    const reelEl = document.querySelector(`.tok-reel[data-id="${reelId}"]`);
+    const vid = reelEl?.querySelector('video');
+    if (!vid) return;
+
+    const isFill = vid.classList.toggle('fill-mode');
+    btn.textContent = isFill ? '⛶ Fill' : '⛶ Fit';
+    btn.style.borderColor = isFill ? 'var(--tt-pink)' : 'rgba(255,255,255,0.25)';
+    btn.style.color = isFill ? 'var(--tt-pink)' : '#fff';
+    tokShell.showToast(isFill ? 'Video sizing: Fill Screen (Zoomed)' : 'Video sizing: Fit to Screen (Full View) ✨');
   };
 
   // Photo Slide Scroll Indicator Handler

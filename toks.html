@@ -36,9 +36,14 @@
     .tok-video-el {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain; /* Sizable for every phone without cropping! */
       display: block;
       cursor: pointer;
+      background: #000;
+      transition: object-fit 0.2s ease;
+    }
+    .tok-video-el.fill-mode {
+      object-fit: cover; /* Optional fill screen mode */
     }
     .tok-play-overlay {
       position: absolute;
@@ -268,9 +273,55 @@
         border-top-right-radius: 16px;
       }
     }
-    @media (max-width: 900px) {
+    /* ═══════════════════════════════════════════════════════════
+       MOBILE SIZING & ADAPTIVE VIEWPORT  (< 900px)
+       Sized comfortably for every phone without cutting off nav
+    ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 899px) {
       .tok-nav-arrows-desktop {
         display: none !important;
+      }
+      .tok-reel {
+        width: 100%;
+        /* Subtract top header (56px) + bottom mobile nav (56px) */
+        height: calc(100vh - var(--nav-height, 56px) - 56px);
+        height: calc(100dvh - var(--nav-height, 56px) - 56px);
+        padding: 0;
+      }
+      .tok-stage {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .tok-bottom-overlay {
+        padding: 40px 76px 14px 12px;
+      }
+      .tok-action-rail {
+        right: 8px;
+        bottom: 14px;
+        gap: 12px;
+      }
+      .tok-action-circle {
+        width: 42px;
+        height: 42px;
+      }
+      .tok-action-circle svg {
+        width: 22px;
+        height: 22px;
+      }
+      .tok-avatar-img {
+        width: 44px;
+        height: 44px;
+      }
+      .tok-vinyl {
+        width: 42px;
+        height: 42px;
+      }
+      .tok-vinyl img {
+        width: 16px;
+        height: 16px;
       }
     }
 
