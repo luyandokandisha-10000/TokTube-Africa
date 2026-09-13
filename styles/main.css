@@ -486,5 +486,19 @@ button:active {
   box-shadow: 0 0 12px rgba(0, 230, 118, 0.25);
 }
 
+/* ─────────────────────────────────────────────────────────────
+   CREATOR TIPPING SYSTEM (Hidden until payment system is live)
+   ───────────────────────────────────────────────────────────── */
+.yt-action-tip,
+.watch-pill-tip,
+#btn-watch-tip,
+#btn-tip-live,
+#btn-chat-tip,
+.tok-tip-btn,
+.btn-tip {
+  display: none !important;
+}
+
+
 
 

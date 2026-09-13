@@ -192,7 +192,8 @@
                       <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                       <span class="dl-text">${isDownloaded ? 'Saved' : 'Save'}</span>
                     </button>
-                    <button class="yt-action-pill yt-action-tip" onclick="tokShell.openTippingModal('${video.channel.id}')" title="Tip creator">
+                    <!-- Tip Creator Button — hidden until payment system is live -->
+                    <button class="yt-action-pill yt-action-tip" style="display:none !important;" onclick="tokShell.openTippingModal('${video.channel.id}')" title="Tip creator">
                       <span>☕</span>
                       <span>Tip</span>
                     </button>

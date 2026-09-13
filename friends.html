@@ -117,7 +117,8 @@
             <div style="display: flex; gap: 8px;">
               <button id="btn-modal-follow" class="btn-primary" style="padding: 6px 16px; font-size: 13px;">Follow</button>
               <button id="btn-modal-message" class="btn-secondary" style="padding: 6px 14px; font-size: 13px;">💬 Message</button>
-              <button id="btn-modal-tip" class="btn-secondary" style="padding: 6px 14px; font-size: 13px; color: var(--africa-gold);">☕ Tip</button>
+              <!-- Tip Button — hidden until payment system is live -->
+              <button id="btn-modal-tip" class="btn-secondary" style="display:none !important; padding: 6px 14px; font-size: 13px; color: var(--africa-gold);">☕ Tip</button>
             </div>
           </div>
 
@@ -167,7 +168,8 @@
                 <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="window.location.href='messages.html?creator=${c.id}'">
                   💬 Chat
                 </button>
-                <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="tokShell.openTippingModal('${c.id}')" title="Tip with Mobile Money">
+                <!-- Tip Button — hidden until payment system is live -->
+                <button class="btn-secondary" style="display:none !important; padding: 6px 12px; font-size: 12px;" onclick="tokShell.openTippingModal('${c.id}')" title="Tip with Mobile Money">
                   ☕ Tip
                 </button>
                 <!-- Friend Request Button -->

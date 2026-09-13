@@ -342,13 +342,9 @@
   fill: var(--tt-pink);
 }
 
-.watch-pill-tip {
-  color: var(--africa-gold);
-}
-
-.watch-pill-tip:hover {
-  background: rgba(255, 184, 0, 0.15);
-  border-color: rgba(255, 184, 0, 0.4);
+.watch-pill-tip,
+#btn-watch-tip {
+  display: none !important;
 }
 
 .like-dislike-pill {

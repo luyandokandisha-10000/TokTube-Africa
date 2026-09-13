@@ -70,7 +70,8 @@
                 </div>
               </div>
               <div style="display: flex; gap: 8px; align-items: center;">
-                <button id="btn-chat-tip" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; color: var(--africa-gold);">☕ Tip</button>
+                <!-- Tip Button — hidden until payment system is live -->
+                <button id="btn-chat-tip" class="btn-secondary" style="display:none !important; padding: 6px 12px; font-size: 12px; color: var(--africa-gold);">☕ Tip</button>
                 <button id="btn-chat-block" class="btn-block-user" data-i18n="block_user">Block User</button>
               </div>
             </div>
@@ -341,7 +342,7 @@
           avatarEl.src = creator.avatar;
           avatarEl.style.display = 'block';
           nameEl.textContent = creator.name;
-          tipBtn.style.display = 'block';
+          tipBtn.style.display = 'none'; // Hidden until payment system is live
           blockBtn.style.display = 'block';
 
           // Block state

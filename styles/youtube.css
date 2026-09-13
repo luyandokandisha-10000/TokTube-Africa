@@ -679,12 +679,7 @@
 }
 
 .yt-action-tip {
-  color: var(--africa-gold);
-}
-
-.yt-action-tip:hover {
-  background: rgba(255, 184, 0, 0.15);
-  border-color: rgba(255, 184, 0, 0.35);
+  display: none !important;
 }
 
 /* Page wrapper for content area */
