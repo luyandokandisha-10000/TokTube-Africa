@@ -37,15 +37,20 @@
           <!-- Video Type Selection Card -->
           <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
             <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">1. Choose Content Format</h3>
-            <div class="upload-type-picker" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+            <div class="upload-type-picker" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
               <div class="type-choice-card active" id="choice-tok" style="padding: 18px; background: var(--bg-card); border: 2px solid var(--tt-pink); border-radius: var(--radius-md); cursor: pointer;">
                 <div style="font-size: 24px; margin-bottom: 6px;">📱</div>
-                <h4 style="font-size: 15px; font-weight: 700;">Tok (Vertical 9:16 Reel)</h4>
+                <h4 style="font-size: 15px; font-weight: 700;">Tok (Vertical 9:16)</h4>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Short-form immersive video under 3 minutes for mobile feed.</p>
+              </div>
+              <div class="type-choice-card" id="choice-photos" style="padding: 18px; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer;">
+                <div style="font-size: 24px; margin-bottom: 6px;">📸</div>
+                <h4 style="font-size: 15px; font-weight: 700;">Photo Slides (Carousel)</h4>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Swipeable photo story slides with background music (TikTok style).</p>
               </div>
               <div class="type-choice-card" id="choice-tube" style="padding: 18px; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-md); cursor: pointer;">
                 <div style="font-size: 24px; margin-bottom: 6px;">📺</div>
-                <h4 style="font-size: 15px; font-weight: 700;">Tube (Horizontal 16:9 Video)</h4>
+                <h4 style="font-size: 15px; font-weight: 700;">Tube (Horizontal 16:9)</h4>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">In-depth tutorials, STEM masterclasses, or documentaries.</p>
               </div>
             </div>
@@ -53,10 +58,10 @@
 
           <!-- Drag and Drop Dropzone with Custom Thumbnail Feature -->
           <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
-            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">2. Media & Custom Thumbnail</h3>
+            <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 14px;">2. Media Upload</h3>
             
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-              <!-- Video File Upload Box -->
+            <!-- Video File Upload Box -->
+            <div id="video-upload-section" style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
               <div id="dropzone" style="border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 30px 16px; text-align: center; background: rgba(0,0,0,0.2); cursor: pointer; transition: all var(--transition-fast);">
                 <div style="font-size: 36px; margin-bottom: 8px;">📁</div>
                 <h4 style="font-size: 15px; font-weight: 700;">Select Video File</h4>
@@ -78,6 +83,17 @@
                 <input type="file" id="thumb-file-input" style="display: none;" accept="image/*">
                 <div id="thumb-selected-label" style="display: none; margin-top: 10px; font-size: 12px; color: var(--africa-green); font-weight: 700;"></div>
               </div>
+            </div>
+
+            <!-- Multi-Photo Slides Upload Box (Active when Photo Slides format selected) -->
+            <div id="photo-slides-upload-section" style="display:none; border: 2px dashed #06b6d4; border-radius: var(--radius-md); padding: 32px 20px; text-align: center; background: rgba(6, 182, 212, 0.05); cursor: pointer; transition: all var(--transition-fast);">
+              <div style="font-size: 40px; margin-bottom: 8px;">📸</div>
+              <h4 style="font-size: 16px; font-weight: 800; color: #06b6d4;">Select Photos for Slide Show</h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Select 2 to 10 photos (JPG, PNG, WEBP) to create a swipeable carousel.</p>
+              <button class="btn-primary" style="margin-top: 12px; font-size: 13px; pointer-events: none; background: #06b6d4; color: #000; font-weight: 800;">Choose Photos</button>
+              <input type="file" id="photo-slides-input" style="display: none;" accept="image/*" multiple>
+              <div id="photo-slides-preview-grid" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px;"></div>
+              <div id="photo-slides-count-label" style="display: none; margin-top: 10px; font-size: 13px; color: #06b6d4; font-weight: 800;"></div>
             </div>
           </div>
 
@@ -183,9 +199,17 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      let selectedType = 'tok'; // 'tok' or 'tube'
+      let selectedType = 'tok'; // 'tok', 'photos', or 'tube'
       const tokChoice = document.getElementById('choice-tok');
+      const photosChoice = document.getElementById('choice-photos');
       const tubeChoice = document.getElementById('choice-tube');
+      const videoSection = document.getElementById('video-upload-section');
+      const photoSection = document.getElementById('photo-slides-upload-section');
+      const photoSlidesInput = document.getElementById('photo-slides-input');
+      const photoPreviewGrid = document.getElementById('photo-slides-preview-grid');
+      const photoCountLabel = document.getElementById('photo-slides-count-label');
+      let photoSlideUrls = [];
+
       const dropzone = document.getElementById('dropzone');
       const fileInput = document.getElementById('file-input');
       const fileLabel = document.getElementById('file-selected-label');
@@ -195,6 +219,20 @@
       const thumbPlaceholder = document.getElementById('thumb-placeholder');
       const thumbLabel = document.getElementById('thumb-selected-label');
       let customThumbnailUrl = '';
+
+      // Check remix param in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const remixId = urlParams.get('remix');
+      if (remixId) {
+        try {
+          const remixData = JSON.parse(sessionStorage.getItem('toktube_remix_source') || '{}');
+          if (remixData.creator) {
+            tokShell.showToast(`Remixing audio from ${remixData.creator}: "${remixData.sound}" 🎵`);
+            const descEl = document.getElementById('upload-desc');
+            if (descEl) descEl.value = `#remix with @${remixData.creator} ${remixData.sound ? '• Sound: ' + remixData.sound : ''}`;
+          }
+        } catch(e) {}
+      }
 
       // Check if user is in Kid mode to display EduBoost option
       if (storage.isKidMode()) {
@@ -230,7 +268,20 @@
       tokChoice.addEventListener('click', () => {
         selectedType = 'tok';
         tokChoice.style.borderColor = 'var(--tt-pink)';
+        photosChoice.style.borderColor = 'var(--border-subtle)';
         tubeChoice.style.borderColor = 'var(--border-subtle)';
+        videoSection.style.display = 'grid';
+        photoSection.style.display = 'none';
+        soundFX.playSwitchSound();
+      });
+
+      photosChoice.addEventListener('click', () => {
+        selectedType = 'photos';
+        photosChoice.style.borderColor = '#06b6d4';
+        tokChoice.style.borderColor = 'var(--border-subtle)';
+        tubeChoice.style.borderColor = 'var(--border-subtle)';
+        videoSection.style.display = 'none';
+        photoSection.style.display = 'block';
         soundFX.playSwitchSound();
       });
 
@@ -238,7 +289,35 @@
         selectedType = 'tube';
         tubeChoice.style.borderColor = 'var(--tt-cyan)';
         tokChoice.style.borderColor = 'var(--border-subtle)';
+        photosChoice.style.borderColor = 'var(--border-subtle)';
+        videoSection.style.display = 'grid';
+        photoSection.style.display = 'none';
         soundFX.playSwitchSound();
+      });
+
+      photoSection.addEventListener('click', () => photoSlidesInput.click());
+
+      photoSlidesInput.addEventListener('change', () => {
+        const files = Array.from(photoSlidesInput.files);
+        if (files.length > 0) {
+          photoSlideUrls = [];
+          photoPreviewGrid.innerHTML = '';
+          files.forEach(file => {
+            const url = URL.createObjectURL(file);
+            photoSlideUrls.push(url);
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.width = '64px';
+            img.style.height = '90px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '6px';
+            img.style.border = '2px solid #06b6d4';
+            photoPreviewGrid.appendChild(img);
+          });
+          photoCountLabel.textContent = `✓ ${files.length} Photo Slides Selected`;
+          photoCountLabel.style.display = 'block';
+          soundFX.playNotificationSound();
+        }
       });
 
       dropzone.addEventListener('click', () => fileInput.click());
@@ -292,7 +371,37 @@
                 }
               }
 
-              if (selectedType === 'tok') {
+              if (selectedType === 'photos') {
+                const newId = "tok-" + Date.now();
+                const slideImages = photoSlideUrls.length > 0 ? photoSlideUrls : [
+                  "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800",
+                  "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800"
+                ];
+
+                storage.addNewReel({
+                  id: newId,
+                  isPhotoSlide: true,
+                  images: slideImages,
+                  title: title,
+                  thumbnail: slideImages[0],
+                  likes: 1,
+                  commentsCount: 0,
+                  shares: 0,
+                  musicTitle: "Original Sound - " + user.name,
+                  musicArtist: user.name,
+                  isEducational: isEdu,
+                  creator: {
+                    id: "ch-user",
+                    name: user.name,
+                    handle: user.handle,
+                    avatar: user.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+                  },
+                  comments: []
+                });
+                soundFX.playSubscribeSound();
+                tokShell.showToast('Photo Slides published to Toks! 📸✨');
+                setTimeout(() => window.location.href = 'toks.html', 800);
+              } else if (selectedType === 'tok') {
                 const newId = "tok-" + Date.now();
                 const reliableTokUrl = mediaUrl || "https://vjs.zencdn.net/v/oceans.mp4";
                 const reelThumb = customThumbnailUrl || "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600";

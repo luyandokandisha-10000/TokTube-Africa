@@ -554,6 +554,26 @@ export class TokStorage {
     const tkReels = this.getTiktokReels().filter(r => r.channel && r.channel.id === creatorId);
     return [...ytVideos, ...tkReels];
   }
+
+  // ─── Repost helpers ───────────────────────────────────────────────────────
+  isReposted(reelId) {
+    const list = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    return list.includes(reelId);
+  }
+
+  addRepost(reelId) {
+    const list = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    if (!list.includes(reelId)) {
+      list.push(reelId);
+      localStorage.setItem('toktube_reposts', JSON.stringify(list));
+    }
+  }
+
+  removeRepost(reelId) {
+    const list = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    const updated = list.filter(id => id !== reelId);
+    localStorage.setItem('toktube_reposts', JSON.stringify(updated));
+  }
 }
 
 

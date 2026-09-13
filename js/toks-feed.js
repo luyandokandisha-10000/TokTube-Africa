@@ -13,14 +13,40 @@ document.addEventListener('DOMContentLoaded', () => {
       const likesCount = (reel.likes || 0).toLocaleString();
       const commentsCount = reel.commentsCount || reel.comments?.length || 0;
       const safeVideoSrc = reel.videoUrl || "https://vjs.zencdn.net/v/oceans.mp4";
+      const isPhoto = reel.isPhotoSlide && Array.isArray(reel.images) && reel.images.length > 0;
+      const isReposted = storage.isReposted ? storage.isReposted(reel.id) : false;
+
+      let mediaMarkup = '';
+      if (isPhoto) {
+        mediaMarkup = `
+          <div class="tok-photo-slide-container" style="position:relative;width:100%;height:100%;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;" onscroll="window.handlePhotoSlideScroll(this, '${reel.id}')">
+            ${reel.images.map((imgUrl, i) => `
+              <div style="flex:0 0 100%;height:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;background:#000;position:relative;">
+                <img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover;">
+                <div style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);padding:4px 10px;border-radius:12px;font-size:12px;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.2);">
+                  📸 ${i + 1}/${reel.images.length}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <!-- Swipe indicators -->
+          <div id="photo-dots-${reel.id}" style="position:absolute;bottom:100px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:25;pointer-events:none;">
+            ${reel.images.map((_, i) => `<span class="photo-dot ${i === 0 ? 'active' : ''}" style="width:6px;height:6px;border-radius:50%;background:${i === 0 ? 'var(--tt-pink)' : 'rgba(255,255,255,0.4)'};"></span>`).join('')}
+          </div>
+        `;
+      } else {
+        mediaMarkup = `
+          <video class="tok-video-el" data-reel-id="${reel.id}" poster="${reel.thumbnail || ''}" loop playsinline preload="${idx < 2 ? 'auto' : 'none'}" src="${safeVideoSrc}"></video>
+        `;
+      }
 
       return `
         <div class="tok-reel" data-index="${idx}" data-id="${reel.id}">
           <div class="tok-stage">
-            <video class="tok-video-el" data-reel-id="${reel.id}" poster="${reel.thumbnail || ''}" loop playsinline preload="${idx < 2 ? 'auto' : 'none'}" src="${safeVideoSrc}"></video>
+            ${mediaMarkup}
 
             <!-- Quality Selector for Shorts -->
-            <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25;">
+            <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25; ${isPhoto ? 'display:none;' : ''}">
               <select class="tok-quality-select" onchange="window.changeTokQuality(this)" style="background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-full); padding: 5px 10px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px);">
                 <option value="1080p">1080p HD</option>
                 <option value="720p" selected>720p HD</option>
@@ -47,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span class="tok-creator-name" onclick="window.location.href='channel.html?id=${reel.creator.id}'">${reel.creator.name}</span>
                   <span class="tok-creator-handle">${reel.creator.handle}</span>
                   ${reel.isEducational ? '<span class="badge badge-edu" style="font-size:10px;padding:2px 6px;">EduBoost</span>' : ''}
+                  ${isPhoto ? '<span class="badge" style="background:#06b6d4;color:#000;font-size:10px;padding:2px 6px;font-weight:800;">Photo Slides</span>' : ''}
                 </div>
               </div>
               <p class="tok-caption" id="caption-${reel.id}">${reel.title}</p>
@@ -67,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
 
+              <!-- Like Button -->
               <div class="tok-action-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation(); window.toggleLikeReel('${reel.id}', this)">
                 <div class="tok-action-circle">
                   <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -74,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="tok-action-text" id="like-count-${reel.id}">${likesCount}</span>
               </div>
 
+              <!-- Comments Button -->
               <div class="tok-action-btn" onclick="event.stopPropagation(); window.openCommentsDrawer('${reel.id}')">
                 <div class="tok-action-circle">
                   <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
@@ -81,6 +110,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="tok-action-text" id="comment-count-label-${reel.id}">${commentsCount}</span>
               </div>
 
+              <!-- Repost Button -->
+              <div class="tok-action-btn ${isReposted ? 'reposted' : ''}" onclick="event.stopPropagation(); window.toggleRepostReel('${reel.id}', this)" title="Repost to your followers">
+                <div class="tok-action-circle" style="background:${isReposted ? 'rgba(16,185,129,0.3)' : 'rgba(40,40,40,0.45)'};border:1px solid ${isReposted ? '#10b981' : 'rgba(255,255,255,0.1)'};">
+                  <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:${isReposted ? '#10b981' : '#fff'};"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                </div>
+                <span class="tok-action-text" style="color:${isReposted ? '#10b981' : '#fff'};">${isReposted ? 'Reposted' : 'Repost'}</span>
+              </div>
+
+              <!-- Remix / Stitch Button -->
+              <div class="tok-action-btn" onclick="event.stopPropagation(); window.remixTokReel('${reel.id}')" title="Remix or Stitch this Tok">
+                <div class="tok-action-circle" style="background:rgba(236,72,153,0.25);border:1px solid rgba(236,72,153,0.5);">
+                  <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ec4899;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                </div>
+                <span class="tok-action-text" style="color:#ec4899;">Remix</span>
+              </div>
+
+              <!-- Tip Creator Button -->
               <div class="tok-action-btn" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
                 <div class="tok-action-circle" style="background:rgba(255,184,0,0.2); border:1px solid var(--africa-gold);">
                   <span style="font-size:18px;">☕</span>
@@ -88,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="tok-action-text" style="color:var(--africa-gold);">Tip</span>
               </div>
 
+              <!-- Share Button -->
               <div class="tok-action-btn" onclick="event.stopPropagation(); tokShell.openShareModal(window.location.href, '${reel.title}')">
                 <div class="tok-action-circle">
                   <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
@@ -252,6 +299,67 @@ document.addEventListener('DOMContentLoaded', () => {
     const quality = selectEl.value;
     tokShell.showToast(`Quality set to ${quality} ✨`);
     soundFX.playSwitchSound();
+  };
+
+  // Photo Slide Scroll Indicator Handler
+  window.handlePhotoSlideScroll = function(container, reelId) {
+    const index = Math.round(container.scrollLeft / container.clientWidth);
+    const dotsContainer = document.getElementById(`photo-dots-${reelId}`);
+    if (dotsContainer) {
+      dotsContainer.querySelectorAll('.photo-dot').forEach((dot, i) => {
+        dot.style.background = i === index ? 'var(--tt-pink)' : 'rgba(255,255,255,0.4)';
+        dot.style.transform = i === index ? 'scale(1.2)' : 'scale(1)';
+      });
+    }
+  };
+
+  // Repost Handler
+  window.toggleRepostReel = function(reelId, btn) {
+    soundFX.playNotificationSound();
+    let reposts = [];
+    try {
+      reposts = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    } catch(e) { reposts = []; }
+
+    const isAlready = reposts.includes(reelId);
+    if (isAlready) {
+      reposts = reposts.filter(id => id !== reelId);
+      btn.querySelector('.tok-action-text').textContent = 'Repost';
+      btn.querySelector('.tok-action-text').style.color = '#fff';
+      btn.querySelector('.tok-action-circle').style.background = 'rgba(40,40,40,0.45)';
+      btn.querySelector('.tok-action-circle').style.borderColor = 'rgba(255,255,255,0.1)';
+      btn.querySelector('svg').style.fill = '#fff';
+      tokShell.showToast('Repost removed from your profile.');
+    } else {
+      reposts.push(reelId);
+      btn.querySelector('.tok-action-text').textContent = 'Reposted';
+      btn.querySelector('.tok-action-text').style.color = '#10b981';
+      btn.querySelector('.tok-action-circle').style.background = 'rgba(16,185,129,0.3)';
+      btn.querySelector('.tok-action-circle').style.borderColor = '#10b981';
+      btn.querySelector('svg').style.fill = '#10b981';
+      tokShell.showToast('Reposted to your friends & followers! 🔁');
+    }
+    localStorage.setItem('toktube_reposts', JSON.stringify(reposts));
+  };
+
+  // Remix / Stitch Handler
+  window.remixTokReel = function(reelId) {
+    soundFX.playSwitchSound();
+    const reel = reels.find(r => r.id === reelId);
+    const audioName = reel?.musicTitle || 'Original Sound';
+    const creatorName = reel?.creator?.name || 'Creator';
+    
+    // Redirect to creator studio with audio preset & remix attribution
+    sessionStorage.setItem('toktube_remix_source', JSON.stringify({
+      id: reelId,
+      creator: creatorName,
+      sound: audioName,
+      title: reel?.title || ''
+    }));
+    tokShell.showToast(`Opening Creator Studio to Remix with sound "${audioName}" 🎵`);
+    setTimeout(() => {
+      window.location.href = `upload.html?remix=${encodeURIComponent(reelId)}`;
+    }, 600);
   };
 
   document.getElementById('btn-tok-prev')?.addEventListener('click', () => activateReel(currentIndex - 1));

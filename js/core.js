@@ -847,6 +847,32 @@ const INITIAL_DATA = {
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
       },
       comments: []
+    },
+    {
+      id: "tok-5",
+      isPhotoSlide: true,
+      images: [
+        "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800&auto=format&fit=crop&q=80"
+      ],
+      title: "Victoria Falls & Zambian Wildlife Photo Expedition 📸🇿🇲 Swipe to explore! #Zambia #Nature #Photography",
+      thumbnail: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600&auto=format&fit=crop&q=80",
+      likes: 215000,
+      commentsCount: 3840,
+      shares: 34200,
+      musicTitle: "Zambezi River Sunrise (Original Sound)",
+      musicArtist: "Luyando Kandisha",
+      isEducational: false,
+      creator: {
+        id: "ch-luyando",
+        name: "Luyando Kandisha",
+        handle: "@luyando_zm",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc5", author: "Mwape Banda", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", text: "Proudly Zambian! Mosi-oa-Tunya is unmatched 🇿🇲🌊", likes: 840 }
+      ]
     }
   ],
 
