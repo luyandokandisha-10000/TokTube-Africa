@@ -1903,6 +1903,15 @@ class TokTubeShell {
     this.renderGlobalModals();
     this.bindGlobalEvents();
     i18n.setLanguage(i18n.currentLang);
+
+    // Auto-prompt location on Toks feed if not configured yet
+    setTimeout(() => {
+      const hasLocation = localStorage.getItem('toktube_user_location');
+      const skipped = sessionStorage.getItem('toktube_location_skipped');
+      if (!hasLocation && !skipped && document.body.dataset.page === 'toks') {
+        this.openLocationModal();
+      }
+    }, 1200);
   }
 
   renderHeader() {
@@ -2435,6 +2444,64 @@ class TokTubeShell {
         </div>
       </div>
 
+      <!-- Location Personalisation Modal -->
+      <div id="location-modal" class="modal-backdrop">
+        <div class="modal-window" style="max-width: 440px; text-align: center; border-radius: 20px;">
+          <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+            <div class="modal-title" style="width: 100%; font-size: 20px; font-weight: 800; justify-content: center;">📍 Personalise Your Feed</div>
+            <button class="modal-close-btn" onclick="tokShell.closeModals()">✕</button>
+          </div>
+          <div class="modal-body" style="gap: 16px; padding: 16px 24px 28px;">
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              TokTube Africa tailors your feed to your location and what attracts your attention. Tell us where you are watching from to see more local creators!
+            </p>
+
+            <!-- Auto-detect GPS -->
+            <button id="btn-use-gps" onclick="tokShell.detectGPSLocation()" class="btn-primary" style="width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              📡 Use My Current Location
+            </button>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin: 4px 0;">
+              <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+              <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">or choose country</span>
+              <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+            </div>
+
+            <!-- Manual country select -->
+            <select id="location-country-select" class="form-input" style="width: 100%; padding: 12px 14px; border-radius: 10px; font-size: 14px; background: var(--bg-card); color: #fff;">
+              <option value="">— Select African Country —</option>
+              <option value="Zambia">🇿🇲 Zambia</option>
+              <option value="Nigeria">🇳🇬 Nigeria</option>
+              <option value="South Africa">🇿🇦 South Africa</option>
+              <option value="Kenya">🇰🇪 Kenya</option>
+              <option value="Ghana">🇬🇭 Ghana</option>
+              <option value="Ethiopia">🇪🇹 Ethiopia</option>
+              <option value="Tanzania">🇹🇿 Tanzania</option>
+              <option value="Uganda">🇺🇬 Uganda</option>
+              <option value="Zimbabwe">🇿🇼 Zimbabwe</option>
+              <option value="Mozambique">🇲🇿 Mozambique</option>
+              <option value="Senegal">🇸🇳 Senegal</option>
+              <option value="Cameroon">🇨🇲 Cameroon</option>
+              <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+              <option value="Angola">🇦🇴 Angola</option>
+              <option value="DR Congo">🇨🇩 DR Congo</option>
+              <option value="Rwanda">🇷🇼 Rwanda</option>
+              <option value="Egypt">🇪🇬 Egypt</option>
+              <option value="Morocco">🇲🇦 Morocco</option>
+              <option value="Other Africa">🌍 Other African Country</option>
+            </select>
+
+            <button id="btn-save-location" onclick="tokShell.saveManualLocation()" class="btn-secondary" style="width: 100%; padding: 13px; border-radius: 12px; font-size: 14px; font-weight: 700; background: var(--bg-elevated); color: #fff; border: 1px solid var(--border-subtle);">
+              ✅ Save &amp; Personalise Feed
+            </button>
+
+            <button type="button" onclick="tokShell.skipLocationSetup()" style="background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 4px;">
+              Skip for now
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Toast Container -->
       <div id="toast-container"></div>
     `;
@@ -2762,6 +2829,76 @@ class TokTubeShell {
     }
   }
 
+  openLocationModal(options = {}) {
+    this._locationOptions = options;
+    const modal = document.getElementById('location-modal');
+    if (modal) {
+      modal.classList.add('open');
+      soundFX.playNotificationSound();
+    }
+  }
+
+  saveLocationData(data) {
+    localStorage.setItem('toktube_user_location', JSON.stringify(data));
+    try {
+      if (window.storage && window.storage.updateUserProfile) {
+        window.storage.updateUserProfile({
+          country: data.country || 'Zambia',
+          city: data.city || ''
+        });
+      }
+    } catch(e) {}
+    this.closeModals();
+    this.showToast(`📍 Feed personalised for ${data.country || data.city || 'your location'} 🌍`);
+    if (this._locationOptions && this._locationOptions.isPostAuth) {
+      setTimeout(() => location.reload(), 800);
+    } else if (document.body.dataset.page === 'toks') {
+      setTimeout(() => location.reload(), 800);
+    }
+  }
+
+  detectGPSLocation() {
+    const btn = document.getElementById('btn-use-gps');
+    if (btn) btn.textContent = '⏳ Detecting location...';
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+          const data = await resp.json();
+          const country = data.address?.country || 'Africa';
+          const city = data.address?.city || data.address?.town || data.address?.village || '';
+          this.saveLocationData({ country, city, continent: 'Africa', lat: latitude, lon: longitude });
+        } catch(e) {
+          this.saveLocationData({ country: 'Africa', city: '', continent: 'Africa' });
+        }
+      },
+      () => {
+        if (btn) btn.textContent = '📡 Use My Current Location';
+        this.showToast('Could not access GPS. Please choose your country from the list.');
+      },
+      { timeout: 8000 }
+    );
+  }
+
+  saveManualLocation() {
+    const sel = document.getElementById('location-country-select');
+    const country = sel ? sel.value : '';
+    if (!country) {
+      this.showToast('Please select your country first.');
+      return;
+    }
+    this.saveLocationData({ country, city: '', continent: 'Africa' });
+  }
+
+  skipLocationSetup() {
+    sessionStorage.setItem('toktube_location_skipped', '1');
+    this.closeModals();
+    if (this._locationOptions && this._locationOptions.isPostAuth) {
+      location.reload();
+    }
+  }
+
   closeModals() {
     document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
   }
@@ -2845,7 +2982,16 @@ window.submitAuth = async function() {
       await auth.login(email, password);
     }
     tokShell.closeModals();
-    location.reload();
+
+    // Check if user has location configured; if not, ask immediately on sign-in
+    const hasLocation = localStorage.getItem('toktube_user_location');
+    if (!hasLocation) {
+      setTimeout(() => {
+        tokShell.openLocationModal({ isPostAuth: true });
+      }, 350);
+    } else {
+      location.reload();
+    }
   } catch (e) {
     showErr(e.message);
     if (submitBtn) {
@@ -2876,7 +3022,16 @@ window.signInWithGoogle = async function() {
   try {
     await auth.signInWithGoogle();
     tokShell.closeModals();
-    location.reload();
+
+    // Check if user has location configured; if not, ask immediately on sign-in
+    const hasLocation = localStorage.getItem('toktube_user_location');
+    if (!hasLocation) {
+      setTimeout(() => {
+        tokShell.openLocationModal({ isPostAuth: true });
+      }, 350);
+    } else {
+      location.reload();
+    }
   } catch (e) {
     showErr(e.message || 'Google Sign-In failed.');
     if (googleBtn) googleBtn.style.opacity = '1';

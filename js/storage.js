@@ -541,6 +541,14 @@ export class TokStorage {
     return merged;
   }
 
+  getUserProfile() {
+    return this.getCurrentUser();
+  }
+
+  saveUserProfile(profileData) {
+    return this.updateUserProfile(profileData);
+  }
+
   // Sounds Library
   getSounds() {
     return INITIAL_DATA.sounds || [];

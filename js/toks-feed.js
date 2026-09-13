@@ -12,12 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
       return { ...profile, ...location, subscribedChannels: subscribed };
     } catch(e) { return {}; }
   })();
-  const likedIds   = (() => { try { return JSON.parse(localStorage.getItem('toktube_liked_video_ids') || '[]'); } catch(e) { return []; } })();
-  const watchedIds = (() => { try { return JSON.parse(localStorage.getItem('toktube_history_video_ids') || '[]'); } catch(e) { return []; } })();
+  const likedIds      = (() => { try { return JSON.parse(localStorage.getItem('toktube_liked_video_ids') || '[]'); } catch(e) { return []; } })();
+  const watchedIds    = (() => { try { return JSON.parse(localStorage.getItem('toktube_history_video_ids') || '[]'); } catch(e) { return []; } })();
+  const bookmarkedIds = (() => { try { return JSON.parse(localStorage.getItem('toktube_bookmarked_ids') || '[]'); } catch(e) { return []; } })();
+  const repostedIds   = (() => { try { return JSON.parse(localStorage.getItem('toktube_reposts') || '[]'); } catch(e) { return []; } })();
 
-  // rank() is defined in algorithm.js and exposed as window.rankReels
+  // rankReels evaluates location + user attention signals (likes, bookmarks, reposts, history)
   const reels = (typeof window.rankReels === 'function')
-    ? window.rankReels(rawReels, userProfile, likedIds, watchedIds)
+    ? window.rankReels(rawReels, userProfile, { likedIds, watchedIds, bookmarkedIds, repostedIds })
     : rawReels;
 
   let currentIndex = 0;
@@ -102,62 +104,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>${reel.musicTitle || 'Original Sound'}</span>
               </div>
             </div>
+          </div>
 
-            <div class="tok-action-rail">
-              <div class="tok-avatar-wrap" onclick="window.location.href='channel.html?id=${reel.creator.id}'">
-                <img class="tok-avatar-img" src="${reel.creator.avatar}" alt="${reel.creator.name}">
-                <div class="tok-follow-plus ${isFollowed ? 'followed' : ''}" onclick="event.stopPropagation(); window.toggleFollowCreator('${reel.creator.id}', this)">
-                  ${isFollowed ? '✓' : '+'}
-                </div>
+          <div class="tok-action-rail">
+            <div class="tok-avatar-wrap" onclick="window.location.href='channel.html?id=${reel.creator.id}'">
+              <img class="tok-avatar-img" src="${reel.creator.avatar}" alt="${reel.creator.name}">
+              <div class="tok-follow-plus ${isFollowed ? 'followed' : ''}" onclick="event.stopPropagation(); window.toggleFollowCreator('${reel.creator.id}', this)">
+                ${isFollowed ? '✓' : '+'}
               </div>
+            </div>
 
-              <!-- Like Button -->
-              <div class="tok-action-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation(); window.toggleLikeReel('${reel.id}', this)">
-                <div class="tok-action-circle">
-                  <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                </div>
-                <span class="tok-action-text" id="like-count-${reel.id}">${likesCount}</span>
+            <!-- Like Button -->
+            <div class="tok-action-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation(); window.toggleLikeReel('${reel.id}', this)">
+              <div class="tok-action-circle">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               </div>
+              <span class="tok-action-text" id="like-count-${reel.id}">${likesCount}</span>
+            </div>
 
-              <!-- Comments Button -->
-              <div class="tok-action-btn" onclick="event.stopPropagation(); window.openCommentsDrawer('${reel.id}')">
-                <div class="tok-action-circle">
-                  <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-                </div>
-                <span class="tok-action-text" id="comment-count-label-${reel.id}">${commentsCount}</span>
+            <!-- Comments Button -->
+            <div class="tok-action-btn" onclick="event.stopPropagation(); window.openCommentsDrawer('${reel.id}')">
+              <div class="tok-action-circle">
+                <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
               </div>
+              <span class="tok-action-text" id="comment-count-label-${reel.id}">${commentsCount}</span>
+            </div>
 
-              <!-- Repost Button -->
-              <div class="tok-action-btn ${isReposted ? 'reposted' : ''}" onclick="event.stopPropagation(); window.toggleRepostReel('${reel.id}', this)" title="Repost to your followers">
-                <div class="tok-action-circle" style="background:${isReposted ? 'rgba(16,185,129,0.3)' : 'rgba(40,40,40,0.45)'};border:1px solid ${isReposted ? '#10b981' : 'rgba(255,255,255,0.1)'};">
-                  <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:${isReposted ? '#10b981' : '#fff'};"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
-                </div>
-                <span class="tok-action-text" style="color:${isReposted ? '#10b981' : '#fff'};">${isReposted ? 'Reposted' : 'Repost'}</span>
+            <!-- Repost Button -->
+            <div class="tok-action-btn ${isReposted ? 'reposted' : ''}" onclick="event.stopPropagation(); window.toggleRepostReel('${reel.id}', this)" title="Repost to your followers">
+              <div class="tok-action-circle" style="background:${isReposted ? 'rgba(16,185,129,0.3)' : 'rgba(40,40,40,0.45)'};border:1px solid ${isReposted ? '#10b981' : 'rgba(255,255,255,0.1)'};">
+                <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:${isReposted ? '#10b981' : '#fff'};"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               </div>
+              <span class="tok-action-text" style="color:${isReposted ? '#10b981' : '#fff'};">${isReposted ? 'Reposted' : 'Repost'}</span>
+            </div>
 
-              <!-- Tip Creator Button — hidden until payment system is live -->
-              <div class="tok-action-btn tok-tip-btn" style="display:none;" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
-                <div class="tok-action-circle" style="background:rgba(255,184,0,0.2); border:1px solid var(--africa-gold);">
-                  <span style="font-size:18px;">☕</span>
-                </div>
-                <span class="tok-action-text" style="color:var(--africa-gold);">Tip</span>
+            <!-- Tip Creator Button — hidden until payment system is live -->
+            <div class="tok-action-btn tok-tip-btn" style="display:none;" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
+              <div class="tok-action-circle" style="background:rgba(255,184,0,0.2); border:1px solid var(--africa-gold);">
+                <span style="font-size:18px;">☕</span>
               </div>
+              <span class="tok-action-text" style="color:var(--africa-gold);">Tip</span>
+            </div>
 
-              <!-- Share Button -->
-              <div class="tok-action-btn" onclick="event.stopPropagation(); tokShell.openShareModal(window.location.href, '${reel.title}')">
-                <div class="tok-action-circle">
-                  <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
-                </div>
-                <span class="tok-action-text">${reel.shares || 120}</span>
+            <!-- Share Button -->
+            <div class="tok-action-btn" onclick="event.stopPropagation(); tokShell.openShareModal(window.location.href, '${reel.title}')">
+              <div class="tok-action-circle">
+                <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
               </div>
+              <span class="tok-action-text">${reel.shares || 120}</span>
+            </div>
 
-              <!-- Vinyl / Spinning disc — doubles as Remix button -->
-              <div class="tok-vinyl-wrap" onclick="event.stopPropagation(); window.remixTokReel('${reel.id}')" title="Remix this Tok 🎛️" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                <div class="tok-vinyl">
-                  <img src="${reel.creator.avatar}" alt="${reel.creator.name}">
-                </div>
-                <span style="font-size:10px;font-weight:700;color:#ec4899;text-shadow:0 1px 4px rgba(0,0,0,0.9);">Remix</span>
+            <!-- Vinyl / Spinning disc — doubles as Remix button -->
+            <div class="tok-vinyl-wrap" onclick="event.stopPropagation(); window.remixTokReel('${reel.id}')" title="Remix this Tok 🎛️" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <div class="tok-vinyl">
+                <img src="${reel.creator.avatar}" alt="${reel.creator.name}">
               </div>
+              <span style="font-size:10px;font-weight:700;color:#ec4899;text-shadow:0 1px 4px rgba(0,0,0,0.9);">Remix</span>
             </div>
           </div>
         </div>
