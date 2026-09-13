@@ -5,24 +5,112 @@
   overflow-y: auto;
 }
 
-/* Category Filter Chips Bar */
-.category-chips-bar {
+/* Category Filter Chips Bar & Desktop Sideways Scroll */
+.category-chips-wrapper {
   position: sticky;
   top: 0;
   background: rgba(15, 15, 15, 0.96);
   backdrop-filter: blur(14px);
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.category-chips-bar {
   padding: 10px 0 12px;
   display: flex;
   gap: 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  scroll-behavior: smooth;
+  cursor: grab;
+  user-select: none;
+  flex: 1;
+}
+
+.category-chips-bar.is-dragging {
+  cursor: grabbing !important;
+  scroll-behavior: auto !important;
 }
 
 .category-chips-bar::-webkit-scrollbar {
   display: none;
+  height: 4px;
+}
+
+/* Subtle scrollbar for non-touch screens with mouse hover */
+@media (hover: hover) and (pointer: fine) {
+  .category-chips-bar:hover {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  }
+  .category-chips-bar:hover::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+  .category-chips-bar:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 9999px;
+  }
+  .category-chips-bar:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* Sideways scroll buttons for big/non-touch screens (YouTube-style) */
+.chips-scroll-btn {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(24, 24, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 105;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: background 0.18s, transform 0.15s, opacity 0.2s;
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+}
+
+.chips-scroll-btn:hover {
+  background: rgba(50, 50, 50, 0.98);
+  transform: translateY(-50%) scale(1.08);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.chips-scroll-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.chips-scroll-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.chips-scroll-left {
+  left: 4px;
+}
+
+.chips-scroll-right {
+  right: 4px;
+}
+
+/* Show sideways scroll buttons on screens >= 768px */
+@media (min-width: 768px) {
+  .chips-scroll-btn {
+    display: flex;
+  }
 }
 
 .category-chip {

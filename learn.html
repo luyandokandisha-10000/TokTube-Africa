@@ -60,12 +60,20 @@
             </div>
           </div>
 
-          <!-- Subject Tracks Chips -->
-          <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px;">
-            <button class="category-chip active" data-topic="All">All STEM Courses</button>
-            <button class="category-chip" data-topic="Robotics & Clean Energy">⚡ Solar & Robotics</button>
-            <button class="category-chip" data-topic="Software Architecture">💻 AI & Software</button>
-            <button class="category-chip" data-topic="AgriTech & Drones">🌱 Drone Agriculture</button>
+          <!-- Subject Tracks Chips & Desktop Sideways Scroll -->
+          <div class="category-chips-wrapper" style="margin-bottom: 24px;">
+            <button class="chips-scroll-btn chips-scroll-left" aria-label="Scroll left" style="display:none;">
+              <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <div class="category-chips-bar" style="gap: 10px;">
+              <button class="category-chip active" data-topic="All">All STEM Courses</button>
+              <button class="category-chip" data-topic="Robotics & Clean Energy">⚡ Solar & Robotics</button>
+              <button class="category-chip" data-topic="Software Architecture">💻 AI & Software</button>
+              <button class="category-chip" data-topic="AgriTech & Drones">🌱 Drone Agriculture</button>
+            </div>
+            <button class="chips-scroll-btn chips-scroll-right" aria-label="Scroll right">
+              <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </button>
           </div>
 
           <!-- Educational Video Grid -->

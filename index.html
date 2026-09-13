@@ -49,19 +49,27 @@
       <!-- Main Home Content -->
       <main class="page-main">
         <div class="page-content">
-          <!-- Horizontal Category Filter Chips Bar with expanded categories -->
-          <div class="category-chips-bar" id="category-chips-bar">
-            <button class="category-chip active" data-category="All">All</button>
-            <button class="category-chip" data-category="Music">🎵 Afrobeats & Amapiano</button>
-            <button class="category-chip" data-category="Culture">🌍 African Heritage & Nollywood</button>
-            <button class="category-chip" data-category="Comedy">😂 African Comedy & Toks</button>
-            <button class="category-chip" data-category="Gaming">🎮 African Esports & Gaming</button>
-            <button class="category-chip" data-category="Fashion">👗 African Fashion & Streetwear</button>
-            <button class="category-chip" data-category="Food">🍲 Jollof & Pan-African Cuisine</button>
-            <button class="category-chip" data-category="STEM">🎓 EduBoost STEM</button>
-            <button class="category-chip" data-category="Coding">💻 Coding & AI</button>
-            <button class="category-chip" data-category="Agriculture">🌱 AgriTech & Drones</button>
-            <button class="category-chip" data-category="Clean Energy">⚡ Clean Energy</button>
+          <!-- Horizontal Category Filter Chips Bar with desktop sideways scroll -->
+          <div class="category-chips-wrapper" id="category-chips-wrapper">
+            <button class="chips-scroll-btn chips-scroll-left" id="btn-chips-left" aria-label="Scroll left" style="display:none;">
+              <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <div class="category-chips-bar" id="category-chips-bar">
+              <button class="category-chip active" data-category="All">All</button>
+              <button class="category-chip" data-category="Music">🎵 Afrobeats & Amapiano</button>
+              <button class="category-chip" data-category="Culture">🌍 African Heritage & Nollywood</button>
+              <button class="category-chip" data-category="Comedy">😂 African Comedy & Toks</button>
+              <button class="category-chip" data-category="Gaming">🎮 African Esports & Gaming</button>
+              <button class="category-chip" data-category="Fashion">👗 African Fashion & Streetwear</button>
+              <button class="category-chip" data-category="Food">🍲 Jollof & Pan-African Cuisine</button>
+              <button class="category-chip" data-category="STEM">🎓 EduBoost STEM</button>
+              <button class="category-chip" data-category="Coding">💻 Coding & AI</button>
+              <button class="category-chip" data-category="Agriculture">🌱 AgriTech & Drones</button>
+              <button class="category-chip" data-category="Clean Energy">⚡ Clean Energy</button>
+            </div>
+            <button class="chips-scroll-btn chips-scroll-right" id="btn-chips-right" aria-label="Scroll right">
+              <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </button>
           </div>
 
           <!-- Trending African Toks Shelf -->
@@ -213,7 +221,7 @@
         `).join('');
       }
 
-      // Filter chips click handling
+      // Filter chips click handling & desktop sideways scroll initialization
       if (chipsBar) {
         chipsBar.querySelectorAll('.category-chip').forEach(chip => {
           chip.addEventListener('click', () => {
@@ -224,6 +232,11 @@
             renderVideos('', activeCategory);
           });
         });
+
+        // Initialize desktop sideways scroll buttons, mouse wheel, and drag
+        if (typeof window.setupCategoryChipsScroll === 'function') {
+          window.setupCategoryChipsScroll(document.getElementById('category-chips-wrapper') || chipsBar);
+        }
       }
 
       window.toggleCardLike = function(e, id) {

@@ -541,12 +541,59 @@ export class TokStorage {
     return merged;
   }
 
+  // User Profile
   getUserProfile() {
     return this.getCurrentUser();
   }
 
   saveUserProfile(profileData) {
     return this.updateUserProfile(profileData);
+  }
+
+  // Repost methods (TikTok-style repost support)
+  getReposts() {
+    try {
+      return JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    } catch {
+      return [];
+    }
+  }
+
+  isReposted(id) {
+    const list = this.getReposts();
+    return list.some(item => (typeof item === 'string' ? item === id : item.id === id));
+  }
+
+  getRepostItem(id) {
+    const list = this.getReposts();
+    return list.find(item => (typeof item === 'string' ? item === id : item.id === id)) || null;
+  }
+
+  addRepost(id, note = '') {
+    const list = this.getReposts();
+    const existingIndex = list.findIndex(item => (typeof item === 'string' ? item === id : item.id === id));
+    const user = this.getCurrentUser();
+    const repostObj = {
+      id,
+      note: (note || '').trim(),
+      repostedAt: new Date().toISOString(),
+      repostedBy: user.name || 'You',
+      userHandle: user.handle || '@you'
+    };
+    if (existingIndex >= 0) {
+      list[existingIndex] = repostObj;
+    } else {
+      list.unshift(repostObj);
+    }
+    localStorage.setItem('toktube_reposts', JSON.stringify(list));
+    return repostObj;
+  }
+
+  removeRepost(id) {
+    let list = this.getReposts();
+    list = list.filter(item => (typeof item === 'string' ? item !== id : item.id !== id));
+    localStorage.setItem('toktube_reposts', JSON.stringify(list));
+    return list;
   }
 
   // Sounds Library

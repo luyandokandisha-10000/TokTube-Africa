@@ -3130,3 +3130,117 @@ document.addEventListener('click', function(e) {
   } catch(err) {}
   tokShell.showToast('Profile photo removed');
 });
+
+// ── Sideways Horizontal Scroll for Category Chips (Big / Non-Touch Screens) ──
+window.setupCategoryChipsScroll = function(container) {
+  if (!container) return;
+  const bar = container.classList.contains('category-chips-bar')
+    ? container
+    : container.querySelector('.category-chips-bar');
+  if (!bar) return;
+
+  const leftBtn = container.querySelector('.chips-scroll-left') || document.getElementById('btn-chips-left') || document.getElementById('btn-scroll-chips-left');
+  const rightBtn = container.querySelector('.chips-scroll-right') || document.getElementById('btn-chips-right') || document.getElementById('btn-scroll-chips-right');
+
+  function updateArrowVisibility() {
+    const maxScroll = bar.scrollWidth - bar.clientWidth;
+    if (maxScroll <= 4) {
+      if (leftBtn) leftBtn.style.display = 'none';
+      if (rightBtn) rightBtn.style.display = 'none';
+      return;
+    }
+    const isBigScreen = window.innerWidth >= 768;
+    if (!isBigScreen) {
+      if (leftBtn) leftBtn.style.display = 'none';
+      if (rightBtn) rightBtn.style.display = 'none';
+      return;
+    }
+    if (leftBtn) {
+      leftBtn.style.display = bar.scrollLeft > 8 ? 'flex' : 'none';
+    }
+    if (rightBtn) {
+      rightBtn.style.display = bar.scrollLeft < maxScroll - 8 ? 'flex' : 'none';
+    }
+  }
+
+  if (leftBtn) {
+    leftBtn.onclick = (e) => {
+      e.stopPropagation();
+      bar.scrollBy({ left: -260, behavior: 'smooth' });
+      setTimeout(updateArrowVisibility, 320);
+    };
+  }
+  if (rightBtn) {
+    rightBtn.onclick = (e) => {
+      e.stopPropagation();
+      bar.scrollBy({ left: 260, behavior: 'smooth' });
+      setTimeout(updateArrowVisibility, 320);
+    };
+  }
+
+  // Mouse wheel: translate vertical wheel scroll to horizontal sideways scroll on non-touch screens
+  bar.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      bar.scrollLeft += e.deltaY;
+      updateArrowVisibility();
+    }
+  }, { passive: false });
+
+  // Mouse drag-to-scroll (grab & drag sideways on desktop)
+  let isDown = false;
+  let startX = 0;
+  let scrollStart = 0;
+  let hasDragged = false;
+
+  bar.addEventListener('mousedown', (e) => {
+    isDown = true;
+    hasDragged = false;
+    startX = e.pageX - bar.offsetLeft;
+    scrollStart = bar.scrollLeft;
+    bar.classList.add('is-dragging');
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isDown) {
+      isDown = false;
+      bar.classList.remove('is-dragging');
+      setTimeout(() => { hasDragged = false; }, 50);
+    }
+  });
+
+  bar.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    const x = e.pageX - bar.offsetLeft;
+    const walk = (x - startX) * 1.4;
+    if (Math.abs(walk) > 4) {
+      hasDragged = true;
+    }
+    bar.scrollLeft = scrollStart - walk;
+    updateArrowVisibility();
+  });
+
+  // Prevent activating chip if dragged
+  bar.querySelectorAll('.category-chip').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      if (hasDragged) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+      }
+    }, true);
+  });
+
+  bar.addEventListener('scroll', updateArrowVisibility);
+  window.addEventListener('resize', updateArrowVisibility);
+
+  // Initial check
+  setTimeout(updateArrowVisibility, 150);
+};
+
+// Auto-initialize category scrolls on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.category-chips-wrapper').forEach(wrap => {
+    window.setupCategoryChipsScroll(wrap);
+  });
+});
+

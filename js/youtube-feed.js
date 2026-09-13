@@ -41,13 +41,21 @@ export class YouTubeFeed {
     });
 
     this.container.innerHTML = `
-      <!-- Category Filter Chips Bar -->
-      <div class="category-chips-bar">
-        ${this.categories.map(cat => `
-          <button class="category-chip ${this.currentCategory === cat ? 'active' : ''}" data-category="${cat}">
-            ${cat === 'Subscribed' ? '★ Subscribed' : cat}
-          </button>
-        `).join('')}
+      <!-- Category Filter Chips Bar & Desktop Sideways Scroll -->
+      <div class="category-chips-wrapper">
+        <button class="chips-scroll-btn chips-scroll-left" aria-label="Scroll left" style="display:none;">
+          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <div class="category-chips-bar">
+          ${this.categories.map(cat => `
+            <button class="category-chip ${this.currentCategory === cat ? 'active' : ''}" data-category="${cat}">
+              ${cat === 'Subscribed' ? '★ Subscribed' : cat}
+            </button>
+          `).join('')}
+        </div>
+        <button class="chips-scroll-btn chips-scroll-right" aria-label="Scroll right">
+          <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
       </div>
 
       <!-- Main Video Grid -->
@@ -145,6 +153,12 @@ export class YouTubeFeed {
         this.render(this.searchQuery);
       });
     });
+
+    // Sideways scroll buttons, mouse wheel, and drag for non-touch/desktop screens
+    const chipsWrapper = this.container.querySelector('.category-chips-wrapper');
+    if (chipsWrapper && typeof window.setupCategoryChipsScroll === 'function') {
+      window.setupCategoryChipsScroll(chipsWrapper);
+    }
 
     // Video Card Clicks -> Open YouTube Watch Page
     const videoCards = this.container.querySelectorAll('.video-card');

@@ -402,6 +402,214 @@
         display: none !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       REPOST BOTTOM SHEET  (TikTok-style)
+    ═══════════════════════════════════════════════════════════ */
+    #tok-repost-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(0,0,0,0);
+      pointer-events: none;
+      transition: background 0.28s ease;
+    }
+    #tok-repost-sheet.open {
+      background: rgba(0,0,0,0.55);
+      pointer-events: all;
+    }
+    #tok-repost-panel {
+      width: 100%;
+      max-width: 480px;
+      background: #1a1a1a;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      border: 1px solid #333;
+      padding: 0 0 calc(env(safe-area-inset-bottom) + 16px);
+      transform: translateY(110%);
+      transition: transform 0.38s cubic-bezier(0.16,1,0.3,1);
+      overflow: hidden;
+    }
+    #tok-repost-sheet.open #tok-repost-panel {
+      transform: translateY(0);
+    }
+    .repost-handle {
+      width: 36px;
+      height: 4px;
+      background: #444;
+      border-radius: 9999px;
+      margin: 10px auto 0;
+    }
+    .repost-sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 10px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .repost-sheet-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .repost-sheet-title svg {
+      width: 18px;
+      height: 18px;
+      fill: #10b981;
+    }
+    .repost-sheet-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #2a2a2a;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Tok preview row inside sheet */
+    .repost-preview {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: #111;
+      margin: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+    }
+    .repost-preview-thumb {
+      width: 48px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #333;
+      flex-shrink: 0;
+    }
+    .repost-preview-info {
+      flex: 1;
+      overflow: hidden;
+    }
+    .repost-preview-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .repost-preview-creator {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+    /* Note field */
+    .repost-note-wrap {
+      padding: 0 16px;
+      margin-top: 4px;
+    }
+    .repost-note-label {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 6px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    #repost-note-input {
+      width: 100%;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    #repost-note-input:focus {
+      border-color: #10b981;
+    }
+    #repost-note-input::placeholder { color: #555; }
+    /* Action buttons */
+    .repost-actions {
+      display: flex;
+      gap: 10px;
+      padding: 14px 16px 0;
+    }
+    #btn-repost-confirm {
+      flex: 1;
+      padding: 13px;
+      border-radius: 12px;
+      background: #10b981;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    #btn-repost-confirm:active { transform: scale(0.97); opacity: 0.85; }
+    #btn-repost-confirm svg { width:18px;height:18px;fill:#fff; }
+    #btn-repost-remove {
+      padding: 13px 18px;
+      border-radius: 12px;
+      background: #2a2a2a;
+      color: #f87171;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid #444;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.15s;
+    }
+    #btn-repost-remove.visible { display: flex; }
+
+    /* Reposted badge on the reel — top of video, like TikTok */
+    .tok-repost-badge {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(16,185,129,0.4);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: #10b981;
+      font-weight: 700;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 15;
+      animation: repostBadgePop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes repostBadgePop {
+      from { opacity:0; transform: translateX(-50%) scale(0.7); }
+      to   { opacity:1; transform: translateX(-50%) scale(1); }
+    }
   </style>
 </head>
 <body data-page="toks">
@@ -435,6 +643,40 @@
       <div style="padding:12px 16px;border-top:1px solid #333;display:flex;gap:10px;background:#181818;">
         <input type="text" id="drawer-comment-input" placeholder="Add a TikTok comment or reply..." style="flex:1;background:#121212;border:1px solid #333;border-radius:9999px;padding:10px 16px;color:#fff;font-size:14px;outline:none;">
         <button id="btn-drawer-send" class="btn-primary" style="padding:8px 18px;">Post</button>
+      </div>
+    </div>
+    <!-- Repost Bottom Sheet (TikTok-style) -->
+    <div id="tok-repost-sheet" onclick="if(event.target === this) window.closeRepostSheet();">
+      <div id="tok-repost-panel" onclick="event.stopPropagation();">
+        <div class="repost-handle"></div>
+        <div class="repost-sheet-header">
+          <div class="repost-sheet-title">
+            <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+            <span id="repost-sheet-heading">Repost Tok</span>
+          </div>
+          <button class="repost-sheet-close" onclick="window.closeRepostSheet()" aria-label="Close">✕</button>
+        </div>
+        <div class="repost-preview">
+          <img id="repost-preview-img" class="repost-preview-thumb" src="" alt="Thumbnail">
+          <div class="repost-preview-info">
+            <div id="repost-preview-title" class="repost-preview-title">Video title</div>
+            <div id="repost-preview-creator" class="repost-preview-creator">@creator</div>
+          </div>
+        </div>
+        <div class="repost-note-wrap">
+          <div class="repost-note-label">Add your thoughts (optional)</div>
+          <textarea id="repost-note-input" rows="2" placeholder="Say something about this repost..."></textarea>
+        </div>
+        <div class="repost-actions">
+          <button id="btn-repost-remove" onclick="window.confirmRemoveRepost()">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            <span>Remove</span>
+          </button>
+          <button id="btn-repost-confirm" onclick="window.confirmSubmitRepost()">
+            <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+            <span id="btn-repost-confirm-text">Repost</span>
+          </button>
+        </div>
       </div>
     </div>
     <div id="mobile-bottom-nav-container"></div>

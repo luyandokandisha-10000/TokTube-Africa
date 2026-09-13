@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const safeVideoSrc = reel.videoUrl || "https://vjs.zencdn.net/v/oceans.mp4";
       const isPhoto = reel.isPhotoSlide && Array.isArray(reel.images) && reel.images.length > 0;
       const isReposted = storage.isReposted ? storage.isReposted(reel.id) : false;
+      const repostItem = storage.getRepostItem ? storage.getRepostItem(reel.id) : null;
 
       // Truncate long descriptions with 'more' toggle to keep screen clean
       const fullDesc = (reel.caption && reel.caption !== reel.title)
@@ -70,6 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="tok-reel" data-index="${idx}" data-id="${reel.id}">
           <div class="tok-stage">
             ${mediaMarkup}
+
+            <!-- Repost Badge (TikTok-style) -->
+            <div class="tok-repost-badge" id="repost-badge-${reel.id}" onclick="event.stopPropagation(); window.openRepostModal('${reel.id}')" style="${isReposted ? 'display:flex;cursor:pointer;pointer-events:all;' : 'display:none;cursor:pointer;pointer-events:all;'}" title="Click to manage repost">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#10b981;flex-shrink:0;"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+              <span>${repostItem && repostItem.note ? 'You: "' + (repostItem.note.length > 24 ? repostItem.note.substring(0, 22) + '…' : repostItem.note) + '"' : 'You reposted'}</span>
+            </div>
 
             <!-- Quality & Sizing Selector for Shorts -->
             <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25; display: flex; gap: 6px; align-items: center; ${isPhoto ? 'display:none;' : ''}">
@@ -143,8 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="tok-action-text" id="comment-count-label-${reel.id}">${commentsCount}</span>
             </div>
 
-            <!-- Repost Button -->
-            <div class="tok-action-btn ${isReposted ? 'reposted' : ''}" onclick="event.stopPropagation(); window.toggleRepostReel('${reel.id}', this)" title="Repost to your followers">
+            <!-- Repost Button (TikTok-style) -->
+            <div class="tok-action-btn ${isReposted ? 'reposted' : ''}" id="repost-btn-${reel.id}" onclick="event.stopPropagation(); window.openRepostModal('${reel.id}')" title="${isReposted ? 'Manage Repost' : 'Repost to your followers'}">
               <div class="tok-action-circle" style="background:${isReposted ? 'rgba(16,185,129,0.3)' : 'rgba(40,40,40,0.45)'};border:1px solid ${isReposted ? '#10b981' : 'rgba(255,255,255,0.1)'};">
                 <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:${isReposted ? '#10b981' : '#fff'};"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               </div>
@@ -355,33 +362,145 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Repost Handler
-  window.toggleRepostReel = function(reelId, btn) {
-    soundFX.playNotificationSound();
-    let reposts = [];
-    try {
-      reposts = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
-    } catch(e) { reposts = []; }
+  // ── TikTok-Style Repost System ───────────────────────────────────────
+  let currentRepostReelId = null;
 
-    const isAlready = reposts.includes(reelId);
-    if (isAlready) {
-      reposts = reposts.filter(id => id !== reelId);
-      btn.querySelector('.tok-action-text').textContent = 'Repost';
-      btn.querySelector('.tok-action-text').style.color = '#fff';
-      btn.querySelector('.tok-action-circle').style.background = 'rgba(40,40,40,0.45)';
-      btn.querySelector('.tok-action-circle').style.borderColor = 'rgba(255,255,255,0.1)';
-      btn.querySelector('svg').style.fill = '#fff';
-      tokShell.showToast('Repost removed from your profile.');
-    } else {
-      reposts.push(reelId);
-      btn.querySelector('.tok-action-text').textContent = 'Reposted';
-      btn.querySelector('.tok-action-text').style.color = '#10b981';
-      btn.querySelector('.tok-action-circle').style.background = 'rgba(16,185,129,0.3)';
-      btn.querySelector('.tok-action-circle').style.borderColor = '#10b981';
-      btn.querySelector('svg').style.fill = '#10b981';
-      tokShell.showToast('Reposted to your friends & followers! 🔁');
+  window.openRepostModal = function(reelId) {
+    soundFX.playSwitchSound();
+    currentRepostReelId = reelId;
+    const reel = reels.find(r => r.id === reelId);
+    if (!reel) return;
+
+    const sheet = document.getElementById('tok-repost-sheet');
+    const thumbEl = document.getElementById('repost-preview-img');
+    const titleEl = document.getElementById('repost-preview-title');
+    const creatorEl = document.getElementById('repost-preview-creator');
+    const headingEl = document.getElementById('repost-sheet-heading');
+    const noteInput = document.getElementById('repost-note-input');
+    const removeBtn = document.getElementById('btn-repost-remove');
+    const confirmText = document.getElementById('btn-repost-confirm-text');
+
+    if (thumbEl) thumbEl.src = reel.thumbnail || (reel.images && reel.images[0]) || '';
+    if (titleEl) titleEl.textContent = reel.title || 'Tok Reel';
+    if (creatorEl) creatorEl.textContent = `@${reel.creator?.name || 'creator'}`;
+
+    const isAlready = storage.isReposted ? storage.isReposted(reelId) : false;
+    const existingItem = storage.getRepostItem ? storage.getRepostItem(reelId) : null;
+
+    if (noteInput) {
+      noteInput.value = (existingItem && existingItem.note) ? existingItem.note : '';
     }
-    localStorage.setItem('toktube_reposts', JSON.stringify(reposts));
+
+    if (isAlready) {
+      if (headingEl) headingEl.textContent = 'Manage Repost';
+      if (confirmText) confirmText.textContent = 'Save Thought';
+      if (removeBtn) removeBtn.classList.add('visible');
+    } else {
+      if (headingEl) headingEl.textContent = 'Repost Tok';
+      if (confirmText) confirmText.textContent = 'Repost';
+      if (removeBtn) removeBtn.classList.remove('visible');
+    }
+
+    if (sheet) {
+      sheet.classList.add('open');
+      if (noteInput) {
+        setTimeout(() => noteInput.focus(), 300);
+      }
+    }
+  };
+
+  window.closeRepostSheet = function() {
+    const sheet = document.getElementById('tok-repost-sheet');
+    if (sheet) sheet.classList.remove('open');
+    currentRepostReelId = null;
+  };
+
+  window.confirmSubmitRepost = function() {
+    if (!currentRepostReelId) return;
+    const reelId = currentRepostReelId;
+    const noteInput = document.getElementById('repost-note-input');
+    const note = noteInput ? noteInput.value.trim() : '';
+
+    if (storage.addRepost) {
+      storage.addRepost(reelId, note);
+    } else {
+      let reposts = [];
+      try { reposts = JSON.parse(localStorage.getItem('toktube_reposts') || '[]'); } catch(e) {}
+      if (!reposts.includes(reelId)) reposts.push(reelId);
+      localStorage.setItem('toktube_reposts', JSON.stringify(reposts));
+    }
+    soundFX.playNotificationSound();
+
+    // Update Action Button
+    const btn = document.getElementById(`repost-btn-${reelId}`);
+    if (btn) {
+      btn.classList.add('reposted');
+      const text = btn.querySelector('.tok-action-text');
+      const circle = btn.querySelector('.tok-action-circle');
+      const svg = btn.querySelector('svg');
+      if (text) { text.textContent = 'Reposted'; text.style.color = '#10b981'; }
+      if (circle) { circle.style.background = 'rgba(16,185,129,0.3)'; circle.style.borderColor = '#10b981'; }
+      if (svg) { svg.style.fill = '#10b981'; }
+    }
+
+    // Update or show Badge on Reel
+    const badge = document.getElementById(`repost-badge-${reelId}`);
+    if (badge) {
+      badge.style.display = 'flex';
+      badge.style.cursor = 'pointer';
+      badge.style.pointerEvents = 'all';
+      badge.onclick = (e) => { e.stopPropagation(); window.openRepostModal(reelId); };
+      const safeNote = note.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const displayText = note ? `You: "${safeNote.length > 24 ? safeNote.substring(0, 22) + '…' : safeNote}"` : 'You reposted';
+      badge.innerHTML = `
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#10b981;flex-shrink:0;"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+        <span>${displayText}</span>
+      `;
+    }
+
+    tokShell.showToast(note ? 'Reposted with your thoughts! 🔁' : 'Reposted to your friends & followers! 🔁');
+    window.closeRepostSheet();
+  };
+
+  window.confirmRemoveRepost = function() {
+    if (!currentRepostReelId) return;
+    const reelId = currentRepostReelId;
+
+    if (storage.removeRepost) {
+      storage.removeRepost(reelId);
+    } else {
+      let reposts = [];
+      try { reposts = JSON.parse(localStorage.getItem('toktube_reposts') || '[]'); } catch(e) {}
+      reposts = reposts.filter(id => id !== reelId);
+      localStorage.setItem('toktube_reposts', JSON.stringify(reposts));
+    }
+    soundFX.playSwitchSound();
+
+    // Reset Action Button
+    const btn = document.getElementById(`repost-btn-${reelId}`);
+    if (btn) {
+      btn.classList.remove('reposted');
+      const text = btn.querySelector('.tok-action-text');
+      const circle = btn.querySelector('.tok-action-circle');
+      const svg = btn.querySelector('svg');
+      if (text) { text.textContent = 'Repost'; text.style.color = '#fff'; }
+      if (circle) { circle.style.background = 'rgba(40,40,40,0.45)'; circle.style.borderColor = 'rgba(255,255,255,0.1)'; }
+      if (svg) { svg.style.fill = '#fff'; }
+    }
+
+    // Hide Badge
+    const badge = document.getElementById(`repost-badge-${reelId}`);
+    if (badge) {
+      badge.style.display = 'none';
+    }
+
+    tokShell.showToast('Repost removed from your profile.');
+    window.closeRepostSheet();
+  };
+
+  // Backwards-compatible trigger
+  window.toggleRepostReel = function(reelId) {
+    window.openRepostModal(reelId);
   };
 
   // Remix / Stitch Handler

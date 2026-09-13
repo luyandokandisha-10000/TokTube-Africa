@@ -70,6 +70,17 @@
               <!-- Injected dynamically -->
             </div>
           </section>
+
+          <!-- Section 4: Reposted Toks (TikTok-style) -->
+          <section style="margin-bottom: 36px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h2 style="font-size: 18px; font-weight: 700;">🔁 Reposted Toks</h2>
+              <span id="reposted-count" style="font-size: 13px; color: var(--text-muted);"></span>
+            </div>
+            <div class="shorts-shelf-grid" id="reposted-toks-grid" style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;">
+              <!-- Injected dynamically -->
+            </div>
+          </section>
         </div>
       </main>
     </div>
@@ -144,6 +155,38 @@
           likedGrid.innerHTML = `<p style="grid-column: 1 / -1; color: var(--text-muted); font-size: 14px; padding: 12px 0;">No liked videos yet. Tap ❤️ on videos you enjoy!</p>`;
         } else {
           likedGrid.innerHTML = likedVids.map(createVideoCard).join('');
+        }
+
+        // Render Reposted Toks (TikTok-style)
+        const repostList = storage.getReposts ? storage.getReposts() : [];
+        const allReels = storage.getTiktokReels ? storage.getTiktokReels() : [];
+        const repostedIds = repostList.map(item => typeof item === 'string' ? item : item.id);
+        const repostedReels = allReels.filter(r => repostedIds.includes(r.id));
+        const repostedCountEl = document.getElementById('reposted-count');
+        const repostedGrid = document.getElementById('reposted-toks-grid');
+        if (repostedCountEl) repostedCountEl.textContent = `${repostedReels.length} toks`;
+        if (repostedGrid) {
+          if (repostedReels.length === 0) {
+            repostedGrid.innerHTML = `<p style="grid-column: 1 / -1; color: var(--text-muted); font-size: 14px; padding: 12px 0;">No Toks reposted yet. Tap 🔁 on Toks to share them to your profile!</p>`;
+          } else {
+            repostedGrid.innerHTML = repostedReels.map(reel => {
+              const item = repostList.find(x => (typeof x === 'string' ? x === reel.id : x.id === reel.id));
+              const note = (item && item.note) ? item.note : '';
+              return `
+                <div class="shorts-preview-card" onclick="window.location.href='toks.html'" style="flex: 0 0 140px; cursor: pointer; position: relative;">
+                  <div class="shorts-preview-thumb-wrap" style="position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 9/16; background: #222;">
+                    <img src="${reel.thumbnail || (reel.images && reel.images[0]) || ''}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <span style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.75); border-radius: 9999px; padding: 2px 7px; font-size: 10px; color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 3px; backdrop-filter: blur(4px); border: 1px solid rgba(16,185,129,0.3);">
+                      🔁 Repost
+                    </span>
+                    <span class="shorts-preview-views" style="position: absolute; bottom: 6px; left: 6px; font-size: 11px; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">${(reel.likes || 0).toLocaleString()} likes</span>
+                  </div>
+                  <div style="font-size: 12px; font-weight: 600; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;">${reel.title}</div>
+                  ${note ? `<div style="font-size: 11px; color: #10b981; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">💬 "${note}"</div>` : ''}
+                </div>
+              `;
+            }).join('');
+          }
         }
       }
 
