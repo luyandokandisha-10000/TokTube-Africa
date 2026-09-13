@@ -2,7 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewport = document.getElementById('toks-viewport');
   if (!viewport) return;
 
-  const reels = storage.getTiktokReels();
+  // ── Personalised feed ranking ─────────────────────────────────────────
+  const rawReels   = storage.getTiktokReels();
+  const userProfile = (() => {
+    try {
+      const profile  = storage.getUserProfile() || {};
+      const location = JSON.parse(localStorage.getItem('toktube_user_location') || '{}');
+      const subscribed = JSON.parse(localStorage.getItem('toktube_subscribed_channel_ids') || '["ch-techcraft"]');
+      return { ...profile, ...location, subscribedChannels: subscribed };
+    } catch(e) { return {}; }
+  })();
+  const likedIds   = (() => { try { return JSON.parse(localStorage.getItem('toktube_liked_video_ids') || '[]'); } catch(e) { return []; } })();
+  const watchedIds = (() => { try { return JSON.parse(localStorage.getItem('toktube_history_video_ids') || '[]'); } catch(e) { return []; } })();
+
+  // rank() is defined in algorithm.js and exposed as window.rankReels
+  const reels = (typeof window.rankReels === 'function')
+    ? window.rankReels(rawReels, userProfile, likedIds, watchedIds)
+    : rawReels;
+
   let currentIndex = 0;
   let activeVideoEl = null;
 
@@ -118,16 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="tok-action-text" style="color:${isReposted ? '#10b981' : '#fff'};">${isReposted ? 'Reposted' : 'Repost'}</span>
               </div>
 
-              <!-- Remix / Stitch Button -->
-              <div class="tok-action-btn" onclick="event.stopPropagation(); window.remixTokReel('${reel.id}')" title="Remix or Stitch this Tok">
-                <div class="tok-action-circle" style="background:rgba(236,72,153,0.25);border:1px solid rgba(236,72,153,0.5);">
-                  <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ec4899;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
-                </div>
-                <span class="tok-action-text" style="color:#ec4899;">Remix</span>
-              </div>
-
-              <!-- Tip Creator Button -->
-              <div class="tok-action-btn" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
+              <!-- Tip Creator Button — hidden until payment system is live -->
+              <div class="tok-action-btn tok-tip-btn" style="display:none;" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
                 <div class="tok-action-circle" style="background:rgba(255,184,0,0.2); border:1px solid var(--africa-gold);">
                   <span style="font-size:18px;">☕</span>
                 </div>
@@ -142,8 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="tok-action-text">${reel.shares || 120}</span>
               </div>
 
-              <div class="tok-vinyl">
-                <img src="${reel.creator.avatar}" alt="${reel.creator.name}">
+              <!-- Vinyl / Spinning disc — doubles as Remix button -->
+              <div class="tok-vinyl-wrap" onclick="event.stopPropagation(); window.remixTokReel('${reel.id}')" title="Remix this Tok 🎛️" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+                <div class="tok-vinyl">
+                  <img src="${reel.creator.avatar}" alt="${reel.creator.name}">
+                </div>
+                <span style="font-size:10px;font-weight:700;color:#ec4899;text-shadow:0 1px 4px rgba(0,0,0,0.9);">Remix</span>
               </div>
             </div>
           </div>

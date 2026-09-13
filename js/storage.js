@@ -26,6 +26,15 @@ export class TokStorage {
   }
 
   init() {
+    // Version stamp — bump this whenever sample data changes structurally
+    const DATA_VERSION = '2.1';
+    const storedVersion = localStorage.getItem('toktube_data_version');
+    if (storedVersion !== DATA_VERSION) {
+      // Refresh sample data (user-generated content like comments/likes is preserved)
+      localStorage.setItem(STORAGE_KEYS.YT_VIDEOS, JSON.stringify(INITIAL_DATA.youtubeVideos));
+      localStorage.setItem(STORAGE_KEYS.TOK_REELS, JSON.stringify(INITIAL_DATA.tiktokReels));
+      localStorage.setItem('toktube_data_version', DATA_VERSION);
+    }
     if (!localStorage.getItem(STORAGE_KEYS.YT_VIDEOS)) {
       localStorage.setItem(STORAGE_KEYS.YT_VIDEOS, JSON.stringify(INITIAL_DATA.youtubeVideos));
     }

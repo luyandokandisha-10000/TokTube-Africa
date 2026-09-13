@@ -268,31 +268,35 @@ export const INITIAL_DATA = {
       title: "Fastest way to center anything in modern CSS ✨ #css #webdev #frontend #toktube",
       caption: "Stop using margins in 2026! Just use display: grid and place-content: center. Clean, bulletproof, and 100% responsive.",
       soundTitle: "Original Sound - DevHacks Beats 🎵",
+      musicTitle: "Original Sound - DevHacks Beats 🎵",
       videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
       thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80",
-      channel: {
-        id: "ch-techcraft",
-        name: "@techcraft",
+      country: "Nigeria", continent: "Africa",
+      category: "Tech", tags: ["css","webdev","coding","frontend","tech"],
+      postedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+      creator: {
+        id: "ch-techcraft", name: "TechCraft Studios", handle: "@techcraft",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
-        verified: true,
+        verified: true
       },
-      likes: 124500,
-      commentsCount: 1420,
-      sharesCount: 8900,
-      bookmarksCount: 31200,
+      channel: {
+        id: "ch-techcraft", name: "@techcraft",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
+        verified: true
+      },
+      likes: 124500, commentsCount: 1420, sharesCount: 8900, bookmarksCount: 31200,
+      shares: 8900,
       ytEquivalentId: "yt-1",
       comments: [
         {
-          id: "tc-1",
-          author: "WebNinja",
+          id: "tc-1", author: "WebNinja",
           avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
           timeAgo: "2h ago",
           text: "Wait place-content: center works with grid without needing rows/cols definition? My mind is blown 🔥",
           likes: 412,
           replies: [
             {
-              id: "tr-1",
-              author: "TechCraft Studios",
+              id: "tr-1", author: "TechCraft Studios",
               avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
               timeAgo: "1h ago",
               text: "Yep! It combines align-content and justify-content in one shorthand."
@@ -300,43 +304,45 @@ export const INITIAL_DATA = {
           ]
         },
         {
-          id: "tc-2",
-          author: "CSS_Queen",
+          id: "tc-2", author: "CSS_Queen",
           avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
           timeAgo: "5h ago",
           text: "Can confirm, been using this for 6 months and never looked back!",
-          likes: 189,
-          replies: []
+          likes: 189, replies: []
         }
       ]
     },
     {
       id: "tok-2",
-      title: "Wait till the drop! Incredible FPV dive into Icelandic canyon 🏔️ #drone #travel #iceland #cinematic",
-      caption: "Never been so scared for my drone propellers! Full dive down the canyon at 90mph.",
+      title: "FPV drone deep in the Drakensberg mountains 🏔️ #drone #southafrica #travel #cinematic",
+      caption: "Flying through the Drakensberg at 90mph. The signal through those basalt walls was terrifying!",
       soundTitle: "Hans Zimmer - Cinematic Pulse (Remix)",
+      musicTitle: "Hans Zimmer - Cinematic Pulse (Remix)",
       videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
       thumbnail: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=600&auto=format&fit=crop&q=80",
-      channel: {
-        id: "ch-earthlens",
-        name: "@earthlens",
+      country: "South Africa", continent: "Africa",
+      category: "Travel", tags: ["drone","travel","africa","cinematic","nature"],
+      postedAt: new Date(Date.now() - 5 * 86400000).toISOString(),
+      creator: {
+        id: "ch-earthlens", name: "EarthLens Africa", handle: "@earthlens",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
-        verified: true,
+        verified: true
       },
-      likes: 389000,
-      commentsCount: 4890,
-      sharesCount: 42100,
-      bookmarksCount: 98400,
+      channel: {
+        id: "ch-earthlens", name: "@earthlens",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
+        verified: true
+      },
+      likes: 389000, commentsCount: 4890, sharesCount: 42100, bookmarksCount: 98400,
+      shares: 42100,
       ytEquivalentId: "yt-2",
       comments: [
         {
-          id: "tc-3",
-          author: "FlightPro",
+          id: "tc-3", author: "FlightPro",
           avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop&q=80",
           timeAgo: "1h ago",
           text: "The signal through that basalt wall must have been terrifying. Props to the pilot!",
-          likes: 1205,
-          replies: []
+          likes: 1205, replies: []
         }
       ]
     },
@@ -345,59 +351,105 @@ export const INITIAL_DATA = {
       title: "POV: You finally fixed the bug that took 3 days 💻🎉 #coding #programmerhumor #developer #relatable",
       caption: "It was a missing comma. It is ALWAYS the missing comma or typo in the environment variable.",
       soundTitle: "Celebration Horns - Party Anthem",
+      musicTitle: "Celebration Horns - Party Anthem",
       videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
       thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80",
-      channel: {
-        id: "ch-lofiradio",
-        name: "@cyberlofi",
+      country: "Kenya", continent: "Africa",
+      category: "Tech", tags: ["coding","developer","programmerhumor","tech","relatable"],
+      postedAt: new Date(Date.now() - 1 * 86400000).toISOString(),
+      creator: {
+        id: "ch-lofiradio", name: "CyberLofi Africa", handle: "@cyberlofi",
         avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80",
-        verified: true,
+        verified: true
       },
-      likes: 540200,
-      commentsCount: 7200,
-      sharesCount: 88000,
-      bookmarksCount: 45000,
+      channel: {
+        id: "ch-lofiradio", name: "@cyberlofi",
+        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80",
+        verified: true
+      },
+      likes: 540200, commentsCount: 7200, sharesCount: 88000, bookmarksCount: 45000,
+      shares: 88000,
       ytEquivalentId: "yt-3",
       comments: []
     },
     {
       id: "tok-4",
-      title: "Satisfying 3D Physics simulation rendered in real-time 🎮 #gamedev #satisfying #blender #gaming",
-      caption: "10,000 domino blocks colliding with zero lag. Check the YouTube video for how the physics solver works!",
+      title: "Lusakaboys gaming tournament HIGHLIGHTS 🎮🇿🇲 #zambia #gaming #esports #africa",
+      caption: "Lusaka e-sports scene is RISING. Full tournament recap dropping on the Tube soon!",
       soundTitle: "Satisfying ASMR Click Beats",
+      musicTitle: "Satisfying ASMR Click Beats",
       videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
       thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80",
-      channel: {
-        id: "ch-gamedev",
-        name: "@gamedevfrontier",
+      country: "Zambia", continent: "Africa",
+      category: "Gaming", tags: ["gaming","zambia","esports","africa","lusaka"],
+      postedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+      creator: {
+        id: "ch-gamedev", name: "GameDev Frontier ZM", handle: "@gamedevfrontier",
         avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
-        verified: true,
+        verified: true
       },
-      likes: 210400,
-      commentsCount: 2310,
-      sharesCount: 14000,
-      bookmarksCount: 52000,
+      channel: {
+        id: "ch-gamedev", name: "@gamedevfrontier",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
+        verified: true
+      },
+      likes: 210400, commentsCount: 2310, sharesCount: 14000, bookmarksCount: 52000,
+      shares: 14000,
       ytEquivalentId: "yt-4",
       comments: []
     },
     {
       id: "tok-5",
-      title: "Listen to this CRUNCH! Duck skin crispy test 🦆🤤 #foodie #cooking #chef #michelin",
-      caption: "The sound you have been waiting for. Crispy duck breast resting after high heat rendering.",
+      title: "Nshima cooking with Grandma 🫕🇿🇲 #zambia #nshima #food #african #recipe",
+      caption: "Nothing beats Grandma's nshima. Traditional Zambian staple made with love in Lusaka.",
       soundTitle: "Chef ASMR Sounds - Pure Sizzle",
+      musicTitle: "Chef ASMR Sounds - Pure Sizzle",
       videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
       thumbnail: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
-      channel: {
-        id: "ch-culinary",
-        name: "@artisankitchen",
+      country: "Zambia", continent: "Africa",
+      category: "Food", tags: ["zambia","food","nshima","african","recipe","cooking"],
+      postedAt: new Date(Date.now() - 6 * 3600000).toISOString(),
+      creator: {
+        id: "ch-culinary", name: "ArtisanKitchen ZM", handle: "@artisankitchen",
         avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80",
-        verified: true,
+        verified: true
       },
-      likes: 672000,
-      commentsCount: 9100,
-      sharesCount: 63000,
-      bookmarksCount: 180000,
+      channel: {
+        id: "ch-culinary", name: "@artisankitchen",
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80",
+        verified: true
+      },
+      likes: 672000, commentsCount: 9100, sharesCount: 63000, bookmarksCount: 180000,
+      shares: 63000,
       ytEquivalentId: "yt-5",
+      comments: []
+    },
+    {
+      id: "tok-6",
+      isPhotoSlide: true,
+      title: "Victoria Falls — The Smoke That Thunders 🌊🇿🇲 #zambia #victoriafalls #travel #africa #nature",
+      caption: "Mosi-oa-Tunya at its peak. One of the Seven Natural Wonders of the World, right here in Zambia 🇿🇲",
+      musicTitle: "African Drums — Spirit of the Zambezi",
+      country: "Zambia", continent: "Africa",
+      category: "Travel", tags: ["zambia","victoriafalls","travel","africa","nature","wonder"],
+      postedAt: new Date(Date.now() - 12 * 3600000).toISOString(),
+      images: [
+        "https://images.unsplash.com/photo-1520637102912-2df6bb2aec6d?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1580904384516-e666b5642888?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1466125687897-3f4fe47e2a65?w=800&auto=format&fit=crop&q=80"
+      ],
+      creator: {
+        id: "ch-luyando", name: "Luyando Kandisha", handle: "@luyando_zm",
+        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=120&auto=format&fit=crop&q=80",
+        verified: false
+      },
+      channel: {
+        id: "ch-luyando", name: "@luyando_zm",
+        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=120&auto=format&fit=crop&q=80",
+        verified: false
+      },
+      likes: 48200, commentsCount: 830, sharesCount: 5100, bookmarksCount: 19400,
+      shares: 5100,
       comments: []
     }
   ],

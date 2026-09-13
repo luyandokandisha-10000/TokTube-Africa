@@ -249,6 +249,105 @@
         display: none !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       DESKTOP WIDE-SCREEN LAYOUT  (≥ 900px)
+       Video centred, action rail sits beside it — not overlaid
+    ═══════════════════════════════════════════════════════════ */
+    @media (min-width: 900px) {
+      /* Each reel becomes a row: [gap] [video card] [actions] [gap] */
+      .tok-reel {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        background: #000;
+      }
+
+      /* Video card — fixed narrow column, centred */
+      .tok-stage {
+        position: relative;
+        width: 360px;
+        max-width: 360px;
+        flex-shrink: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.9);
+      }
+
+      /* Action rail comes OUT of the video — sits to the right */
+      .tok-action-rail {
+        position: static !important;  /* override absolute */
+        right: unset;
+        bottom: unset;
+        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        z-index: 20;
+        flex-shrink: 0;
+      }
+
+      /* Larger action circles on desktop */
+      .tok-action-circle {
+        width: 52px;
+        height: 52px;
+      }
+      .tok-action-circle svg {
+        width: 26px;
+        height: 26px;
+      }
+      .tok-avatar-img {
+        width: 54px;
+        height: 54px;
+      }
+
+      /* Vinyl disc — bigger, pulsing ring on desktop */
+      .tok-vinyl {
+        width: 54px;
+        height: 54px;
+        box-shadow: 0 0 0 4px rgba(236,72,153,0.35), 0 0 0 8px rgba(236,72,153,0.12);
+      }
+      .tok-vinyl img {
+        width: 22px;
+        height: 22px;
+      }
+
+      /* Bottom overlay stays inside video card */
+      .tok-bottom-overlay {
+        border-radius: 0 0 16px 16px;
+      }
+
+      /* Hide old fixed arrow nav on wide screen — arrow keys still work */
+      .tok-nav-arrows-desktop {
+        display: none !important;
+      }
+    }
+
+    /* ── Location Modal ────────────────────────────────────────────────── */
+    #location-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #location-modal-overlay.hidden { display: none; }
+    #location-modal-box {
+      background: #141414;
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 32px 28px 28px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+    }
   </style>
 </head>
 <body data-page="toks">
@@ -286,9 +385,135 @@
     </div>
     <div id="mobile-bottom-nav-container"></div>
   </div>
+
+  <!-- ── Location Personalisation Modal ────────────────────────────── -->
+  <div id="location-modal-overlay" class="hidden">
+    <div id="location-modal-box">
+      <div style="font-size:40px;margin-bottom:12px;">📍</div>
+      <h2 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;">Personalise Your Feed</h2>
+      <p style="font-size:13px;color:#aaa;line-height:1.5;margin-bottom:24px;">
+        TokTube Africa tailors your Toks feed to your location — showing more content from your country and region. Share your location to get started.
+      </p>
+
+      <!-- Auto-detect -->
+      <button id="btn-use-gps" onclick="window.detectGPSLocation()" style="width:100%;padding:14px;background:var(--tt-pink);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        📡 Use My Current Location
+      </button>
+
+      <!-- Manual country pick -->
+      <div style="margin-bottom:16px;">
+        <p style="font-size:12px;color:#666;margin-bottom:8px;">Or choose your country:</p>
+        <select id="location-country-select" style="width:100%;padding:12px 14px;background:#1e1e1e;border:1px solid #333;border-radius:10px;color:#fff;font-size:14px;outline:none;">
+          <option value="">— Select Country —</option>
+          <option value="Zambia">🇿🇲 Zambia</option>
+          <option value="Nigeria">🇳🇬 Nigeria</option>
+          <option value="South Africa">🇿🇦 South Africa</option>
+          <option value="Kenya">🇰🇪 Kenya</option>
+          <option value="Ghana">🇬🇭 Ghana</option>
+          <option value="Ethiopia">🇪🇹 Ethiopia</option>
+          <option value="Tanzania">🇹🇿 Tanzania</option>
+          <option value="Uganda">🇺🇬 Uganda</option>
+          <option value="Zimbabwe">🇿🇼 Zimbabwe</option>
+          <option value="Mozambique">🇲🇿 Mozambique</option>
+          <option value="Senegal">🇸🇳 Senegal</option>
+          <option value="Cameroon">🇨🇲 Cameroon</option>
+          <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+          <option value="Angola">🇦🇴 Angola</option>
+          <option value="DR Congo">🇨🇩 DR Congo</option>
+          <option value="Rwanda">🇷🇼 Rwanda</option>
+          <option value="Egypt">🇪🇬 Egypt</option>
+          <option value="Morocco">🇲🇦 Morocco</option>
+          <option value="Other Africa">🌍 Other African Country</option>
+        </select>
+      </div>
+
+      <button id="btn-save-location" onclick="window.saveManualLocation()" style="width:100%;padding:13px;background:#1e1e1e;color:#fff;border:1px solid #333;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">
+        ✅ Save &amp; Continue
+      </button>
+      <button onclick="window.skipLocationSetup()" style="background:none;border:none;color:#555;font-size:13px;cursor:pointer;width:100%;padding:8px;">
+        Skip for now
+      </button>
+    </div>
+  </div>
+
+  <script src="js/algorithm.js" type="module"></script>
   <script src="js/core.js"></script>
+  <script>
+    // ── Location modal logic ────────────────────────────────────────────
+    (function() {
+      function shouldShowLocationModal() {
+        return !localStorage.getItem('toktube_user_location');
+      }
+
+      function showLocationModal() {
+        const overlay = document.getElementById('location-modal-overlay');
+        if (overlay) overlay.classList.remove('hidden');
+      }
+
+      function hideLocationModal() {
+        const overlay = document.getElementById('location-modal-overlay');
+        if (overlay) overlay.classList.add('hidden');
+      }
+
+      function saveLocation(data) {
+        localStorage.setItem('toktube_user_location', JSON.stringify(data));
+        hideLocationModal();
+        if (window.tokShell) tokShell.showToast(`📍 Feed personalised for ${data.country || data.city || 'your location'} 🌍`);
+      }
+
+      window.detectGPSLocation = function() {
+        const btn = document.getElementById('btn-use-gps');
+        if (btn) btn.textContent = '⏳ Detecting...';
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            try {
+              const { latitude, longitude } = pos.coords;
+              const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+              const data = await resp.json();
+              const country = data.address?.country || 'Africa';
+              const city    = data.address?.city || data.address?.town || data.address?.village || '';
+              saveLocation({ country, city, continent: 'Africa', lat: latitude, lon: longitude });
+            } catch(e) {
+              saveLocation({ country: 'Africa', city: '', continent: 'Africa' });
+            }
+          },
+          () => {
+            if (btn) btn.textContent = '📡 Use My Current Location';
+            if (window.tokShell) tokShell.showToast('Could not get GPS. Please choose a country.');
+          },
+          { timeout: 8000 }
+        );
+      };
+
+      window.saveManualLocation = function() {
+        const sel = document.getElementById('location-country-select');
+        const country = sel ? sel.value : '';
+        if (!country) {
+          if (window.tokShell) tokShell.showToast('Please select your country first.');
+          return;
+        }
+        saveLocation({ country, city: '', continent: 'Africa' });
+      };
+
+      window.skipLocationSetup = function() {
+        // Mark as skipped so we don't ask again this session
+        sessionStorage.setItem('toktube_location_skipped', '1');
+        hideLocationModal();
+      };
+
+      // Show modal once the page is ready and location hasn't been set
+      window.addEventListener('load', () => {
+        const skipped = sessionStorage.getItem('toktube_location_skipped');
+        if (shouldShowLocationModal() && !skipped) {
+          // Slight delay so the page can render first
+          setTimeout(showLocationModal, 1200);
+        }
+      });
+    })();
+  </script>
   <script src="js/toks-feed.js"></script>
 </body>
 </html>
+
 
 
