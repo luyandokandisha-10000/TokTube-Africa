@@ -115,10 +115,34 @@
     }
     .tok-caption {
       font-size: 13px;
-      line-height: 1.4;
+      line-height: 1.45;
       color: #eee;
       margin-bottom: 6px;
       pointer-events: all;
+      word-break: break-word;
+    }
+    .tok-caption-text {
+      display: inline;
+    }
+    .tok-more-btn {
+      display: inline-block;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      margin-left: 5px;
+      padding: 1px 7px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 11px;
+      letter-spacing: 0.2px;
+      transition: background 0.15s, color 0.15s, transform 0.15s;
+      vertical-align: baseline;
+      user-select: none;
+    }
+    .tok-more-btn:hover {
+      background: var(--tt-pink);
+      color: #fff;
+      transform: scale(1.05);
     }
     .tok-translate-btn {
       font-size: 11px;

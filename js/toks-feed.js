@@ -35,6 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const isPhoto = reel.isPhotoSlide && Array.isArray(reel.images) && reel.images.length > 0;
       const isReposted = storage.isReposted ? storage.isReposted(reel.id) : false;
 
+      // Truncate long descriptions with 'more' toggle to keep screen clean
+      const fullDesc = (reel.caption && reel.caption !== reel.title)
+        ? `${reel.title} — ${reel.caption}`
+        : (reel.title || reel.caption || '');
+      const isLong = fullDesc.length > 55;
+      const shortDesc = isLong ? (fullDesc.substring(0, 52).replace(/\s+\S*$/, '') + '...') : fullDesc;
+
       let mediaMarkup = '';
       if (isPhoto) {
         mediaMarkup = `
@@ -95,8 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${isPhoto ? '<span class="badge" style="background:#06b6d4;color:#000;font-size:10px;padding:2px 6px;font-weight:800;">Photo Slides</span>' : ''}
                 </div>
               </div>
-              <p class="tok-caption" id="caption-${reel.id}">${reel.title}</p>
-              <div class="tok-translate-btn" onclick="event.stopPropagation(); window.translateCaption('${reel.id}', '${reel.title.replace(/'/g, "\\'")}')">
+              <p class="tok-caption" id="caption-${reel.id}">
+                <span class="tok-caption-text" id="caption-text-${reel.id}">${shortDesc}</span>
+                ${isLong ? `<span class="tok-more-btn" id="caption-toggle-${reel.id}" onclick="event.stopPropagation(); window.toggleTokCaption('${reel.id}')">more</span>` : ''}
+              </p>
+              <div class="tok-translate-btn" onclick="event.stopPropagation(); window.translateCaption('${reel.id}')">
                 🌍 Translate caption
               </div>
               <div class="tok-music-row">
@@ -422,11 +432,53 @@ document.addEventListener('DOMContentLoaded', () => {
     tokShell.showToast(nowFollowing ? 'Following creator! 🌟' : 'Unfollowed creator');
   };
 
-  window.translateCaption = function(id, text) {
-    const el = document.getElementById(`caption-${id}`);
-    if (el) {
+  // Caption "more / less" toggle handler
+  const captionExpandedStates = {};
+
+  window.toggleTokCaption = function(reelId) {
+    if (window.soundFX && soundFX.playSwitchSound) soundFX.playSwitchSound();
+    const reel = reels.find(r => r.id === reelId);
+    if (!reel) return;
+
+    const isExpanded = !captionExpandedStates[reelId];
+    captionExpandedStates[reelId] = isExpanded;
+
+    const textEl = document.getElementById(`caption-text-${reelId}`);
+    const toggleBtn = document.getElementById(`caption-toggle-${reelId}`);
+    if (!textEl || !toggleBtn) return;
+
+    const fullDesc = (reel.caption && reel.caption !== reel.title)
+      ? `${reel.title} — ${reel.caption}`
+      : (reel.title || reel.caption || '');
+
+    if (isExpanded) {
+      // Show full text and change button to "less"
+      textEl.textContent = fullDesc;
+      toggleBtn.textContent = 'less';
+    } else {
+      // Re-shorten text and change button to "more"
+      const shortDesc = fullDesc.length > 55 ? (fullDesc.substring(0, 52).replace(/\s+\S*$/, '') + '...') : fullDesc;
+      textEl.textContent = shortDesc;
+      toggleBtn.textContent = 'more';
+    }
+  };
+
+  window.translateCaption = function(id) {
+    const textEl = document.getElementById(`caption-text-${id}`) || document.getElementById(`caption-${id}`);
+    if (textEl) {
       soundFX.playNotificationSound();
-      el.textContent = i18n.translateContent(text);
+      const reel = reels.find(r => r.id === id);
+      const isExpanded = !!captionExpandedStates[id];
+      const fullDesc = (reel && reel.caption && reel.caption !== reel.title)
+        ? `${reel.title} — ${reel.caption}`
+        : (reel?.title || textEl.textContent);
+
+      if (isExpanded) {
+        textEl.textContent = i18n.translateContent(fullDesc);
+      } else {
+        const translated = i18n.translateContent(fullDesc);
+        textEl.textContent = translated.length > 55 ? (translated.substring(0, 52).replace(/\s+\S*$/, '') + '...') : translated;
+      }
       tokShell.showToast(i18n.t('translated_by'));
     }
   };
