@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // My statuses from localStorage
   let myStatuses = [];
-  try { myStatuses = JSON.parse(localStorage.getItem('toktube_my_statuses')) || []; } catch(e){}
+  try { myStatuses = JSON.parse(localStorage.getItem('wave_my_statuses')) || []; } catch(e){}
 
   const statusMap = {};
   sampleStatuses.forEach(s => statusMap[s.id] = s);
@@ -536,13 +536,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let ms = [];
-    try { ms = JSON.parse(localStorage.getItem('toktube_my_statuses')) || []; } catch(e){}
+    try { ms = JSON.parse(localStorage.getItem('wave_my_statuses')) || []; } catch(e){}
     ms.unshift(item);
     try {
-      localStorage.setItem('toktube_my_statuses', JSON.stringify(ms.slice(0, 10)));
+      localStorage.setItem('wave_my_statuses', JSON.stringify(ms.slice(0, 10)));
     } catch(err) {
       console.warn('Storage quota safeguard:', err);
-      localStorage.setItem('toktube_my_statuses', JSON.stringify(ms.slice(0, 3)));
+      localStorage.setItem('wave_my_statuses', JSON.stringify(ms.slice(0, 3)));
     }
     myStatuses = ms.slice(0, 10);
     document.getElementById('cs-modal').classList.remove('open');

@@ -1,5 +1,5 @@
-/**
- * TokTube - Initial Mock Dataset & Database Seed Fixtures
+﻿/**
+ * wave - Initial Mock Dataset & Database Seed Fixtures
  * Long-form (YouTube 16:9) and vertical reels (TikTok 9:16)
  * with working video streams, notifications, sounds, and comments.
  */
@@ -265,7 +265,7 @@ export const INITIAL_DATA = {
   tiktokReels: [
     {
       id: "tok-1",
-      title: "Fastest way to center anything in modern CSS ✨ #css #webdev #frontend #toktube",
+      title: "Fastest way to center anything in modern CSS ✨ #css #webdev #frontend #wave",
       caption: "Stop using margins in 2026! Just use display: grid and place-content: center. Clean, bulletproof, and 100% responsive.",
       soundTitle: "Original Sound - DevHacks Beats 🎵",
       musicTitle: "Original Sound - DevHacks Beats 🎵",

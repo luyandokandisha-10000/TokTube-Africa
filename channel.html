@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -456,7 +456,7 @@
       <span>←</span>
       <span>Back</span>
     </a>
-    <span class="brand-title">TokTube Africa</span>
+    <span class="brand-title">wave.africa</span>
     <div style="width: 70px;"></div>
   </header>
 
@@ -775,7 +775,7 @@
             btnConfirmSponsor.disabled = true;
             btnConfirmSponsor.textContent = 'Processing MoMo Request...';
 
-            const backendBase = window.TOKTUBE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '');
+            const backendBase = window.wave_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '');
 
             try {
               const resp = await fetch(`${backendBase}/api/sponsor`, {

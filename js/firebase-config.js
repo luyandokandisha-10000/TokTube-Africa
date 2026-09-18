@@ -1,5 +1,5 @@
-﻿/**
- * TokTube Africa - Firebase Cloud Integration
+/**
+ * wave.africa - Firebase Cloud Integration
  * Powers real cross-device authentication (Email/Password + Google Sign-In)
  * and Cloud Firestore synchronization for shared user profiles, friends & creators.
  */

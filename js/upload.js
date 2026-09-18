@@ -1,5 +1,5 @@
-/**
- * TokTube - Creator Studio Upload Modal
+﻿/**
+ * wave - Creator Studio Upload Modal
  * Allows creators to upload local videos or select sample presets,
  * configure formats (Vertical Tok 9:16 vs Horizontal Tube 16:9),
  * add titles/captions/tags, preview in real-time, and publish.
@@ -151,7 +151,7 @@ export class CreatorStudio {
 
   handlePublish() {
     const title = this.titleInput.value.trim() || 'My New Video';
-    const desc = this.descInput.value.trim() || 'Uploaded with TokTube Creator Studio!';
+    const desc = this.descInput.value.trim() || 'Uploaded with wave Creator Studio!';
     const user = storage.getCurrentUser();
     const category = this.categorySelect ? this.categorySelect.value : 'Tech';
     const sound = (this.soundInput ? this.soundInput.value.trim() : '') || 'Original Sound - ' + user.name;

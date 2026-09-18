@@ -1,5 +1,5 @@
-/**
- * TokTube - TikTok Feed Controller
+﻿/**
+ * wave - TikTok Feed Controller
  * Features: Vertical snap scrolling, IntersectionObserver autoplay,
  * Mute/Unmute audio toggle button, Interactive scrubber timeline on reels,
  * Clickable spinning vinyl sound details, double-tap heart burst with audio pop,

@@ -1,5 +1,5 @@
-/**
- * TokTube - Storage & Database Manager
+﻿/**
+ * wave - Storage & Database Manager
  * Bridges instantaneous in-memory caching and LocalStorage
  * with the underlying persistent IndexedDB relational object store.
  */
@@ -8,15 +8,15 @@ import { INITIAL_DATA } from './data.js';
 import { db } from './db.js';
 
 const STORAGE_KEYS = {
-  YT_VIDEOS: 'toktube_yt_videos',
-  TOK_REELS: 'toktube_tok_reels',
-  LIKED_VIDEOS: 'toktube_liked_video_ids',
-  DISLIKED_VIDEOS: 'toktube_disliked_video_ids',
-  BOOKMARKED_VIDEOS: 'toktube_bookmarked_ids',
-  SUBSCRIBED_CHANNELS: 'toktube_subscribed_channel_ids',
-  WATCH_HISTORY: 'toktube_history_video_ids',
-  USER_PROFILE: 'toktube_current_user',
-  NOTIFICATIONS: 'toktube_notifications'
+  YT_VIDEOS: 'wave_yt_videos',
+  TOK_REELS: 'wave_tok_reels',
+  LIKED_VIDEOS: 'wave_liked_video_ids',
+  DISLIKED_VIDEOS: 'wave_disliked_video_ids',
+  BOOKMARKED_VIDEOS: 'wave_bookmarked_ids',
+  SUBSCRIBED_CHANNELS: 'wave_subscribed_channel_ids',
+  WATCH_HISTORY: 'wave_history_video_ids',
+  USER_PROFILE: 'wave_current_user',
+  NOTIFICATIONS: 'wave_notifications'
 };
 
 export class TokStorage {
@@ -28,12 +28,12 @@ export class TokStorage {
   init() {
     // Version stamp — bump this whenever sample data changes structurally
     const DATA_VERSION = '2.1';
-    const storedVersion = localStorage.getItem('toktube_data_version');
+    const storedVersion = localStorage.getItem('wave_data_version');
     if (storedVersion !== DATA_VERSION) {
       // Refresh sample data (user-generated content like comments/likes is preserved)
       localStorage.setItem(STORAGE_KEYS.YT_VIDEOS, JSON.stringify(INITIAL_DATA.youtubeVideos));
       localStorage.setItem(STORAGE_KEYS.TOK_REELS, JSON.stringify(INITIAL_DATA.tiktokReels));
-      localStorage.setItem('toktube_data_version', DATA_VERSION);
+      localStorage.setItem('wave_data_version', DATA_VERSION);
     }
     if (!localStorage.getItem(STORAGE_KEYS.YT_VIDEOS)) {
       localStorage.setItem(STORAGE_KEYS.YT_VIDEOS, JSON.stringify(INITIAL_DATA.youtubeVideos));
@@ -72,11 +72,11 @@ export class TokStorage {
       }));
     }
     // Friend system storage initialization
-    if (!localStorage.getItem('toktube_friend_requests')) {
-      localStorage.setItem('toktube_friend_requests', JSON.stringify([]));
+    if (!localStorage.getItem('wave_friend_requests')) {
+      localStorage.setItem('wave_friend_requests', JSON.stringify([]));
     }
-    if (!localStorage.getItem('toktube_friends')) {
-      localStorage.setItem('toktube_friends', JSON.stringify([]));
+    if (!localStorage.getItem('wave_friends')) {
+      localStorage.setItem('wave_friends', JSON.stringify([]));
     }
   }
 
@@ -301,12 +301,12 @@ export class TokStorage {
   // ------------------------------------------------------------
   // Retrieve pending friend requests
   getFriendRequests() {
-    try { return JSON.parse(localStorage.getItem('toktube_friend_requests')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_friend_requests')) || []; } catch { return []; }
   }
 
   // Retrieve friends list
   getFriendsList() {
-    try { return JSON.parse(localStorage.getItem('toktube_friends')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_friends')) || []; } catch { return []; }
   }
 
   // Check friendship between two users
@@ -321,7 +321,7 @@ export class TokStorage {
     if (requests.find(r => r.senderId === senderId && r.targetId === targetId && r.status === 'pending')) { return false; }
     const newReq = { id: 'req-' + Date.now(), senderId, targetId, timestamp: Date.now(), status: 'pending' };
     requests.push(newReq);
-    localStorage.setItem('toktube_friend_requests', JSON.stringify(requests));
+    localStorage.setItem('wave_friend_requests', JSON.stringify(requests));
     return true;
   }
 
@@ -344,9 +344,9 @@ export class TokStorage {
     const friends = this.getFriendsList();
     friends.push({ userId: req.senderId, friendId: req.targetId });
     friends.push({ userId: req.targetId, friendId: req.senderId });
-    localStorage.setItem('toktube_friends', JSON.stringify(friends));
+    localStorage.setItem('wave_friends', JSON.stringify(friends));
     requests.splice(idx, 1);
-    localStorage.setItem('toktube_friend_requests', JSON.stringify(requests));
+    localStorage.setItem('wave_friend_requests', JSON.stringify(requests));
     return true;
   }
 
@@ -356,7 +356,7 @@ export class TokStorage {
     const idx = requests.findIndex(r => r.id === requestId && r.status === 'pending');
     if (idx === -1) return false;
     requests.splice(idx, 1);
-    localStorage.setItem('toktube_friend_requests', JSON.stringify(requests));
+    localStorage.setItem('wave_friend_requests', JSON.stringify(requests));
     return true;
   }
   }
@@ -473,25 +473,25 @@ export class TokStorage {
     // Broadcast State Persistence
     saveBroadcastState(stateObj) {
       try {
-        localStorage.setItem('toktube_broadcast_state', JSON.stringify(stateObj));
+        localStorage.setItem('wave_broadcast_state', JSON.stringify(stateObj));
       } catch (e) { console.error('Failed to save broadcast state', e); }
     }
 
     getBroadcastState() {
       try {
-        return JSON.parse(localStorage.getItem('toktube_broadcast_state')) || { isLive: false, label: 'Go Live' };
+        return JSON.parse(localStorage.getItem('wave_broadcast_state')) || { isLive: false, label: 'Go Live' };
       } catch (e) { console.error('Failed to get broadcast state', e); return { isLive: false, label: 'Go Live' }; }
     }
 
     // Simple Auth Helpers
     addUser(userObj) {
-      const users = JSON.parse(localStorage.getItem('toktube_users') || '[]');
+      const users = JSON.parse(localStorage.getItem('wave_users') || '[]');
       users.push(userObj);
-      localStorage.setItem('toktube_users', JSON.stringify(users));
+      localStorage.setItem('wave_users', JSON.stringify(users));
     }
 
     getUser(username) {
-      const users = JSON.parse(localStorage.getItem('toktube_users') || '[]');
+      const users = JSON.parse(localStorage.getItem('wave_users') || '[]');
       return users.find(u => u.id === username || u.name === username) || null;
     }
 
@@ -553,7 +553,7 @@ export class TokStorage {
   // Repost methods (TikTok-style repost support)
   getReposts() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+      return JSON.parse(localStorage.getItem('wave_reposts') || '[]');
     } catch {
       return [];
     }
@@ -585,14 +585,14 @@ export class TokStorage {
     } else {
       list.unshift(repostObj);
     }
-    localStorage.setItem('toktube_reposts', JSON.stringify(list));
+    localStorage.setItem('wave_reposts', JSON.stringify(list));
     return repostObj;
   }
 
   removeRepost(id) {
     let list = this.getReposts();
     list = list.filter(item => (typeof item === 'string' ? item !== id : item.id !== id));
-    localStorage.setItem('toktube_reposts', JSON.stringify(list));
+    localStorage.setItem('wave_reposts', JSON.stringify(list));
     return list;
   }
 
@@ -621,22 +621,22 @@ export class TokStorage {
 
   // ─── Repost helpers ───────────────────────────────────────────────────────
   isReposted(reelId) {
-    const list = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    const list = JSON.parse(localStorage.getItem('wave_reposts') || '[]');
     return list.includes(reelId);
   }
 
   addRepost(reelId) {
-    const list = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    const list = JSON.parse(localStorage.getItem('wave_reposts') || '[]');
     if (!list.includes(reelId)) {
       list.push(reelId);
-      localStorage.setItem('toktube_reposts', JSON.stringify(list));
+      localStorage.setItem('wave_reposts', JSON.stringify(list));
     }
   }
 
   removeRepost(reelId) {
-    const list = JSON.parse(localStorage.getItem('toktube_reposts') || '[]');
+    const list = JSON.parse(localStorage.getItem('wave_reposts') || '[]');
     const updated = list.filter(id => id !== reelId);
-    localStorage.setItem('toktube_reposts', JSON.stringify(updated));
+    localStorage.setItem('wave_reposts', JSON.stringify(updated));
   }
 }
 

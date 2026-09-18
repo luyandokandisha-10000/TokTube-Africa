@@ -1,5 +1,5 @@
-/**
- * TokTube - Web Audio API Micro-Interactions Sound Synthesizer
+﻿/**
+ * wave - Web Audio API Micro-Interactions Sound Synthesizer
  * Synthesizes clean, responsive audio cues directly in the browser
  * with zero external MP3 file dependencies.
  */
@@ -7,7 +7,7 @@
 class SoundEffects {
   constructor() {
     this.ctx = null;
-    this.enabled = localStorage.getItem('toktube_sound_fx') !== 'false'; // default true
+    this.enabled = localStorage.getItem('wave_sound_fx') !== 'false'; // default true
   }
 
   initContext() {
@@ -24,7 +24,7 @@ class SoundEffects {
 
   toggleSound() {
     this.enabled = !this.enabled;
-    localStorage.setItem('toktube_sound_fx', this.enabled.toString());
+    localStorage.setItem('wave_sound_fx', this.enabled.toString());
     if (this.enabled) {
       this.playNotificationSound();
     }

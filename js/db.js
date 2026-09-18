@@ -1,12 +1,12 @@
-/**
- * TokTube - IndexedDB Database Engine (TokDatabase)
+﻿/**
+ * wave - IndexedDB Database Engine (TokDatabase)
  * A true relational/object-store browser database providing structured persistence,
  * indexing, transactions, and JSON backup/restore.
  */
 
 import { INITIAL_DATA } from './data.js';
 
-const DB_NAME = 'TokTubeDB';
+const DB_NAME = 'waveDB';
 const DB_VERSION = 1;
 
 export class TokDatabase {

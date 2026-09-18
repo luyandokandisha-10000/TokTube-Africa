@@ -1,5 +1,5 @@
 /**
- * TokTube Africa - Universal Core Architecture & Shell Coordinator
+ * wave.africa - Universal Core Architecture & Shell Coordinator
  * Shared across all pages:
  * 1. Pan-African Data & Educational Catalog
  * 2. 9-Language African Translation Engine (i18n)
@@ -491,13 +491,13 @@ const TRANSLATIONS = {
 
 class TranslationEngine {
   constructor() {
-    this.currentLang = localStorage.getItem('toktube_lang') || 'en';
+    this.currentLang = localStorage.getItem('wave_lang') || 'en';
   }
 
   setLanguage(langCode) {
     if (!TRANSLATIONS[langCode]) return;
     this.currentLang = langCode;
-    localStorage.setItem('toktube_lang', langCode);
+    localStorage.setItem('wave_lang', langCode);
     this.applyTranslations();
     const label = document.getElementById('current-lang-label');
     if (label) {
@@ -1030,7 +1030,7 @@ const INITIAL_DATA = {
 class SoundFX {
   constructor() {
     this.ctx = null;
-    this.enabled = localStorage.getItem('toktube_sound_fx') !== 'false';
+    this.enabled = localStorage.getItem('wave_sound_fx') !== 'false';
   }
 
   initContext() {
@@ -1044,7 +1044,7 @@ class SoundFX {
 
   toggleSound() {
     this.enabled = !this.enabled;
-    localStorage.setItem('toktube_sound_fx', this.enabled.toString());
+    localStorage.setItem('wave_sound_fx', this.enabled.toString());
     const btns = document.querySelectorAll('.btn-sound-fx');
     btns.forEach(b => {
       b.classList.toggle('active', this.enabled);
@@ -1142,7 +1142,7 @@ const soundFX = new SoundFX();
 class StorageManager {
   getYoutubeVideos() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_videos')) || INITIAL_DATA.youtubeVideos;
+      return JSON.parse(localStorage.getItem('wave_videos')) || INITIAL_DATA.youtubeVideos;
     } catch {
       return INITIAL_DATA.youtubeVideos;
     }
@@ -1154,7 +1154,7 @@ class StorageManager {
 
   getVideoComments(videoId) {
     try {
-      const stored = localStorage.getItem(`toktube_tube_comments_${videoId}`);
+      const stored = localStorage.getItem(`wave_tube_comments_${videoId}`);
       if (stored) return JSON.parse(stored);
     } catch {}
     const v = this.getYoutubeVideoById(videoId);
@@ -1165,14 +1165,14 @@ class StorageManager {
     const comments = this.getVideoComments(videoId);
     comments.unshift(comment);
     try {
-      localStorage.setItem(`toktube_tube_comments_${videoId}`, JSON.stringify(comments));
+      localStorage.setItem(`wave_tube_comments_${videoId}`, JSON.stringify(comments));
     } catch {}
     return comments;
   }
 
   getTiktokReels() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_reels')) || INITIAL_DATA.tiktokReels;
+      return JSON.parse(localStorage.getItem('wave_reels')) || INITIAL_DATA.tiktokReels;
     } catch {
       return INITIAL_DATA.tiktokReels;
     }
@@ -1184,7 +1184,7 @@ class StorageManager {
 
   getCreators() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_creators')) || INITIAL_DATA.creators;
+      return JSON.parse(localStorage.getItem('wave_creators')) || INITIAL_DATA.creators;
     } catch {
       return INITIAL_DATA.creators;
     }
@@ -1233,7 +1233,7 @@ class StorageManager {
 
   getConversations() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_conversations')) || INITIAL_DATA.conversations;
+      return JSON.parse(localStorage.getItem('wave_conversations')) || INITIAL_DATA.conversations;
     } catch {
       return INITIAL_DATA.conversations;
     }
@@ -1263,13 +1263,13 @@ class StorageManager {
     conv.messages.push(newMsg);
     conv.lastMessage = text;
     conv.time = "Just now";
-    localStorage.setItem('toktube_conversations', JSON.stringify(convs));
+    localStorage.setItem('wave_conversations', JSON.stringify(convs));
     return newMsg;
   }
 
   isUserBlocked(userId) {
     try {
-      const list = JSON.parse(localStorage.getItem('toktube_blocked_users')) || [];
+      const list = JSON.parse(localStorage.getItem('wave_blocked_users')) || [];
       return list.includes(userId);
     } catch {
       return false;
@@ -1279,7 +1279,7 @@ class StorageManager {
   toggleBlockUser(userId) {
     let list = [];
     try {
-      list = JSON.parse(localStorage.getItem('toktube_blocked_users')) || [];
+      list = JSON.parse(localStorage.getItem('wave_blocked_users')) || [];
     } catch {}
     const idx = list.indexOf(userId);
     let nowBlocked = false;
@@ -1290,12 +1290,12 @@ class StorageManager {
       list.push(userId);
       nowBlocked = true;
     }
-    localStorage.setItem('toktube_blocked_users', JSON.stringify(list));
+    localStorage.setItem('wave_blocked_users', JSON.stringify(list));
     return nowBlocked;
   }
 
   getLikedIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_liked_ids')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_liked_ids')) || []; } catch { return []; }
   }
 
   isLiked(id) {
@@ -1313,12 +1313,12 @@ class StorageManager {
       liked.push(id);
       nowLiked = true;
     }
-    localStorage.setItem('toktube_liked_ids', JSON.stringify(liked));
+    localStorage.setItem('wave_liked_ids', JSON.stringify(liked));
     return nowLiked;
   }
 
   getSubscribedCreatorIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_subscriptions')) || ['ch-amina']; } catch { return ['ch-amina']; }
+    try { return JSON.parse(localStorage.getItem('wave_subscriptions')) || ['ch-amina']; } catch { return ['ch-amina']; }
   }
 
   isSubscribed(creatorId) {
@@ -1336,26 +1336,26 @@ class StorageManager {
       subs.push(creatorId);
       nowSub = true;
     }
-    localStorage.setItem('toktube_subscriptions', JSON.stringify(subs));
+    localStorage.setItem('wave_subscriptions', JSON.stringify(subs));
     return nowSub;
   }
 
   getHistoryIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_history')) || ['tube-1', 'tube-2']; } catch { return ['tube-1', 'tube-2']; }
+    try { return JSON.parse(localStorage.getItem('wave_history')) || ['tube-1', 'tube-2']; } catch { return ['tube-1', 'tube-2']; }
   }
 
   addToHistory(id) {
     const hist = this.getHistoryIds().filter(x => x !== id);
     hist.unshift(id);
-    localStorage.setItem('toktube_history', JSON.stringify(hist.slice(0, 50)));
+    localStorage.setItem('wave_history', JSON.stringify(hist.slice(0, 50)));
   }
 
   clearHistory() {
-    localStorage.setItem('toktube_history', JSON.stringify([]));
+    localStorage.setItem('wave_history', JSON.stringify([]));
   }
 
   getOfflineDownloads() {
-    try { return JSON.parse(localStorage.getItem('toktube_offline_downloads')) || ['tube-1']; } catch { return ['tube-1']; }
+    try { return JSON.parse(localStorage.getItem('wave_offline_downloads')) || ['tube-1']; } catch { return ['tube-1']; }
   }
 
   isDownloaded(id) {
@@ -1373,34 +1373,34 @@ class StorageManager {
       list.push(id);
       nowDownloaded = true;
     }
-    localStorage.setItem('toktube_offline_downloads', JSON.stringify(list));
+    localStorage.setItem('wave_offline_downloads', JSON.stringify(list));
     return nowDownloaded;
   }
 
   isEduBoostActive() {
-    return localStorage.getItem('toktube_eduboost_active') !== 'false';
+    return localStorage.getItem('wave_eduboost_active') !== 'false';
   }
 
   toggleEduBoost() {
     const active = !this.isEduBoostActive();
-    localStorage.setItem('toktube_eduboost_active', active.toString());
+    localStorage.setItem('wave_eduboost_active', active.toString());
     return active;
   }
 
   getEduStreak() {
-    return parseInt(localStorage.getItem('toktube_edu_streak') || '4', 10);
+    return parseInt(localStorage.getItem('wave_edu_streak') || '4', 10);
   }
 
   incrementEduStreak() {
     const current = this.getEduStreak();
     const next = current + 1;
-    localStorage.setItem('toktube_edu_streak', next.toString());
+    localStorage.setItem('wave_edu_streak', next.toString());
     return next;
   }
 
   getFeedbackList() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_feedback')) || INITIAL_DATA.initialFeedback;
+      return JSON.parse(localStorage.getItem('wave_feedback')) || INITIAL_DATA.initialFeedback;
     } catch {
       return INITIAL_DATA.initialFeedback;
     }
@@ -1409,13 +1409,13 @@ class StorageManager {
   addFeedback(item) {
     const list = this.getFeedbackList();
     list.unshift(item);
-    localStorage.setItem('toktube_feedback', JSON.stringify(list));
+    localStorage.setItem('wave_feedback', JSON.stringify(list));
   }
 
   getUserProfile() {
     try {
-      const sessionUser = JSON.parse(localStorage.getItem('toktube_session') || 'null');
-      const savedProfile = JSON.parse(localStorage.getItem('toktube_user_profile') || 'null');
+      const sessionUser = JSON.parse(localStorage.getItem('wave_session') || 'null');
+      const savedProfile = JSON.parse(localStorage.getItem('wave_user_profile') || 'null');
       if (sessionUser && (sessionUser.email || sessionUser.displayName)) {
         const name = sessionUser.displayName || sessionUser.username || (savedProfile && savedProfile.name) || "PulseCreator";
         const email = sessionUser.email || (savedProfile && savedProfile.email) || "";
@@ -1431,7 +1431,7 @@ class StorageManager {
       }
       return savedProfile || {
         name: "PulseCreator",
-        email: "pulse@toktube.africa",
+        email: "pulse@wave.africa",
         handle: "@pulsecreator",
         bio: "Full-stack creator combining TikTok shorts & YouTube deep dives in Africa!",
         avatarLetter: "P",
@@ -1440,7 +1440,7 @@ class StorageManager {
     } catch {
       return {
         name: "PulseCreator",
-        email: "pulse@toktube.africa",
+        email: "pulse@wave.africa",
         handle: "@pulsecreator",
         bio: "Full-stack creator combining TikTok shorts & YouTube deep dives in Africa!",
         avatarLetter: "P",
@@ -1453,7 +1453,7 @@ class StorageManager {
   saveVideoBlob(id, file) {
     return new Promise((resolve) => {
       try {
-        const req = indexedDB.open('toktube_media_db', 1);
+        const req = indexedDB.open('wave_media_db', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('videos')) {
@@ -1478,7 +1478,7 @@ class StorageManager {
   getVideoBlob(id) {
     return new Promise((resolve) => {
       try {
-        const req = indexedDB.open('toktube_media_db', 1);
+        const req = indexedDB.open('wave_media_db', 1);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
           if (!db.objectStoreNames.contains('videos')) {
@@ -1507,27 +1507,27 @@ class StorageManager {
   }
 
   saveUserProfile(profile) {
-    localStorage.setItem('toktube_user_profile', JSON.stringify(profile));
+    localStorage.setItem('wave_user_profile', JSON.stringify(profile));
   }
 
   addNewVideo(video) {
     const videos = this.getYoutubeVideos();
     videos.unshift(video);
-    localStorage.setItem('toktube_videos', JSON.stringify(videos));
+    localStorage.setItem('wave_videos', JSON.stringify(videos));
   }
 
   addNewReel(reel) {
     const reels = this.getTiktokReels();
     reels.unshift(reel);
-    localStorage.setItem('toktube_reels', JSON.stringify(reels));
+    localStorage.setItem('wave_reels', JSON.stringify(reels));
   }
 
   getAccountMode() {
-    return localStorage.getItem('toktube_account_mode') || 'standard';
+    return localStorage.getItem('wave_account_mode') || 'standard';
   }
 
   setAccountMode(mode) {
-    localStorage.setItem('toktube_account_mode', mode);
+    localStorage.setItem('wave_account_mode', mode);
   }
 
   isKidMode() {
@@ -1537,13 +1537,13 @@ class StorageManager {
   addNewLiveStream(stream) {
     const streams = this.getLiveStreams();
     streams.unshift(stream);
-    localStorage.setItem('toktube_live_streams', JSON.stringify(streams));
+    localStorage.setItem('wave_live_streams', JSON.stringify(streams));
     return stream;
   }
 
   getLiveStreams() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_live_streams')) || INITIAL_DATA.liveStreams;
+      return JSON.parse(localStorage.getItem('wave_live_streams')) || INITIAL_DATA.liveStreams;
     } catch {
       return INITIAL_DATA.liveStreams;
     }
@@ -1555,7 +1555,7 @@ class StorageManager {
 
   getNotifications() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_notifications')) || INITIAL_DATA.notifications;
+      return JSON.parse(localStorage.getItem('wave_notifications')) || INITIAL_DATA.notifications;
     } catch {
       return INITIAL_DATA.notifications;
     }
@@ -1563,12 +1563,12 @@ class StorageManager {
 
   markAllNotificationsRead() {
     const list = this.getNotifications().map(n => ({ ...n, unread: false }));
-    localStorage.setItem('toktube_notifications', JSON.stringify(list));
+    localStorage.setItem('wave_notifications', JSON.stringify(list));
     return list;
   }
 
   clearNotifications() {
-    localStorage.setItem('toktube_notifications', JSON.stringify([]));
+    localStorage.setItem('wave_notifications', JSON.stringify([]));
   }
 
   getUnreadNotifCount() {
@@ -1577,10 +1577,10 @@ class StorageManager {
 
   // ---- Friend-Request helpers (stored in localStorage) ----
   _getFriendRequests() {
-    try { return JSON.parse(localStorage.getItem('toktube_friend_requests')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_friend_requests')) || []; } catch { return []; }
   }
   _getFriendsList() {
-    try { return JSON.parse(localStorage.getItem('toktube_friends')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_friends')) || []; } catch { return []; }
   }
   areFriends(userA, userB) {
     return this._getFriendsList().some(f =>
@@ -1592,9 +1592,9 @@ class StorageManager {
     const requests = this._getFriendRequests();
     if (requests.find(r => r.senderId === senderId && r.targetId === targetId && r.status === 'pending')) return false;
     requests.push({ id: 'req-' + Date.now(), senderId, targetId, timestamp: Date.now(), status: 'pending' });
-    if (!localStorage.getItem('toktube_friend_requests')) localStorage.setItem('toktube_friend_requests', JSON.stringify([]));
-    if (!localStorage.getItem('toktube_friends')) localStorage.setItem('toktube_friends', JSON.stringify([]));
-    localStorage.setItem('toktube_friend_requests', JSON.stringify(requests));
+    if (!localStorage.getItem('wave_friend_requests')) localStorage.setItem('wave_friend_requests', JSON.stringify([]));
+    if (!localStorage.getItem('wave_friends')) localStorage.setItem('wave_friends', JSON.stringify([]));
+    localStorage.setItem('wave_friend_requests', JSON.stringify(requests));
     return true;
   }
   getPendingRequestsFor(userId) {
@@ -1611,14 +1611,14 @@ class StorageManager {
     const friends = this._getFriendsList();
     friends.push({ userId: req.senderId, friendId: req.targetId });
     friends.push({ userId: req.targetId, friendId: req.senderId });
-    localStorage.setItem('toktube_friends', JSON.stringify(friends));
+    localStorage.setItem('wave_friends', JSON.stringify(friends));
     requests.splice(idx, 1);
-    localStorage.setItem('toktube_friend_requests', JSON.stringify(requests));
+    localStorage.setItem('wave_friend_requests', JSON.stringify(requests));
     return true;
   }
   declineFriendRequest(requestId) {
     const requests = this._getFriendRequests().filter(r => r.id !== requestId);
-    localStorage.setItem('toktube_friend_requests', JSON.stringify(requests));
+    localStorage.setItem('wave_friend_requests', JSON.stringify(requests));
     return true;
   }
 
@@ -1632,7 +1632,7 @@ class StorageManager {
   // ---- Current user (for channel page) ----
   getCurrentUser() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_current_user')) || { id: 'usr-me', name: 'You', handle: '@you', avatar: '' };
+      return JSON.parse(localStorage.getItem('wave_current_user')) || { id: 'usr-me', name: 'You', handle: '@you', avatar: '' };
     } catch {
       return { id: 'usr-me', name: 'You', handle: '@you', avatar: '' };
     }
@@ -1645,8 +1645,8 @@ const storage = new StorageManager();
 // AUTH MODULE (Firebase Cloud + Local fallback)
 // ==========================================
 const auth = (() => {
-  const USERS_KEY = 'toktube_users';
-  const SESSION_KEY = 'toktube_session';
+  const USERS_KEY = 'wave_users';
+  const SESSION_KEY = 'wave_session';
 
   async function hashPassword(pw) {
     try {
@@ -1666,7 +1666,7 @@ const auth = (() => {
 
   function syncLocalUserSession(user) {
     localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-    localStorage.setItem('toktube_user_profile', JSON.stringify({
+    localStorage.setItem('wave_user_profile', JSON.stringify({
       id: user.uid || user.id || ('usr-' + Date.now()),
       name: user.displayName || 'User',
       email: user.email || '',
@@ -1712,7 +1712,7 @@ const auth = (() => {
           avatarLetter: name[0].toUpperCase(),
           avatarUrl: '',
           handle: '@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''),
-          bio: 'Pan-African creator on TokTube! 🌍',
+          bio: 'Pan-African creator on wave! 🌍',
           createdAt: new Date().toISOString()
         };
 
@@ -1776,7 +1776,7 @@ const auth = (() => {
           avatarLetter: name[0].toUpperCase(),
           avatarUrl: (profile && profile.avatarUrl) || fbUser.photoURL || '',
           handle: (profile && profile.handle) || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, '')),
-          bio: (profile && profile.bio) || 'Pan-African creator on TokTube! 🌍'
+          bio: (profile && profile.bio) || 'Pan-African creator on wave! 🌍'
         };
 
         syncLocalUserSession(userObj);
@@ -1824,7 +1824,7 @@ const auth = (() => {
         avatarLetter: name[0].toUpperCase(),
         avatarUrl: fbUser.photoURL || (profile && profile.avatarUrl) || '',
         handle: (profile && profile.handle) || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, '')),
-        bio: (profile && profile.bio) || 'Pan-African creator on TokTube! 🌍',
+        bio: (profile && profile.bio) || 'Pan-African creator on wave! 🌍',
         createdAt: (profile && profile.createdAt) || new Date().toISOString()
       };
 
@@ -1876,7 +1876,7 @@ const auth = (() => {
               avatarLetter: name[0].toUpperCase(),
               avatarUrl: (profile && profile.avatarUrl) || fbUser.photoURL || '',
               handle: (profile && profile.handle) || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, '')),
-              bio: (profile && profile.bio) || 'Pan-African creator on TokTube! 🌍'
+              bio: (profile && profile.bio) || 'Pan-African creator on wave! 🌍'
             };
             syncLocalUserSession(userObj);
           }
@@ -1891,7 +1891,7 @@ const auth = (() => {
 // ==========================================
 // 5. UNIVERSAL SHELL & NAVIGATION INJECTOR
 // ==========================================
-class TokTubeShell {
+class waveShell {
   constructor() {
     this.currentPage = document.body.dataset.page || 'home';
   }
@@ -1906,8 +1906,8 @@ class TokTubeShell {
 
     // Auto-prompt location on Toks feed if not configured yet
     setTimeout(() => {
-      const hasLocation = localStorage.getItem('toktube_user_location');
-      const skipped = sessionStorage.getItem('toktube_location_skipped');
+      const hasLocation = localStorage.getItem('wave_user_location');
+      const skipped = sessionStorage.getItem('wave_location_skipped');
       if (!hasLocation && !skipped && document.body.dataset.page === 'toks') {
         this.openLocationModal();
       }
@@ -2242,7 +2242,7 @@ class TokTubeShell {
           <textarea id="input-profile-bio" class="form-textarea" rows="2" placeholder="Tell the world about yourself...">${bio}</textarea>
         </div>
         <button id="btn-save-profile" class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="window.saveProfileChanges()">Save Changes</button>
-        <button class="btn-secondary" style="width:100%;margin-top:8px;color:#ff6b6b;border-color:rgba(255,107,107,0.3);" onclick="if(confirm('Log out of TokTube?')){auth.logout();tokShell.closeModals();location.reload();}">Log Out</button>
+        <button class="btn-secondary" style="width:100%;margin-top:8px;color:#ff6b6b;border-color:rgba(255,107,107,0.3);" onclick="if(confirm('Log out of wave?')){auth.logout();tokShell.closeModals();location.reload();}">Log Out</button>
         <div class="form-group" style="margin-top:14px;padding:14px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border-subtle);">
           <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <span>Account Mode &amp; Algorithm</span>
@@ -2264,7 +2264,7 @@ class TokTubeShell {
       <div id="profile-modal" class="modal-backdrop">
         <div class="modal-window" style="max-width: 500px;">
           <div class="modal-header">
-            <div class="modal-title">Your TokTube Profile</div>
+            <div class="modal-title">Your wave Profile</div>
             <button class="modal-close-btn" onclick="tokShell.closeModals()">✕</button>
           </div>
           <div class="modal-body">
@@ -2279,7 +2279,7 @@ class TokTubeShell {
           <div class="modal-header">
             <div style="display:flex;align-items:center;gap:10px;">
               <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--yt-red);"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 21c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 3c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
-              <div class="modal-title" id="auth-modal-title">Sign In to TokTube</div>
+              <div class="modal-title" id="auth-modal-title">Sign In to wave</div>
             </div>
             <button class="modal-close-btn" onclick="tokShell.closeModals()">✕</button>
           </div>
@@ -2382,7 +2382,7 @@ class TokTubeShell {
               </button>
             </div>
             <div style="display: flex; gap: 8px;">
-              <input type="text" id="share-link-input" class="form-input" readonly value="https://toktube.africa">
+              <input type="text" id="share-link-input" class="form-input" readonly value="https://wave.africa">
               <button id="btn-copy-share-link" class="btn-primary" style="white-space: nowrap;">Copy Link</button>
             </div>
           </div>
@@ -2452,7 +2452,7 @@ class TokTubeShell {
           </div>
           <div class="modal-body" style="gap: 16px; padding: 16px 24px 28px;">
             <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0;">
-              TokTube Africa tailors your feed to your location and what attracts your attention. Tell us where you are watching from to see more local creators!
+              wave.africa tailors your feed to your location and what attracts your attention. Tell us where you are watching from to see more local creators!
             </p>
 
             <!-- Auto-detect GPS -->
@@ -2652,7 +2652,7 @@ class TokTubeShell {
     const shareWa = document.getElementById('btn-share-whatsapp');
     if (shareWa && shareInput) {
       shareWa.addEventListener('click', () => {
-        const text = encodeURIComponent(`Check out this video on TokTube Africa: ${shareInput.value}`);
+        const text = encodeURIComponent(`Check out this video on wave.africa: ${shareInput.value}`);
         window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
       });
     }
@@ -2660,7 +2660,7 @@ class TokTubeShell {
     const shareTg = document.getElementById('btn-share-telegram');
     if (shareTg && shareInput) {
       shareTg.addEventListener('click', () => {
-        const text = encodeURIComponent('Check out this video on TokTube Africa:');
+        const text = encodeURIComponent('Check out this video on wave.africa:');
         window.open(`https://t.me/share/url?url=${encodeURIComponent(shareInput.value)}&text=${text}`, '_blank');
       });
     }
@@ -2668,7 +2668,7 @@ class TokTubeShell {
     const shareTw = document.getElementById('btn-share-twitter');
     if (shareTw && shareInput) {
       shareTw.addEventListener('click', () => {
-        const text = encodeURIComponent(`Watch on @TokTubeAfrica: ${shareInput.value}`);
+        const text = encodeURIComponent(`Watch on @waveAfrica: ${shareInput.value}`);
         window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
       });
     }
@@ -2708,7 +2708,7 @@ class TokTubeShell {
         this.closeModals();
 
         // Check if hosted or local backend URL is available
-        const backendBase = window.TOKTUBE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '');
+        const backendBase = window.wave_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '');
 
         try {
           const resp = await fetch(`${backendBase}/api/tip`, {
@@ -2838,7 +2838,7 @@ class TokTubeShell {
   }
 
   saveLocationData(data) {
-    localStorage.setItem('toktube_user_location', JSON.stringify(data));
+    localStorage.setItem('wave_user_location', JSON.stringify(data));
     try {
       if (window.storage && window.storage.updateUserProfile) {
         window.storage.updateUserProfile({
@@ -2891,7 +2891,7 @@ class TokTubeShell {
   }
 
   skipLocationSetup() {
-    sessionStorage.setItem('toktube_location_skipped', '1');
+    sessionStorage.setItem('wave_location_skipped', '1');
     this.closeModals();
     if (this._locationOptions && this._locationOptions.isPostAuth) {
       location.reload();
@@ -2913,7 +2913,7 @@ class TokTubeShell {
   }
 }
 
-const tokShell = new TokTubeShell();
+const tokShell = new waveShell();
 
 document.addEventListener('DOMContentLoaded', () => {
   tokShell.init();
@@ -2944,7 +2944,7 @@ window.switchAuthTab = function(mode) {
   if (mode === 'signin') {
     if (signinTab) { signinTab.style.background = 'var(--yt-red)'; signinTab.style.color = '#fff'; }
     if (signupTab) { signupTab.style.background = 'var(--bg-elevated)'; signupTab.style.color = 'var(--text-secondary)'; }
-    if (title) title.textContent = 'Sign In to TokTube';
+    if (title) title.textContent = 'Sign In to wave';
     if (submitBtn) submitBtn.textContent = 'Sign In';
     if (nameGroup) nameGroup.style.display = 'none';
     if (pwdInput) pwdInput.placeholder = 'Your password';
@@ -2983,7 +2983,7 @@ window.submitAuth = async function() {
     tokShell.closeModals();
 
     // Check if user has location configured; if not, ask immediately on sign-in
-    const hasLocation = localStorage.getItem('toktube_user_location');
+    const hasLocation = localStorage.getItem('wave_user_location');
     if (!hasLocation) {
       setTimeout(() => {
         tokShell.openLocationModal({ isPostAuth: true });
@@ -3023,7 +3023,7 @@ window.signInWithGoogle = async function() {
     tokShell.closeModals();
 
     // Check if user has location configured; if not, ask immediately on sign-in
-    const hasLocation = localStorage.getItem('toktube_user_location');
+    const hasLocation = localStorage.getItem('wave_user_location');
     if (!hasLocation) {
       setTimeout(() => {
         tokShell.openLocationModal({ isPostAuth: true });
@@ -3046,7 +3046,7 @@ window.saveProfileChanges = function() {
   const bioEl  = document.getElementById('input-profile-bio');
   const name = nameEl ? nameEl.value.trim() : '';
   const bio  = bioEl  ? bioEl.value.trim()  : '';
-  const SESSION_KEY = 'toktube_session';
+  const SESSION_KEY = 'wave_session';
   try {
     const user = JSON.parse(localStorage.getItem(SESSION_KEY)) || {};
     if (name) {
@@ -3100,7 +3100,7 @@ document.addEventListener('change', function(e) {
     if (avatarDiv) {
       avatarDiv.innerHTML = '<img src="' + dataUrl + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
     }
-    const SESSION_KEY = 'toktube_session';
+    const SESSION_KEY = 'wave_session';
     try {
       const user = JSON.parse(localStorage.getItem(SESSION_KEY)) || {};
       user.avatarUrl = dataUrl;
@@ -3116,7 +3116,7 @@ document.addEventListener('change', function(e) {
 // Remove avatar
 document.addEventListener('click', function(e) {
   if (e.target.id !== 'btn-remove-avatar') return;
-  const SESSION_KEY = 'toktube_session';
+  const SESSION_KEY = 'wave_session';
   try {
     const user = JSON.parse(localStorage.getItem(SESSION_KEY)) || {};
     delete user.avatarUrl;

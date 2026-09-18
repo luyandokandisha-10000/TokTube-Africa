@@ -1,7 +1,7 @@
 ﻿{
-  "name": "toktube-payment-backend",
+  "name": "wave-payment-backend",
   "version": "1.0.0",
-  "description": "MTN MoMo & Airtel Money Backend for TokTube Africa",
+  "description": "MTN MoMo & Airtel Money Backend for wave.africa",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

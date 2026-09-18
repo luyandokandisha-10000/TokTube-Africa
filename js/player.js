@@ -1,5 +1,5 @@
-/**
- * TokTube - Upgraded Custom Video Player Controller
+﻿/**
+ * wave - Upgraded Custom Video Player Controller
  * Features: PiP mode, Real MP4 file downloader, Quality selector popup,
  * Dislike toggle with counter, custom scrubber, speed controls, theater mode.
  */
@@ -319,7 +319,7 @@ export class VideoPlayer {
     const link = document.createElement('a');
     link.href = this.currentVideoData.videoUrl;
     link.target = '_blank';
-    link.download = `TokTube-${this.currentVideoData.title.replace(/[^a-zA-Z0-9]/g, '_')}.mp4`;
+    link.download = `wave-${this.currentVideoData.title.replace(/[^a-zA-Z0-9]/g, '_')}.mp4`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

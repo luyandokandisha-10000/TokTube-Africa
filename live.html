@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -382,7 +382,7 @@
 
             <div class="live-chat-messages" id="live-chat-box">
               <div class="live-msg"><span class="live-msg-author">Faraji_Tech:</span><span>Greetings from Nairobi! Great rhythms Kwame 🇰🇪🔥</span></div>
-              <div class="live-msg"><span class="live-msg-author">Adaeze_Dev:</span><span>The audio quality is crystal clear over TokTube!</span></div>
+              <div class="live-msg"><span class="live-msg-author">Adaeze_Dev:</span><span>The audio quality is crystal clear over wave!</span></div>
               <div class="live-msg"><span class="live-msg-author">Kofi_Accra:</span><span>Shoutout to everyone building African STEM tech 🇬🇭💻</span></div>
             </div>
 
@@ -432,7 +432,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:22px;">🔴</span>
-            <h2 style="font-size:18px; font-weight:800;">Go Live on TokTube</h2>
+            <h2 style="font-size:18px; font-weight:800;">Go Live on wave</h2>
           </div>
           <button type="button" id="btn-close-live-modal" style="background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
         </div>
@@ -587,13 +587,13 @@
             bannerGoLive.innerHTML = '<span class="live-pulse-dot" style="background:#fff; box-shadow:0 0 6px #fff;"></span> <span>Go Live</span>';
             bannerGoLive.style.background = 'var(--yt-red)';
             bannerGoLive.style.boxShadow = '0 2px 10px rgba(255,0,0,0.35)';
-            bannerGoLive.title = 'Go live on TokTube';
+            bannerGoLive.title = 'Go live on wave';
           }
           if (metaGoLive) {
             metaGoLive.innerHTML = '<span class="live-pulse-dot" style="margin-right:6px;"></span> Go Live';
             metaGoLive.style.background = 'var(--yt-red)';
             metaGoLive.style.boxShadow = '0 0 12px rgba(255,0,0,0.4)';
-            metaGoLive.title = 'Go live on TokTube';
+            metaGoLive.title = 'Go live on wave';
           }
           if (navGoLive) {
             navGoLive.innerHTML = '<svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg> <span>Go Live</span>';
@@ -621,11 +621,11 @@
         isUserBroadcasting = false;
         setBroadcastingUI(false);
         tokShell.showToast("Live broadcast ended ⏹️");
-        addChatMessage('System', `⏹️ Your broadcast has ended. Thanks for streaming on TokTube Africa!`, false);
+        addChatMessage('System', `⏹️ Your broadcast has ended. Thanks for streaming on wave.africa!`, false);
 
         // Remove user broadcast from live list
         const allLive = storage.getLiveStreams().filter(item => !item.isLiveUser);
-        localStorage.setItem('toktube_live_streams', JSON.stringify(allLive));
+        localStorage.setItem('wave_live_streams', JSON.stringify(allLive));
         streams = storage.getLiveStreams();
 
         const fallback = streams[0] || allLive[0];
@@ -1042,7 +1042,7 @@
           ctx.fillStyle = 'rgba(255,255,255,0.45)';
           ctx.font = '13px sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText(`TokTube Africa • 1080p60 Live Broadcast`, cx, canvas.height - 25);
+          ctx.fillText(`wave.africa • 1080p60 Live Broadcast`, cx, canvas.height - 25);
 
           broadcastCanvasAnimId = requestAnimationFrame(draw);
         }
@@ -1183,7 +1183,7 @@
           const category = (categorySelect && categorySelect.value) || 'Music & Culture';
 
           // Get creator profile or auth user safely
-          let userName = 'TokTube Creator';
+          let userName = 'wave Creator';
           let userAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
 
           try {
@@ -1197,7 +1197,7 @@
           } catch (_) {}
 
           try {
-            if (userName === 'TokTube Creator' && typeof storage !== 'undefined' && storage.getUserProfile) {
+            if (userName === 'wave Creator' && typeof storage !== 'undefined' && storage.getUserProfile) {
               const p = storage.getUserProfile();
               if (p && p.name) userName = p.name;
               if (p && p.avatarUrl) userAvatar = p.avatarUrl;
@@ -1247,7 +1247,7 @@
           // Update buttons to "⏹️ End Stream"
           setBroadcastingUI(true);
 
-          tokShell.showToast(`You are now LIVE on TokTube Africa (${selectedLiveFormat === 'short' ? 'Short Live' : 'Video Live'})! 🔴🎉`);
+          tokShell.showToast(`You are now LIVE on wave.africa (${selectedLiveFormat === 'short' ? 'Short Live' : 'Video Live'})! 🔴🎉`);
           soundFX.playSubscribeSound();
           addChatMessage('System', `🔴 ${userName} started broadcasting ${selectedLiveFormat === 'short' ? 'Short Live (9:16)' : 'Video Live (16:9)'}! Send a reaction to welcome them.`, false);
 

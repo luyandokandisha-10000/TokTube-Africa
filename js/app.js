@@ -1,5 +1,5 @@
-/**
- * TokTube - Master Application Router & Coordinator
+﻿/**
+ * wave - Master Application Router & Coordinator
  * Full interactivity: Voice search, notifications dropdown, user profile editor,
  * sound details modal, social sharing, subscribed channel filter, and sound FX.
  */
@@ -11,7 +11,7 @@ import { YouTubeFeed } from './youtube-feed.js';
 import { VideoPlayer } from './player.js';
 import { CreatorStudio } from './upload.js';
 
-class TokTubeApp {
+class waveApp {
   constructor() {
     this.currentView = 'tube'; // 'tube', 'tok', 'watch', 'library'
     this.activeWatchVideoId = null;
@@ -250,7 +250,7 @@ class TokTubeApp {
       if (twitterBtn) {
         twitterBtn.addEventListener('click', () => {
           const url = encodeURIComponent(window.location.href);
-          const text = encodeURIComponent('Check out this video on TokTube!');
+          const text = encodeURIComponent('Check out this video on wave!');
           window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
         });
       }
@@ -871,5 +871,5 @@ class TokTubeApp {
 
 // Global instantiation
 window.addEventListener('DOMContentLoaded', () => {
-  window.tokApp = new TokTubeApp();
+  window.tokApp = new waveApp();
 });

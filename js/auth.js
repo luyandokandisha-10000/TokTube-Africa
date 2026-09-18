@@ -1,4 +1,4 @@
-// auth.js – Simple client‑side authentication module for TokTube
+﻿// auth.js – Simple client‑side authentication module for wave
 // Uses storage.js helpers for user persistence and current session tracking.
 // Passwords are hashed with SHA‑256 before storage (client‑side only).
 

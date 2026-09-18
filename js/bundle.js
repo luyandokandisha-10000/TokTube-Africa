@@ -1,5 +1,5 @@
-/**
- * TokTube Africa - Consolidated All-in-One Application Bundle
+﻿/**
+ * wave.africa - Consolidated All-in-One Application Bundle
  * Includes:
  * 1. African Multi-Language Translation Engine (9 Languages)
  * 2. Education-Promoting Algorithm ("EduBoost") & Learning Streak
@@ -41,7 +41,7 @@ const TRANSLATIONS = {
     block_user: "Block User",
     unblock_user: "Unblock User",
     send: "Send",
-    online: "Online • TokTube Creator"
+    online: "Online • wave Creator"
   },
   sw: { // Kiswahili (Swahili)
     nav_home: "Mwanzo",
@@ -279,13 +279,13 @@ const TRANSLATIONS = {
 
 class TranslationEngine {
   constructor() {
-    this.currentLang = localStorage.getItem('toktube_lang') || 'en';
+    this.currentLang = localStorage.getItem('wave_lang') || 'en';
   }
 
   setLanguage(langCode) {
     if (!TRANSLATIONS[langCode]) return;
     this.currentLang = langCode;
-    localStorage.setItem('toktube_lang', langCode);
+    localStorage.setItem('wave_lang', langCode);
     this.applyTranslations();
   }
 
@@ -497,7 +497,7 @@ const INITIAL_DATA = {
       time: "10m ago",
       unread: true,
       messages: [
-        { id: "m1", sender: "ch-amina", text: "Habari! Welcome to TokTube Africa! Excited to connect.", time: "Yesterday 4:15 PM" },
+        { id: "m1", sender: "ch-amina", text: "Habari! Welcome to wave.africa! Excited to connect.", time: "Yesterday 4:15 PM" },
         { id: "m2", sender: "me", text: "Great to connect Amina! Love your robotics & solar microgrid videos.", time: "Yesterday 4:20 PM" },
         { id: "m3", sender: "ch-amina", text: "Asante sana! The new solar robotics tutorial is going live tomorrow! Check the preview.", time: "10m ago" }
       ]
@@ -720,7 +720,7 @@ const INITIAL_DATA = {
     },
     {
       id: "tok-1",
-      title: "Fastest way to center anything in modern CSS ✨ #css #webdev #frontend #toktube",
+      title: "Fastest way to center anything in modern CSS ✨ #css #webdev #frontend #wave",
       caption: "Stop using margins in 2026! Just use display: grid and place-content: center. Clean, bulletproof, and 100% responsive.",
       soundTitle: "Original Sound - DevHacks Beats 🎵",
       videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
@@ -790,7 +790,7 @@ const INITIAL_DATA = {
 class SoundEffects {
   constructor() {
     this.ctx = null;
-    this.enabled = localStorage.getItem('toktube_sound_fx') !== 'false';
+    this.enabled = localStorage.getItem('wave_sound_fx') !== 'false';
   }
 
   initContext() {
@@ -805,7 +805,7 @@ class SoundEffects {
 
   toggleSound() {
     this.enabled = !this.enabled;
-    localStorage.setItem('toktube_sound_fx', this.enabled.toString());
+    localStorage.setItem('wave_sound_fx', this.enabled.toString());
     if (this.enabled) this.playNotificationSound();
     return this.enabled;
   }
@@ -902,35 +902,35 @@ class TokStorage {
   }
 
   init() {
-    if (!localStorage.getItem('toktube_yt_videos')) {
-      localStorage.setItem('toktube_yt_videos', JSON.stringify(INITIAL_DATA.youtubeVideos));
+    if (!localStorage.getItem('wave_yt_videos')) {
+      localStorage.setItem('wave_yt_videos', JSON.stringify(INITIAL_DATA.youtubeVideos));
     }
-    if (!localStorage.getItem('toktube_tok_reels')) {
-      localStorage.setItem('toktube_tok_reels', JSON.stringify(INITIAL_DATA.tiktokReels));
+    if (!localStorage.getItem('wave_tok_reels')) {
+      localStorage.setItem('wave_tok_reels', JSON.stringify(INITIAL_DATA.tiktokReels));
     }
-    if (!localStorage.getItem('toktube_creators')) {
-      localStorage.setItem('toktube_creators', JSON.stringify(INITIAL_DATA.creators));
+    if (!localStorage.getItem('wave_creators')) {
+      localStorage.setItem('wave_creators', JSON.stringify(INITIAL_DATA.creators));
     }
-    if (!localStorage.getItem('toktube_conversations')) {
-      localStorage.setItem('toktube_conversations', JSON.stringify(INITIAL_DATA.conversations));
+    if (!localStorage.getItem('wave_conversations')) {
+      localStorage.setItem('wave_conversations', JSON.stringify(INITIAL_DATA.conversations));
     }
-    if (!localStorage.getItem('toktube_blocked_users')) {
-      localStorage.setItem('toktube_blocked_users', JSON.stringify([]));
+    if (!localStorage.getItem('wave_blocked_users')) {
+      localStorage.setItem('wave_blocked_users', JSON.stringify([]));
     }
-    if (!localStorage.getItem('toktube_feedback')) {
-      localStorage.setItem('toktube_feedback', JSON.stringify(INITIAL_DATA.initialFeedback));
+    if (!localStorage.getItem('wave_feedback')) {
+      localStorage.setItem('wave_feedback', JSON.stringify(INITIAL_DATA.initialFeedback));
     }
-    if (!localStorage.getItem('toktube_edu_streak')) {
-      localStorage.setItem('toktube_edu_streak', '4');
+    if (!localStorage.getItem('wave_edu_streak')) {
+      localStorage.setItem('wave_edu_streak', '4');
     }
-    if (!localStorage.getItem('toktube_eduboost_active')) {
-      localStorage.setItem('toktube_eduboost_active', 'true');
+    if (!localStorage.getItem('wave_eduboost_active')) {
+      localStorage.setItem('wave_eduboost_active', 'true');
     }
   }
 
   getYoutubeVideos() {
     try {
-      const vids = JSON.parse(localStorage.getItem('toktube_yt_videos')) || INITIAL_DATA.youtubeVideos;
+      const vids = JSON.parse(localStorage.getItem('wave_yt_videos')) || INITIAL_DATA.youtubeVideos;
       const blocked = this.getBlockedUserIds();
       return vids.filter(v => !blocked.includes(v.channel.id));
     } catch {
@@ -944,7 +944,7 @@ class TokStorage {
 
   getTiktokReels() {
     try {
-      const reels = JSON.parse(localStorage.getItem('toktube_tok_reels')) || INITIAL_DATA.tiktokReels;
+      const reels = JSON.parse(localStorage.getItem('wave_tok_reels')) || INITIAL_DATA.tiktokReels;
       const blocked = this.getBlockedUserIds();
       return reels.filter(r => !blocked.includes(r.channel.id));
     } catch {
@@ -958,7 +958,7 @@ class TokStorage {
 
   getCreators() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_creators')) || INITIAL_DATA.creators;
+      return JSON.parse(localStorage.getItem('wave_creators')) || INITIAL_DATA.creators;
     } catch {
       return INITIAL_DATA.creators;
     }
@@ -970,7 +970,7 @@ class TokStorage {
 
   getBlockedUserIds() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_blocked_users')) || [];
+      return JSON.parse(localStorage.getItem('wave_blocked_users')) || [];
     } catch {
       return [];
     }
@@ -991,13 +991,13 @@ class TokStorage {
       list.push(userId);
       nowBlocked = true;
     }
-    localStorage.setItem('toktube_blocked_users', JSON.stringify(list));
+    localStorage.setItem('wave_blocked_users', JSON.stringify(list));
     return nowBlocked;
   }
 
   getConversations() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_conversations')) || INITIAL_DATA.conversations;
+      return JSON.parse(localStorage.getItem('wave_conversations')) || INITIAL_DATA.conversations;
     } catch {
       return INITIAL_DATA.conversations;
     }
@@ -1018,13 +1018,13 @@ class TokStorage {
     conv.messages.push(newMsg);
     conv.lastMessage = text;
     conv.time = "Just now";
-    localStorage.setItem('toktube_conversations', JSON.stringify(convs));
+    localStorage.setItem('wave_conversations', JSON.stringify(convs));
     return newMsg;
   }
 
   getFeedbackList() {
     try {
-      return JSON.parse(localStorage.getItem('toktube_feedback')) || INITIAL_DATA.initialFeedback;
+      return JSON.parse(localStorage.getItem('wave_feedback')) || INITIAL_DATA.initialFeedback;
     } catch {
       return INITIAL_DATA.initialFeedback;
     }
@@ -1033,26 +1033,26 @@ class TokStorage {
   addFeedback(feedbackObj) {
     const list = this.getFeedbackList();
     list.unshift(feedbackObj);
-    localStorage.setItem('toktube_feedback', JSON.stringify(list));
+    localStorage.setItem('wave_feedback', JSON.stringify(list));
   }
 
   isEduBoostActive() {
-    return localStorage.getItem('toktube_eduboost_active') !== 'false';
+    return localStorage.getItem('wave_eduboost_active') !== 'false';
   }
 
   toggleEduBoost() {
     const active = !this.isEduBoostActive();
-    localStorage.setItem('toktube_eduboost_active', active.toString());
+    localStorage.setItem('wave_eduboost_active', active.toString());
     return active;
   }
 
   getEduStreak() {
-    return parseInt(localStorage.getItem('toktube_edu_streak') || '4', 10);
+    return parseInt(localStorage.getItem('wave_edu_streak') || '4', 10);
   }
 
   // Like & Bookmark operations
   getLikedIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_liked_video_ids')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_liked_video_ids')) || []; } catch { return []; }
   }
 
   isLiked(id) {
@@ -1070,12 +1070,12 @@ class TokStorage {
       liked.push(id);
       nowLiked = true;
     }
-    localStorage.setItem('toktube_liked_video_ids', JSON.stringify(liked));
+    localStorage.setItem('wave_liked_video_ids', JSON.stringify(liked));
     return nowLiked;
   }
 
   getBookmarkedIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_bookmarked_ids')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_bookmarked_ids')) || []; } catch { return []; }
   }
 
   isBookmarked(id) {
@@ -1093,12 +1093,12 @@ class TokStorage {
       list.push(id);
       nowSaved = true;
     }
-    localStorage.setItem('toktube_bookmarked_ids', JSON.stringify(list));
+    localStorage.setItem('wave_bookmarked_ids', JSON.stringify(list));
     return nowSaved;
   }
 
   getSubscribedChannelIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_subscribed_channel_ids')) || ["ch-amina"]; } catch { return ["ch-amina"]; }
+    try { return JSON.parse(localStorage.getItem('wave_subscribed_channel_ids')) || ["ch-amina"]; } catch { return ["ch-amina"]; }
   }
 
   isSubscribed(chId) {
@@ -1116,7 +1116,7 @@ class TokStorage {
       subs.push(chId);
       nowSubbed = true;
     }
-    localStorage.setItem('toktube_subscribed_channel_ids', JSON.stringify(subs));
+    localStorage.setItem('wave_subscribed_channel_ids', JSON.stringify(subs));
     return nowSubbed;
   }
 
@@ -1124,29 +1124,29 @@ class TokStorage {
     if (videoData.type === 'tok') {
       const reels = this.getTiktokReels();
       reels.unshift(videoData);
-      localStorage.setItem('toktube_tok_reels', JSON.stringify(reels));
+      localStorage.setItem('wave_tok_reels', JSON.stringify(reels));
     } else {
       const videos = this.getYoutubeVideos();
       videos.unshift(videoData);
-      localStorage.setItem('toktube_yt_videos', JSON.stringify(videos));
+      localStorage.setItem('wave_yt_videos', JSON.stringify(videos));
     }
   }
 
   addToHistory(videoId) {
     try {
-      let history = JSON.parse(localStorage.getItem('toktube_history_video_ids')) || [];
+      let history = JSON.parse(localStorage.getItem('wave_history_video_ids')) || [];
       history = history.filter(id => id !== videoId);
       history.unshift(videoId);
-      localStorage.setItem('toktube_history_video_ids', JSON.stringify(history));
+      localStorage.setItem('wave_history_video_ids', JSON.stringify(history));
     } catch {}
   }
 
   getHistoryIds() {
-    try { return JSON.parse(localStorage.getItem('toktube_history_video_ids')) || []; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('wave_history_video_ids')) || []; } catch { return []; }
   }
 
   clearHistory() {
-    localStorage.setItem('toktube_history_video_ids', JSON.stringify([]));
+    localStorage.setItem('wave_history_video_ids', JSON.stringify([]));
   }
 }
 const storage = new TokStorage();
@@ -1271,9 +1271,9 @@ class CreatorStudio {
 
   handlePublish() {
     const title = (this.titleInput ? this.titleInput.value.trim() : '') || 'African Innovation Showcase';
-    const desc = (this.descInput ? this.descInput.value.trim() : '') || 'Published on TokTube Africa! #africa #learn';
+    const desc = (this.descInput ? this.descInput.value.trim() : '') || 'Published on wave.africa! #africa #learn';
     const category = (this.categorySelect ? this.categorySelect.value : 'Education') || 'Education';
-    const sound = (this.soundInput ? this.soundInput.value.trim() : '') || 'Original Sound - TokTube Africa';
+    const sound = (this.soundInput ? this.soundInput.value.trim() : '') || 'Original Sound - wave.africa';
 
     const videoUrl = this.selectedVideoUrl || INITIAL_DATA.samplePresets[0].url;
     const thumbnail = "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80";
@@ -1673,9 +1673,9 @@ class YouTubeFeed {
 }
 
 // ==========================================
-// 8. MASTER TOKTUBE APP
+// 8. MASTER wave APP
 // ==========================================
-class TokTubeApp {
+class waveApp {
   constructor() {
     this.currentView = 'tube';
     this.activeWatchVideoId = null;
@@ -1839,7 +1839,7 @@ class TokTubeApp {
     const whatsappBtn = document.getElementById('btn-invite-whatsapp');
     if (whatsappBtn) {
       whatsappBtn.addEventListener('click', () => {
-        const text = encodeURIComponent("Join me on TokTube Africa! Watch African toks, learn STEM & chat: https://toktube.africa");
+        const text = encodeURIComponent("Join me on wave.africa! Watch African toks, learn STEM & chat: https://wave.africa");
         window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
       });
     }
@@ -1847,22 +1847,22 @@ class TokTubeApp {
     const telegramBtn = document.getElementById('btn-invite-telegram');
     if (telegramBtn) {
       telegramBtn.addEventListener('click', () => {
-        const text = encodeURIComponent("Join TokTube Africa! The Pan-African video & learning community.");
-        window.open(`https://t.me/share/url?url=https://toktube.africa&text=${text}`, '_blank');
+        const text = encodeURIComponent("Join wave.africa! The Pan-African video & learning community.");
+        window.open(`https://t.me/share/url?url=https://wave.africa&text=${text}`, '_blank');
       });
     }
 
     const smsBtn = document.getElementById('btn-invite-sms');
     if (smsBtn) {
       smsBtn.addEventListener('click', () => {
-        window.open(`sms:?body=Join%20me%20on%20TokTube%20Africa!%20https://toktube.africa`, '_blank');
+        window.open(`sms:?body=Join%20me%20on%20wave%20Africa!%20https://wave.africa`, '_blank');
       });
     }
 
     const copyInviteBtn = document.getElementById('btn-invite-copy-link');
     if (copyInviteBtn) {
       copyInviteBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText('https://toktube.africa/join?ref=user').then(() => {
+        navigator.clipboard.writeText('https://wave.africa/join?ref=user').then(() => {
           soundFX.playNotificationSound();
           this.showToast('Invite link copied to clipboard! 📋');
         });
@@ -2121,10 +2121,10 @@ class TokTubeApp {
         creatorId: creatorId,
         lastMessage: "Started new conversation",
         time: "Just now",
-        messages: [{ id: "m-" + Date.now(), sender: "me", text: "Habari! Nice to connect on TokTube Africa.", time: "Just now" }]
+        messages: [{ id: "m-" + Date.now(), sender: "me", text: "Habari! Nice to connect on wave.africa.", time: "Just now" }]
       };
       convs.unshift(conv);
-      localStorage.setItem('toktube_conversations', JSON.stringify(convs));
+      localStorage.setItem('wave_conversations', JSON.stringify(convs));
     }
     this.activeConversationId = conv.id;
     this.closeCreatorProfileModal();
@@ -2140,7 +2140,7 @@ class TokTubeApp {
       handle: "@creator",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
       banner: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200",
-      bio: "Creator on TokTube Africa! Inspiring youth across the continent 🌍✨",
+      bio: "Creator on wave.africa! Inspiring youth across the continent 🌍✨",
       followers: "120K",
       following: 54,
       likes: "1.2M",
@@ -2268,7 +2268,7 @@ class TokTubeApp {
 
         const newFeedback = {
           id: "fb-" + Date.now(),
-          author: "You (TokTube Creator)",
+          author: "You (wave Creator)",
           rating: currentRating,
           category: currentCat,
           text: text,
@@ -2315,7 +2315,7 @@ class TokTubeApp {
     container.innerHTML = `
       <div style="padding: 24px 32px; max-width: 1400px; margin: 0 auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 16px; margin-bottom: 24px;">
-          <h2 style="font-size: 24px; font-weight: 800;">📚 Your TokTube Library</h2>
+          <h2 style="font-size: 24px; font-weight: 800;">📚 Your wave Library</h2>
           <button id="btn-clear-history" class="btn-secondary" style="font-size: 13px;">Clear History</button>
         </div>
         <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">🕒 Watch History (${historyVids.length})</h3>
@@ -2380,7 +2380,7 @@ class TokTubeApp {
   openShareModal(id, title) {
     if (!this.shareModal) return;
     const linkInput = document.getElementById('share-link-input');
-    if (linkInput) linkInput.value = `https://toktube.africa/v/${id}`;
+    if (linkInput) linkInput.value = `https://wave.africa/v/${id}`;
     this.shareModal.classList.add('open');
   }
 
@@ -2394,12 +2394,12 @@ class TokTubeApp {
 }
 
 // Global initialization
-function startTokTubeApp() {
-  window.tokApp = new TokTubeApp();
+function startwaveApp() {
+  window.tokApp = new waveApp();
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', startTokTubeApp);
+  document.addEventListener('DOMContentLoaded', startwaveApp);
 } else {
-  startTokTubeApp();
+  startwaveApp();
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -66,7 +66,7 @@
                 <img id="chat-creator-avatar" src="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                 <div>
                   <h3 id="chat-creator-name" style="font-size: 15px; font-weight: 700;">Creator Name</h3>
-                  <span style="font-size: 11px; color: var(--africa-green);" data-i18n="online">Online • TokTube Creator</span>
+                  <span style="font-size: 11px; color: var(--africa-green);" data-i18n="online">Online • wave Creator</span>
                 </div>
               </div>
               <div style="display: flex; gap: 8px; align-items: center;">
@@ -141,7 +141,7 @@
       // Initial sample WhatsApp-style Groups if not in localStorage
       let groups = [];
       try {
-        groups = JSON.parse(localStorage.getItem('toktube_groups')) || [];
+        groups = JSON.parse(localStorage.getItem('wave_groups')) || [];
       } catch(e) { groups = []; }
 
       if (groups.length === 0) {
@@ -175,7 +175,7 @@
             ]
           }
         ];
-        localStorage.setItem('toktube_groups', JSON.stringify(groups));
+        localStorage.setItem('wave_groups', JSON.stringify(groups));
       }
 
       let activeConvId = conversations[0]?.id || "conv-1";
@@ -194,11 +194,11 @@
             time: "Just now",
             unread: false,
             messages: [
-              { id: "m-" + Date.now(), sender: "me", text: "Habari! Connected with you on TokTube Africa.", time: "Just now" }
+              { id: "m-" + Date.now(), sender: "me", text: "Habari! Connected with you on wave.africa.", time: "Just now" }
             ]
           };
           conversations.unshift(existing);
-          localStorage.setItem('toktube_conversations', JSON.stringify(conversations));
+          localStorage.setItem('wave_conversations', JSON.stringify(conversations));
         }
         activeConvId = existing.id;
         activeTab = 'direct';
@@ -414,7 +414,7 @@
             const conv = conversations.find(c => c.id === activeConvId);
             if (conv && !storage.isUserBlocked(conv.creatorId)) {
               const replies = [
-                "Asante sana! Appreciate the support on TokTube Africa. 🚀",
+                "Asante sana! Appreciate the support on wave.africa. 🚀",
                 "Great point! Will cover this in the upcoming video!",
                 "Habari! Let me know what you think of the open-source GitHub code.",
                 "Thank you! Africa is innovating fast 🌍💡"
@@ -428,7 +428,7 @@
               });
               conv.lastMessage = replyText;
               conv.time = "Just now";
-              localStorage.setItem('toktube_conversations', JSON.stringify(conversations));
+              localStorage.setItem('wave_conversations', JSON.stringify(conversations));
               soundFX.playNotificationSound();
               renderList();
               renderActiveChat();
@@ -448,7 +448,7 @@
             grp.messages.push(newMsg);
             grp.lastMessage = `${user.name}: ${text}`;
             grp.time = "Just now";
-            localStorage.setItem('toktube_groups', JSON.stringify(groups));
+            localStorage.setItem('wave_groups', JSON.stringify(groups));
             msgInput.value = '';
             soundFX.playNotificationSound();
             renderList();
@@ -471,7 +471,7 @@
               });
               grp.lastMessage = `${ans.author}: ${ans.text}`;
               grp.time = "Just now";
-              localStorage.setItem('toktube_groups', JSON.stringify(groups));
+              localStorage.setItem('wave_groups', JSON.stringify(groups));
               soundFX.playNotificationSound();
               renderList();
               renderActiveChat();
@@ -539,7 +539,7 @@
         };
 
         groups.unshift(newGroup);
-        localStorage.setItem('toktube_groups', JSON.stringify(groups));
+        localStorage.setItem('wave_groups', JSON.stringify(groups));
         closeCreateGroupModal();
         switchTab('groups');
         activeGroupId = newGroup.id;

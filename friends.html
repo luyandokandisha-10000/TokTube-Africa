@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -28,7 +28,7 @@
           <div class="invite-banner-card">
             <div class="invite-banner-header">
               <div>
-                <h2 style="font-size: 22px; font-weight: 800;">🚀 Connect Your Circle to TokTube Africa</h2>
+                <h2 style="font-size: 22px; font-weight: 800;">🚀 Connect Your Circle to wave.africa</h2>
                 <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
                   Share African innovation, STEM tutorials, and trending Toks with your friends across the continent.
                 </p>
@@ -64,7 +64,7 @@
                   <span>🔍 Find Friends Across Devices</span>
                   <span style="font-size:10px;background:var(--africa-green);color:#000;font-weight:800;padding:2px 6px;border-radius:4px;">LIVE CLOUD</span>
                 </h3>
-                <p style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Search for any registered TokTube creator or friend by username, display name, or handle.</p>
+                <p style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Search for any registered wave creator or friend by username, display name, or handle.</p>
               </div>
             </div>
             
@@ -249,21 +249,21 @@
 
       // Invite buttons
       document.getElementById('btn-invite-wa')?.addEventListener('click', () => {
-        const text = encodeURIComponent("Join me on TokTube Africa! The Pan-African video & learning community: https://toktube.africa");
+        const text = encodeURIComponent("Join me on wave.africa! The Pan-African video & learning community: https://wave.africa");
         window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
       });
 
       document.getElementById('btn-invite-tg')?.addEventListener('click', () => {
-        const text = encodeURIComponent("Join me on TokTube Africa! https://toktube.africa");
-        window.open(`https://t.me/share/url?url=https://toktube.africa&text=${text}`, '_blank');
+        const text = encodeURIComponent("Join me on wave.africa! https://wave.africa");
+        window.open(`https://t.me/share/url?url=https://wave.africa&text=${text}`, '_blank');
       });
 
       document.getElementById('btn-invite-sms')?.addEventListener('click', () => {
-        window.open(`sms:?body=Join%20TokTube%20Africa!%20https://toktube.africa`, '_blank');
+        window.open(`sms:?body=Join%20wave%20Africa!%20https://wave.africa`, '_blank');
       });
 
       document.getElementById('btn-invite-copy')?.addEventListener('click', () => {
-        navigator.clipboard.writeText('https://toktube.africa/join?ref=pulse').then(() => {
+        navigator.clipboard.writeText('https://wave.africa/join?ref=pulse').then(() => {
           soundFX.playNotificationSound();
           tokShell.showToast('Referral link copied to clipboard! 📋');
         });
@@ -286,7 +286,7 @@
         }
 
         searchResultsArea.style.display = 'block';
-        searchResultsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);">Searching TokTube cloud users...</div>';
+        searchResultsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text-muted);">Searching wave cloud users...</div>';
 
         let users = [];
 
@@ -310,7 +310,7 @@
 
         // Also check local storage users as backup
         try {
-          const localUsers = JSON.parse(localStorage.getItem('toktube_users') || '[]');
+          const localUsers = JSON.parse(localStorage.getItem('wave_users') || '[]');
           localUsers.forEach(lu => {
             const dName = (lu.displayName || '').toLowerCase();
             const eName = (lu.email || '').toLowerCase();
@@ -356,7 +356,7 @@
               ${avatarHtml}
               <h4 style="font-size:15px;font-weight:700;margin-bottom:2px;">${name}</h4>
               <div style="font-size:12px;color:var(--africa-gold);font-weight:600;margin-bottom:6px;">${handle}</div>
-              <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">${u.bio || 'TokTube Member'}</p>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">${u.bio || 'wave Member'}</p>
               <div style="display:flex;gap:6px;justify-content:center;">
                 <button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="tokShell.showToast('Friend request sent to ${name} ✨');this.textContent='Requested ✓';this.disabled=true;">
                   Add Friend

@@ -1,5 +1,5 @@
-/**
- * TokTube - YouTube Feed Controller
+﻿/**
+ * wave - YouTube Feed Controller
  * Features: Category filtering, Subscribed-only channel feed filtering,
  * hover preview video player, and Shorts/Toks cross-pollination shelf.
  */

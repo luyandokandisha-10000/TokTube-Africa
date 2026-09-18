@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -519,7 +519,7 @@
             time: 'Just now',
             likes: 0
           });
-          localStorage.setItem(`toktube_tube_comments_${video.id}`, JSON.stringify(comments));
+          localStorage.setItem(`wave_tube_comments_${video.id}`, JSON.stringify(comments));
           activeReplyToId = null;
           soundFX.playSubscribeSound();
           renderComments();
@@ -536,7 +536,7 @@
           } else {
             targetComment.likes = (targetComment.likes || 0) + 1;
           }
-          localStorage.setItem(`toktube_tube_comments_${video.id}`, JSON.stringify(comments));
+          localStorage.setItem(`wave_tube_comments_${video.id}`, JSON.stringify(comments));
           soundFX.playLikeSound();
           renderComments();
           tokShell.showToast('Liked comment ❤️');
@@ -560,7 +560,7 @@
           replies: []
         };
         comments.unshift(newComment);
-        localStorage.setItem(`toktube_tube_comments_${video.id}`, JSON.stringify(comments));
+        localStorage.setItem(`wave_tube_comments_${video.id}`, JSON.stringify(comments));
         commentInput.value = '';
         soundFX.playSubscribeSound();
         renderComments();

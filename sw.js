@@ -1,5 +1,5 @@
-// TokTube Africa Service Worker - v1.0
-const CACHE = 'toktube-v1';
+﻿// wave.africa Service Worker - v1.0
+const CACHE = 'wave-v1';
 const ASSETS = [
   '/',
   '/index.html',

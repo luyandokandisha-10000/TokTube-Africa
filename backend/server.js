@@ -1,5 +1,5 @@
 ﻿# backend/server.js
-// TokTube Africa - Real MTN MoMo & Airtel Money API Gateway
+// wave.africa - Real MTN MoMo & Airtel Money API Gateway
 require('dotenv').config();
 const express = require('express');
 const https = require('https');
@@ -161,7 +161,7 @@ app.post('/api/tip', async (req, res) => {
           partyId: cleanPhone
         },
         payerMessage: `Tip for ${creator}: ${message || 'Keep innovating!'}`,
-        payeeNote: `TokTube Africa creator tip for ${creator}`
+        payeeNote: `wave.africa creator tip for ${creator}`
       };
 
       const payRes = await httpsRequest(`${MTN_CONFIG.baseUrl}/collection/v1_0/requesttopay`, {
@@ -252,7 +252,7 @@ app.post('/api/sponsor', async (req, res) => {
         externalId: `spon_${Date.now()}`,
         payer: { partyIdType: 'MSISDN', partyId: cleanPhone },
         payerMessage: `Sponsorship booking for ${creator} (${packageType})`,
-        payeeNote: `TokTube Africa Sponsorship`
+        payeeNote: `wave.africa Sponsorship`
       });
     }
 
@@ -275,13 +275,13 @@ app.post('/api/sponsor', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    platform: 'TokTube Africa Payment Gateway',
+    platform: 'wave.africa Payment Gateway',
     mtnConfigured: !!MTN_CONFIG.primaryKey,
     airtelStatus: process.env.AIRTEL_MONEY_CLIENT_ID ? 'Configured' : 'Awaiting Approval'
   });
 });
 
 app.listen(port, () => {
-  console.log(`🚀 TokTube Payment Gateway listening on port ${port}`);
+  console.log(`🚀 wave Payment Gateway listening on port ${port}`);
   console.log(`✅ MTN MoMo API configured with Primary Key.`);
 });

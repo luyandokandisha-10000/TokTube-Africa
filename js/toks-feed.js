@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
   const viewport = document.getElementById('toks-viewport');
   if (!viewport) return;
 
@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const userProfile = (() => {
     try {
       const profile  = storage.getUserProfile() || {};
-      const location = JSON.parse(localStorage.getItem('toktube_user_location') || '{}');
-      const subscribed = JSON.parse(localStorage.getItem('toktube_subscribed_channel_ids') || '["ch-techcraft"]');
+      const location = JSON.parse(localStorage.getItem('wave_user_location') || '{}');
+      const subscribed = JSON.parse(localStorage.getItem('wave_subscribed_channel_ids') || '["ch-techcraft"]');
       return { ...profile, ...location, subscribedChannels: subscribed };
     } catch(e) { return {}; }
   })();
-  const likedIds      = (() => { try { return JSON.parse(localStorage.getItem('toktube_liked_video_ids') || '[]'); } catch(e) { return []; } })();
-  const watchedIds    = (() => { try { return JSON.parse(localStorage.getItem('toktube_history_video_ids') || '[]'); } catch(e) { return []; } })();
-  const bookmarkedIds = (() => { try { return JSON.parse(localStorage.getItem('toktube_bookmarked_ids') || '[]'); } catch(e) { return []; } })();
-  const repostedIds   = (() => { try { return JSON.parse(localStorage.getItem('toktube_reposts') || '[]'); } catch(e) { return []; } })();
+  const likedIds      = (() => { try { return JSON.parse(localStorage.getItem('wave_liked_video_ids') || '[]'); } catch(e) { return []; } })();
+  const watchedIds    = (() => { try { return JSON.parse(localStorage.getItem('wave_history_video_ids') || '[]'); } catch(e) { return []; } })();
+  const bookmarkedIds = (() => { try { return JSON.parse(localStorage.getItem('wave_bookmarked_ids') || '[]'); } catch(e) { return []; } })();
+  const repostedIds   = (() => { try { return JSON.parse(localStorage.getItem('wave_reposts') || '[]'); } catch(e) { return []; } })();
 
   // rankReels evaluates location + user attention signals (likes, bookmarks, reposts, history)
   const reels = (typeof window.rankReels === 'function')
@@ -425,9 +425,9 @@ document.addEventListener('DOMContentLoaded', () => {
       storage.addRepost(reelId, note);
     } else {
       let reposts = [];
-      try { reposts = JSON.parse(localStorage.getItem('toktube_reposts') || '[]'); } catch(e) {}
+      try { reposts = JSON.parse(localStorage.getItem('wave_reposts') || '[]'); } catch(e) {}
       if (!reposts.includes(reelId)) reposts.push(reelId);
-      localStorage.setItem('toktube_reposts', JSON.stringify(reposts));
+      localStorage.setItem('wave_reposts', JSON.stringify(reposts));
     }
     soundFX.playNotificationSound();
 
@@ -470,9 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
       storage.removeRepost(reelId);
     } else {
       let reposts = [];
-      try { reposts = JSON.parse(localStorage.getItem('toktube_reposts') || '[]'); } catch(e) {}
+      try { reposts = JSON.parse(localStorage.getItem('wave_reposts') || '[]'); } catch(e) {}
       reposts = reposts.filter(id => id !== reelId);
-      localStorage.setItem('toktube_reposts', JSON.stringify(reposts));
+      localStorage.setItem('wave_reposts', JSON.stringify(reposts));
     }
     soundFX.playSwitchSound();
 
@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const creatorName = reel?.creator?.name || 'Creator';
     
     // Redirect to creator studio with audio preset & remix attribution
-    sessionStorage.setItem('toktube_remix_source', JSON.stringify({
+    sessionStorage.setItem('wave_remix_source', JSON.stringify({
       id: reelId,
       creator: creatorName,
       sound: audioName,
@@ -636,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadReelComments(reelId) {
     let stored = [];
     try {
-      stored = JSON.parse(localStorage.getItem(`toktube_comments_${reelId}`)) || [];
+      stored = JSON.parse(localStorage.getItem(`wave_comments_${reelId}`)) || [];
     } catch(e) {
       stored = [];
     }
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
       time: c.time || '1d ago',
       replies: c.replies || []
     })) : [
-      { id: 'c1', author: 'Kwame_Dev', text: 'Brilliant Tok! Loving TokTube Africa 🇬🇭', likes: 34, time: '2h ago', replies: [
+      { id: 'c1', author: 'Kwame_Dev', text: 'Brilliant Tok! Loving wave.africa 🇬🇭', likes: 34, time: '2h ago', replies: [
         { id: 'r1', author: 'Amina_Tech', text: 'Thank you Kwame! More STEM drops coming! 🌱', likes: 14, time: '1h ago' }
       ]},
       { id: 'c2', author: 'Zola_Cape', text: 'Awesome engineering breakdown. Clean energy across Africa! ⚡', likes: 19, time: '4h ago', replies: [] }
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let stored = [];
       try {
-        stored = JSON.parse(localStorage.getItem(`toktube_comments_${currentCommentReelId}`)) || [];
+        stored = JSON.parse(localStorage.getItem(`wave_comments_${currentCommentReelId}`)) || [];
       } catch(e) {
         stored = [];
       }
@@ -801,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tokShell.showToast('Comment posted! 💬');
       }
 
-      localStorage.setItem(`toktube_comments_${currentCommentReelId}`, JSON.stringify(stored));
+      localStorage.setItem(`wave_comments_${currentCommentReelId}`, JSON.stringify(stored));
 
       // Update count on action button
       const countEl = document.getElementById(`comment-count-label-${currentCommentReelId}`);
