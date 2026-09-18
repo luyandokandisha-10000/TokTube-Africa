@@ -64,21 +64,12 @@
 
 .brand-name .tok {
   color: #fff;
+  font-weight: 800;
 }
 
 .brand-name .tube {
   color: var(--tt-cyan);
-}
-
-.brand-tag-africa {
-  font-size: 10px;
   font-weight: 800;
-  background: var(--africa-gold);
-  color: #000;
-  padding: 2px 5px;
-  border-radius: 4px;
-  margin-left: 6px;
-  letter-spacing: 0.5px;
 }
 
 .nav-center {

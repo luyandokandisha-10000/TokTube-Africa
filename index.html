@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TokTube Africa - Pan-African Video, Shorts & Live Streaming Platform</title>
-  <meta name="description" content="TokTube Africa is the Pan-African video, short-form Toks, and live streaming platform. Watch, create, and connect across Africa. Afrobeats, STEM, Nollywood, gaming and more.">
-  <meta name="keywords" content="TokTube, Africa, Pan-African, video platform, live streaming, Afrobeats, Nollywood, STEM, African creators, Toks, shorts">
-  <meta name="author" content="TokTube Africa">
+  <title>wave.africa - Pan-African Video, Shorts & Live Streaming Platform</title>
+  <meta name="description" content="wave.africa is the Pan-African video, short-form Toks, and live streaming platform. Watch, create, and connect across Africa. Afrobeats, STEM, Nollywood, gaming and more.">
+  <meta name="keywords" content="wave.africa, Africa, Pan-African, video platform, live streaming, Afrobeats, Nollywood, STEM, African creators, Toks, shorts">
+  <meta name="author" content="wave.africa">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#FE2C55">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://toktube.africa/">
-  <meta property="og:title" content="TokTube Africa - Pan-African Video & Live Streaming">
-  <meta property="og:description" content="Watch, create and go live with African creators. Afrobeats, STEM, Nollywood, gaming, comedy and more — all on TokTube Africa.">
+  <meta property="og:url" content="https://wave.africa/">
+  <meta property="og:title" content="wave.africa - Pan-African Video & Live Streaming">
+  <meta property="og:description" content="Watch, create and go live with African creators. Afrobeats, STEM, Nollywood, gaming, comedy and more — all on wave.africa.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@TokTubeAfrica">
-  <meta name="twitter:title" content="TokTube Africa - Pan-African Video & Live Streaming">
+  <meta name="twitter:site" content="@waveafrica">
+  <meta name="twitter:title" content="wave.africa - Pan-African Video & Live Streaming">
   <meta name="twitter:description" content="Watch, create and go live with African creators.">
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200">
 
@@ -124,6 +124,12 @@
 
       function renderVideos(query = '', category = 'All') {
         let videos = storage.getYoutubeVideos();
+        // Sort newest first — uploaded videos use id "tube-{timestamp}", fallback to uploadedAt field
+        videos = [...videos].sort((a, b) => {
+          const aTime = a.uploadedAt || (a.id && a.id.startsWith('tube-') ? parseInt(a.id.replace('tube-', '')) || 0 : 0);
+          const bTime = b.uploadedAt || (b.id && b.id.startsWith('tube-') ? parseInt(b.id.replace('tube-', '')) || 0 : 0);
+          return bTime - aTime;
+        });
         const isKid = storage.isKidMode();
 
         // Dual Algorithm: If Kid Mode active, filter to educational STEM content

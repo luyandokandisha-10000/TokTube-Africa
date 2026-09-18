@@ -1,6 +1,6 @@
 {
-  "name": "TokTube Africa",
-  "short_name": "TokTube",
+  "name": "wave.africa",
+  "short_name": "wave.africa",
   "description": "Pan-African video, short-form Toks, and live streaming platform.",
   "start_url": "/index.html",
   "display": "standalone",

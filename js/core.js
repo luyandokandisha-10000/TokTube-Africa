@@ -100,7 +100,7 @@ const TRANSLATIONS = {
     block_user: "Block User",
     unblock_user: "Unblock User",
     send: "Send",
-    online: "Online • TokTube Creator",
+    online: "Online • wave.africa Creator",
     search_placeholder: "Search African creators, STEM, Afrobeats, tutorials..."
   },
   sw: { // Kiswahili (Swahili)
@@ -625,7 +625,7 @@ const INITIAL_DATA = {
       time: "10m ago",
       unread: true,
       messages: [
-        { id: "m1", sender: "ch-amina", text: "Habari! Welcome to TokTube Africa! Excited to connect.", time: "Yesterday 4:15 PM" },
+        { id: "m1", sender: "ch-amina", text: "Habari! Welcome to wave.africa! Excited to connect.", time: "Yesterday 4:15 PM" },
         { id: "m2", sender: "me", text: "Great to connect Amina! Love your robotics & solar microgrid videos.", time: "Yesterday 4:20 PM" },
         { id: "m3", sender: "ch-amina", text: "Asante sana! The new solar robotics tutorial is going live tomorrow! Check the preview.", time: "10m ago" }
       ]
@@ -1203,7 +1203,7 @@ class StorageManager {
         handle: '@' + yt.channel.name.toLowerCase().replace(/[^a-z0-9]/g, ''),
         avatar: yt.channel.avatar,
         banner: yt.thumbnail,
-        bio: 'African video creator sharing inspiring content on TokTube.',
+        bio: 'African video creator sharing inspiring content on wave.africa.',
         followers: yt.channel.subscribers || '150K',
         following: 48,
         likes: '1.2M',
@@ -1220,7 +1220,7 @@ class StorageManager {
         handle: c.handle || ('@' + c.name.toLowerCase().replace(/[^a-z0-9]/g, '')),
         avatar: c.avatar,
         banner: reel.thumbnail,
-        bio: 'African creative voice on TokTube Toks.',
+        bio: 'African creative voice on wave.africa Toks.',
         followers: '210K',
         following: 82,
         likes: '3.4M',
@@ -1424,7 +1424,7 @@ class StorageManager {
           name: name,
           email: email,
           handle: sessionUser.handle || (savedProfile && savedProfile.handle) || ("@" + name.toLowerCase().replace(/[^a-z0-9]/g, '')),
-          bio: sessionUser.bio !== undefined ? sessionUser.bio : (savedProfile && savedProfile.bio !== undefined ? savedProfile.bio : "Pan-African creator on TokTube!"),
+          bio: sessionUser.bio !== undefined ? sessionUser.bio : (savedProfile && savedProfile.bio !== undefined ? savedProfile.bio : "Pan-African creator on wave.africa!"),
           avatarLetter: letter,
           avatarUrl: sessionUser.avatarUrl || (savedProfile && savedProfile.avatarUrl) || ""
         };
@@ -1671,7 +1671,7 @@ const auth = (() => {
       name: user.displayName || 'User',
       email: user.email || '',
       handle: user.handle || ('@' + (user.displayName || 'user').toLowerCase().replace(/[^a-z0-9]/g, '')),
-      bio: user.bio || 'Pan-African creator on TokTube! 🌍',
+      bio: user.bio || 'Pan-African creator on wave.africa! 🌍',
       avatarLetter: (user.avatarLetter || (user.displayName || 'U')[0]).toUpperCase(),
       avatarUrl: user.avatarUrl || user.photoURL || ''
     }));
@@ -1931,13 +1931,12 @@ class TokTubeShell {
           <button id="menu-toggle" class="menu-toggle" aria-label="Toggle Navigation Sidebar">
             <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; fill: currentColor;"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
           </button>
-          <a href="index.html" class="brand-logo" title="TokTube Africa - Home">
+          <a href="index.html" class="brand-logo" title="wave.africa - Home">
             <div class="brand-icon">
               <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 21c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 3c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
             </div>
             <span class="brand-name">
-              <span class="tok">Tok</span><span class="tube">Tube</span>
-              <span class="brand-tag-africa">AFRICA</span>
+              <span class="tok">wave</span><span class="tube">.africa</span>
             </span>
           </a>
         </div>
@@ -2196,7 +2195,7 @@ class TokTubeShell {
       profileModalBody = `
         <div style="text-align:center;padding:24px 0;">
           <div style="font-size:60px;margin-bottom:14px;">👤</div>
-          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">Sign in to TokTube Africa</h3>
+          <h3 style="font-size:16px;font-weight:800;margin-bottom:8px;">Sign in to wave.africa</h3>
           <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;">Watch videos freely. Sign in to post, comment, go live, or tip creators.</p>
           <div style="display:flex;gap:10px;justify-content:center;">
             <button class="btn-primary" style="min-width:110px;" onclick="tokShell.closeModals();openAuthModal('signin')">Sign In</button>
@@ -2346,7 +2345,7 @@ class TokTubeShell {
       <div id="voice-search-modal" class="modal-backdrop">
         <div class="modal-window" style="max-width: 440px; text-align: center;">
           <div class="modal-header">
-            <div class="modal-title">Voice Search TokTube</div>
+            <div class="modal-title">Voice Search wave.africa</div>
             <button class="modal-close-btn" onclick="tokShell.closeModals()">✕</button>
           </div>
           <div class="modal-body" style="align-items: center; gap: 16px;">

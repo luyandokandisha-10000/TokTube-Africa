@@ -1,5 +1,5 @@
 /**
- * TokTube Africa — Personalised Recommendation Engine & Feed Algorithm
+ * wave.africa — Personalised Recommendation Engine & Feed Algorithm
  * Ranks Toks tailored to:
  *  1. User Location (country, city, Pan-African priority)
  *  2. User Attention & Intent (likes, bookmarks, reposts, watch history, subscriptions)
