@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -326,7 +326,18 @@
           </div>
         </div>
 
-        <div class="live-layout">
+        <!-- BACK TO LIVESTREAM SELECTION BAR -->
+        <div id="live-player-back-bar" style="max-width:1600px; margin:14px 20px 0 20px; display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+          <button id="btn-back-to-streams" class="btn-secondary" onclick="window.backToStreamList()" style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; font-size:13px; font-weight:700; border-radius:var(--radius-full); cursor:pointer; background:var(--bg-elevated); border:1px solid var(--border-subtle); color:#fff; transition:background 0.2s, transform 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'; this.style.transform='translateX(-2px)'" onmouseout="this.style.background='var(--bg-elevated)'; this.style.transform='translateX(0)'">
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            <span>← Choose Another Live Stream</span>
+          </button>
+          <span style="font-size:12px; color:var(--text-muted);">
+            Watching live broadcast • Click button to choose a different stream
+          </span>
+        </div>
+
+        <div class="live-layout" id="live-player-container" style="display:none;">
           <!-- Main Player Column -->
           <div class="live-player-card">
             <div class="live-video-wrapper" id="main-video-wrapper">
@@ -401,15 +412,15 @@
           </div>
         </div>
 
-        <!-- FULL SCROLLABLE LIVE STREAMS FEED -->
-        <div style="padding: 10px 20px 40px 20px; max-width: 1600px; margin: 0 auto;">
+        <!-- FULL SCROLLABLE LIVE STREAMS FEED / SELECTION DIRECTORY -->
+        <div id="live-browse-section" style="padding: 10px 20px 40px 20px; max-width: 1600px; margin: 0 auto;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:18px; border-bottom:1px solid var(--border-subtle); padding-bottom:14px;">
             <div>
-              <h2 style="font-size:20px; font-weight:800; display:flex; align-items:center; gap:8px;">
-                <span>📡</span> Explore All African Live Streams (Scrollable Feed)
+              <h2 id="live-browse-title" style="font-size:20px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                <span>📡</span> Choose a Live Stream to Watch
               </h2>
-              <p style="font-size:13px; color:var(--text-muted); margin-top:3px;">
-                Scroll and discover live channels across Africa — filter by landscape Video Live or vertical Short Live
+              <p id="live-browse-desc" style="font-size:13px; color:var(--text-muted); margin-top:3px;">
+                Select any active Pan-African livestream below to start watching and join the live chat
               </p>
             </div>
             <!-- Format Filter Tabs -->
@@ -532,9 +543,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const streamId = urlParams.get('stream') || 'live-1';
+      const streamId = urlParams.get('stream');
       let streams = (typeof storage !== 'undefined' && storage.getLiveStreams) ? storage.getLiveStreams() : [];
-      let currentStream = streams.find(s => s.id === streamId) || streams[0];
+      let currentStream = null;
 
       const videoEl = document.getElementById('active-live-video');
       const videoWrapper = document.getElementById('main-video-wrapper');
@@ -628,8 +639,9 @@
         localStorage.setItem('wave_live_streams', JSON.stringify(allLive));
         streams = storage.getLiveStreams();
 
-        const fallback = streams[0] || allLive[0];
-        if (fallback) loadStream(fallback);
+        if (typeof window.backToStreamList === 'function') {
+          window.backToStreamList();
+        }
       }
 
       // Fullscreen support for live player
@@ -716,8 +728,9 @@
       }
 
       function renderOtherStreams() {
+        if (!currentStream) return;
         otherList.innerHTML = streams.map(s => `
-          <div class="stream-thumb-card ${s.id === currentStream.id ? 'active' : ''}" onclick="window.location.href='live.html?stream=${s.id}'">
+          <div class="stream-thumb-card ${s.id === currentStream.id ? 'active' : ''}" onclick="window.selectStream('${s.id}')">
             <div style="position:relative; aspect-ratio:${s.format === 'short' ? '9/16' : '16/9'}; max-height:140px; overflow:hidden;">
               <img src="${s.thumbnail}" style="width:100%; height:100%; object-fit:cover;">
               <span style="position:absolute; top:6px; left:6px; background:var(--yt-red); color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:3px;">LIVE</span>
@@ -751,10 +764,10 @@
         }
 
         fullGrid.innerHTML = filtered.map(s => {
-          const isCurrent = s.id === currentStream.id;
+          const isCurrent = currentStream && (s.id === currentStream.id);
           const isShort = s.format === 'short';
           return `
-            <div class="stream-thumb-card ${isCurrent ? 'active' : ''}" style="display:flex; flex-direction:column; border-radius:var(--radius-lg); overflow:hidden; background:var(--bg-card); cursor:pointer;" onclick="loadStreamDirectly('${s.id}')">
+            <div class="stream-thumb-card ${isCurrent ? 'active' : ''}" style="display:flex; flex-direction:column; border-radius:var(--radius-lg); overflow:hidden; background:var(--bg-card); cursor:pointer; transition:transform 0.2s, box-shadow 0.2s;" onclick="window.selectStream('${s.id}')">
               <div style="position:relative; width:100%; aspect-ratio:16/9; background:#000; overflow:hidden;">
                 <img src="${s.thumbnail}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <span class="live-tag-badge" style="top:10px; left:10px; font-size:11px; padding:3px 8px;"><span class="live-pulse-dot"></span> LIVE</span>
@@ -770,8 +783,8 @@
                   <div style="font-size:12px; font-weight:600; color:var(--text-secondary);">${s.streamer.name}</div>
                   <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${s.streamer.location} • <span style="color:var(--africa-gold);">${s.category || 'Live'}</span></div>
                   <div style="margin-top:10px;">
-                    <button class="btn-primary" style="padding:6px 14px; font-size:12px; background:${isCurrent ? 'var(--yt-red)' : 'var(--bg-elevated)'}; border:1px solid var(--border-subtle); color:#fff; width:100%; justify-content:center;">
-                      ${isCurrent ? '▶ Now Watching' : '🔴 Watch Live'}
+                    <button class="btn-primary" onclick="event.stopPropagation(); window.selectStream('${s.id}')" style="padding:8px 14px; font-size:12px; font-weight:700; background:${isCurrent ? 'var(--yt-red)' : 'var(--bg-elevated)'}; border:1px solid var(--border-subtle); color:#fff; width:100%; justify-content:center; border-radius:var(--radius-sm); cursor:pointer;">
+                      ${isCurrent ? '▶ Watching Now' : '🔴 Choose & Watch Live'}
                     </button>
                   </div>
                 </div>
@@ -781,13 +794,112 @@
         }).join('');
       }
 
-      window.loadStreamDirectly = function(id) {
+      window.selectStream = function(id) {
         const s = streams.find(item => item.id === id);
-        if (s) {
-          loadStream(s);
-          videoWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!s) return;
+
+        const playerContainer = document.getElementById('live-player-container');
+        const backBar = document.getElementById('live-player-back-bar');
+        const browseTitle = document.getElementById('live-browse-title');
+        const browseDesc = document.getElementById('live-browse-desc');
+
+        if (playerContainer) playerContainer.style.display = 'grid';
+        if (backBar) backBar.style.display = 'flex';
+        if (browseTitle) browseTitle.textContent = 'Explore More Live Streams';
+        if (browseDesc) browseDesc.textContent = 'Switch to another Pan-African broadcast or filter by format';
+
+        // Update URL query parameter without full reload
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('stream', id);
+        window.history.pushState({ streamId: id }, '', newUrl.toString());
+
+        loadStream(s);
+
+        // Smoothly scroll to player
+        if (playerContainer) {
+          playerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       };
+
+      window.backToStreamList = function() {
+        if (isUserBroadcasting) {
+          if (!confirm("You are currently broadcasting live! Do you want to end your stream to return to the live directory?")) {
+            return;
+          }
+          endLiveStream();
+          return;
+        }
+
+        // Pause video and clear source
+        if (videoEl) {
+          videoEl.pause();
+          videoEl.src = '';
+          videoEl.removeAttribute('src');
+          if (videoEl.srcObject) {
+            videoEl.srcObject = null;
+          }
+        }
+
+        currentStream = null;
+
+        const playerContainer = document.getElementById('live-player-container');
+        const backBar = document.getElementById('live-player-back-bar');
+        const browseTitle = document.getElementById('live-browse-title');
+        const browseDesc = document.getElementById('live-browse-desc');
+
+        if (playerContainer) playerContainer.style.display = 'none';
+        if (backBar) backBar.style.display = 'none';
+        if (browseTitle) browseTitle.textContent = 'Choose a Live Stream to Watch';
+        if (browseDesc) browseDesc.textContent = 'Select any active Pan-African livestream below to start watching and join the live chat';
+
+        // Clean up URL without stream param
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('stream');
+        window.history.pushState({}, '', newUrl.pathname + (newUrl.search ? newUrl.search : ''));
+
+        // Scroll to browse section
+        const browseSec = document.getElementById('live-browse-section') || document.querySelector('.live-top-banner');
+        if (browseSec) browseSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        renderFullStreams(currentFilter);
+      };
+
+      window.loadStreamDirectly = function(id) {
+        window.selectStream(id);
+      };
+
+      // Handle browser back and forward buttons
+      window.addEventListener('popstate', () => {
+        const params = new URLSearchParams(window.location.search);
+        const sid = params.get('stream');
+        if (sid) {
+          const s = streams.find(item => item.id === sid);
+          if (s) {
+            const playerContainer = document.getElementById('live-player-container');
+            const backBar = document.getElementById('live-player-back-bar');
+            if (playerContainer) playerContainer.style.display = 'grid';
+            if (backBar) backBar.style.display = 'flex';
+            loadStream(s);
+          }
+        } else {
+          if (videoEl) {
+            videoEl.pause();
+            videoEl.src = '';
+            videoEl.removeAttribute('src');
+            if (videoEl.srcObject) videoEl.srcObject = null;
+          }
+          currentStream = null;
+          const playerContainer = document.getElementById('live-player-container');
+          const backBar = document.getElementById('live-player-back-bar');
+          if (playerContainer) playerContainer.style.display = 'none';
+          if (backBar) backBar.style.display = 'none';
+          const browseTitle = document.getElementById('live-browse-title');
+          const browseDesc = document.getElementById('live-browse-desc');
+          if (browseTitle) browseTitle.textContent = 'Choose a Live Stream to Watch';
+          if (browseDesc) browseDesc.textContent = 'Select any active Pan-African livestream below to start watching and join the live chat';
+          renderFullStreams(currentFilter);
+        }
+      });
 
       // Filter tabs event listeners
       document.querySelectorAll('.live-filter-btn').forEach(btn => {
@@ -805,6 +917,7 @@
       });
 
       followBtn.addEventListener('click', () => {
+        if (!currentStream) return;
         soundFX.playSubscribeSound();
         const nowSub = storage.toggleSubscribe(currentStream.streamer.id);
         followBtn.textContent = nowSub ? 'Following ✓' : '+ Follow';
@@ -813,10 +926,12 @@
       });
 
       tipBtn.addEventListener('click', () => {
+        if (!currentStream) return;
         tokShell.openTippingModal(currentStream.streamer.id);
       });
 
       shareBtn.addEventListener('click', () => {
+        if (!currentStream) return;
         tokShell.openShareModal(window.location.href, currentStream.title);
       });
 
@@ -1241,6 +1356,10 @@
           closeGoLiveModal(false);
 
           // Load user stream directly into active player
+          const playerContainer = document.getElementById('live-player-container');
+          const backBar = document.getElementById('live-player-back-bar');
+          if (playerContainer) playerContainer.style.display = 'grid';
+          if (backBar) backBar.style.display = 'flex';
           currentStream = myLiveStream;
           loadStream(currentStream);
 
@@ -1268,7 +1387,30 @@
       window._execStartBroadcast = doStartBroadcast;
       window.startBroadcast = doStartBroadcast;
 
-      loadStream(currentStream);
+      if (streamId) {
+        const initialStream = streams.find(s => s.id === streamId) || streams[0];
+        if (initialStream) {
+          const playerContainer = document.getElementById('live-player-container');
+          const backBar = document.getElementById('live-player-back-bar');
+          const browseTitle = document.getElementById('live-browse-title');
+          const browseDesc = document.getElementById('live-browse-desc');
+          if (playerContainer) playerContainer.style.display = 'grid';
+          if (backBar) backBar.style.display = 'flex';
+          if (browseTitle) browseTitle.textContent = 'Explore More Live Streams';
+          if (browseDesc) browseDesc.textContent = 'Switch to another Pan-African broadcast or filter by format';
+          loadStream(initialStream);
+        }
+      } else {
+        // Default: User must choose a stream first!
+        const playerContainer = document.getElementById('live-player-container');
+        const backBar = document.getElementById('live-player-back-bar');
+        const browseTitle = document.getElementById('live-browse-title');
+        const browseDesc = document.getElementById('live-browse-desc');
+        if (playerContainer) playerContainer.style.display = 'none';
+        if (backBar) backBar.style.display = 'none';
+        if (browseTitle) browseTitle.textContent = 'Choose a Live Stream to Watch';
+        if (browseDesc) browseDesc.textContent = 'Select any active Pan-African livestream below to start watching and join the live chat';
+      }
       renderFullStreams('all');
     });
   </script>
