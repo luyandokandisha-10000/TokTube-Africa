@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const viewport = document.getElementById('toks-viewport');
   if (!viewport) return;
 
@@ -26,6 +26,13 @@
   let activeVideoEl = null;
 
   function renderReels() {
+    const savedSizingMode = (() => {
+      try {
+        return localStorage.getItem('wave_tok_sizing_mode') || 'fit';
+      } catch(e) { return 'fit'; }
+    })();
+    const isGlobalFill = savedSizingMode === 'fill';
+
     viewport.innerHTML = reels.map((reel, idx) => {
       const isLiked = storage.isLiked(reel.id);
       const isFollowed = storage.isSubscribed(reel.creator.id);
@@ -63,7 +70,7 @@
         `;
       } else {
         mediaMarkup = `
-          <video class="tok-video-el" data-reel-id="${reel.id}" poster="${reel.thumbnail || ''}" loop playsinline preload="${idx < 2 ? 'auto' : 'none'}" src="${safeVideoSrc}"></video>
+          <video class="tok-video-el ${isGlobalFill ? 'fill-mode' : ''}" data-reel-id="${reel.id}" poster="${reel.thumbnail || ''}" loop playsinline preload="${idx < 2 ? 'auto' : 'none'}" src="${safeVideoSrc}"></video>
         `;
       }
 
@@ -86,8 +93,8 @@
                 <option value="480p">480p</option>
                 <option value="360p">360p DataSaver</option>
               </select>
-              <button class="tok-fit-btn" onclick="window.toggleVideoFit(this, '${reel.id}')" title="Switch between Fit to Screen and Fill Screen" style="background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-full); padding: 5px 9px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px); user-select: none;">
-                ⛶ Fit
+              <button class="tok-fit-btn" onclick="window.toggleVideoFit(this, '${reel.id}')" title="Switch between Fit to Screen and Fill Screen" style="background: rgba(0,0,0,0.65); color: ${isGlobalFill ? 'var(--tt-pink)' : '#fff'}; border: 1px solid ${isGlobalFill ? 'var(--tt-pink)' : 'rgba(255,255,255,0.25)'}; border-radius: var(--radius-full); padding: 5px 9px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px); user-select: none;">
+                ${isGlobalFill ? '⛶ Fill' : '⛶ Fit'}
               </button>
             </div>
 
@@ -336,18 +343,41 @@
     soundFX.playSwitchSound();
   };
 
-  // Sizing Toggle (Fit to Screen vs Fill Screen)
+  // Sizing Toggle (Fit to Screen vs Fill Screen — applies globally to all Tok videos)
   window.toggleVideoFit = function(btn, reelId) {
     if (window.soundFX && soundFX.playSwitchSound) soundFX.playSwitchSound();
-    const reelEl = document.querySelector(`.tok-reel[data-id="${reelId}"]`);
-    const vid = reelEl?.querySelector('video');
-    if (!vid) return;
 
-    const isFill = vid.classList.toggle('fill-mode');
-    btn.textContent = isFill ? '⛶ Fill' : '⛶ Fit';
-    btn.style.borderColor = isFill ? 'var(--tt-pink)' : 'rgba(255,255,255,0.25)';
-    btn.style.color = isFill ? 'var(--tt-pink)' : '#fff';
-    tokShell.showToast(isFill ? 'Video sizing: Fill Screen (Zoomed)' : 'Video sizing: Fit to Screen (Full View) ✨');
+    const reelEl = reelId ? document.querySelector(`.tok-reel[data-id="${reelId}"]`) : null;
+    const currentVid = reelEl ? reelEl.querySelector('video') : null;
+    const currentlyFill = currentVid
+      ? currentVid.classList.contains('fill-mode')
+      : (document.querySelector('.tok-video-el.fill-mode') !== null);
+    const newIsFill = !currentlyFill;
+
+    // Apply to ALL video elements across the feed so current, preceding, and upcoming videos are in this mode
+    const allVideos = document.querySelectorAll('.tok-video-el');
+    allVideos.forEach(vid => {
+      if (newIsFill) {
+        vid.classList.add('fill-mode');
+      } else {
+        vid.classList.remove('fill-mode');
+      }
+    });
+
+    // Update ALL fit buttons across all reels to stay in sync
+    const allBtns = document.querySelectorAll('.tok-fit-btn');
+    allBtns.forEach(b => {
+      b.textContent = newIsFill ? '⛶ Fill' : '⛶ Fit';
+      b.style.borderColor = newIsFill ? 'var(--tt-pink)' : 'rgba(255,255,255,0.25)';
+      b.style.color = newIsFill ? 'var(--tt-pink)' : '#fff';
+    });
+
+    // Persist preference so scrolling or reloading preserves the mode
+    try {
+      localStorage.setItem('wave_tok_sizing_mode', newIsFill ? 'fill' : 'fit');
+    } catch(e) {}
+
+    tokShell.showToast(newIsFill ? 'All videos set to Fill Screen (Zoomed) ⛶' : 'All videos set to Fit to Screen (Full View) ✨');
   };
 
   // Photo Slide Scroll Indicator Handler
