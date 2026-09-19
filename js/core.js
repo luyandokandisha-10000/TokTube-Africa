@@ -1716,8 +1716,8 @@ const auth = (() => {
           createdAt: new Date().toISOString()
         };
 
-        await saveFirestoreUserProfile(fbUser.uid, userObj);
         syncLocalUserSession(userObj);
+        saveFirestoreUserProfile(fbUser.uid, userObj).catch(() => {});
         return userObj;
       } catch (fbErr) {
         if (fbErr.code === 'auth/email-already-in-use') {
@@ -1762,9 +1762,14 @@ const auth = (() => {
         // Fetch from Firestore
         if (window.tokFirebase.db) {
           try {
-            const doc = await window.tokFirebase.db.collection('users').doc(fbUser.uid).get();
+            const doc = await withTimeout(
+              window.tokFirebase.db.collection('users').doc(fbUser.uid).get(),
+              5000
+            );
             if (doc.exists) profile = doc.data();
-          } catch (e) {}
+          } catch (e) {
+            // Firestore unavailable or timed out
+          }
         }
 
         const name = (profile && profile.displayName) || fbUser.displayName || emailToName(cleanEmail);
@@ -1798,6 +1803,14 @@ const auth = (() => {
     return user;
   }
 
+  // Helper: race a promise against a timeout
+  function withTimeout(promise, ms) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+    ]);
+  }
+
   async function signInWithGoogle() {
     if (!window.tokFirebase || !window.tokFirebase.auth || !window.tokFirebase.googleProvider) {
       throw new Error('Firebase Auth is not connected yet.');
@@ -1808,11 +1821,17 @@ const auth = (() => {
       const fbUser = result.user;
       let profile = null;
 
+      // Try to fetch existing Firestore profile — but don't wait more than 5 seconds
       if (window.tokFirebase.db) {
         try {
-          const doc = await window.tokFirebase.db.collection('users').doc(fbUser.uid).get();
+          const doc = await withTimeout(
+            window.tokFirebase.db.collection('users').doc(fbUser.uid).get(),
+            5000
+          );
           if (doc.exists) profile = doc.data();
-        } catch (e) {}
+        } catch (e) {
+          // Firestore unavailable or timed out — continue without cloud profile
+        }
       }
 
       const name = fbUser.displayName || emailToName(fbUser.email || 'User');
@@ -1828,8 +1847,12 @@ const auth = (() => {
         createdAt: (profile && profile.createdAt) || new Date().toISOString()
       };
 
-      await saveFirestoreUserProfile(fbUser.uid, userObj);
+      // Sign in locally immediately — don't wait for cloud save
       syncLocalUserSession(userObj);
+
+      // Save to Firestore in background (non-blocking)
+      saveFirestoreUserProfile(fbUser.uid, userObj).catch(() => {});
+
       return userObj;
     } catch (err) {
       if (err.code === 'auth/popup-closed-by-user') {
