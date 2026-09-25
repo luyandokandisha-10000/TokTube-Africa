@@ -2003,6 +2003,12 @@ class waveShell {
             </div>
           </div>
 
+          <!-- Learn (EduBoost) Quick Link -->
+          <a href="learn.html" class="nav-learn-btn ${page === 'learn' ? 'active' : ''}" id="btn-nav-learn" title="Learn (EduBoost)">
+            <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: var(--africa-gold);"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+            <span>Learn</span>
+          </a>
+
           <!-- Live Stream Button -->
           <a href="live.html" class="nav-live-btn" title="Watch Pan-African Live Streams">
             <span class="live-pulse-dot"></span>
@@ -2152,6 +2158,11 @@ class waveShell {
           <span style="font-weight:800;font-size:16px;">More</span>
           <button onclick="tokShell.closeMobileDrawer()" class="mobile-drawer-close">&#x2715;</button>
         </div>
+        <a href="learn.html" class="mobile-drawer-item ${page === 'learn' ? 'active' : ''}">
+          <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--africa-gold);"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+          <span style="color:var(--africa-gold);font-weight:700;">Learn (EduBoost)</span>
+          <span class="badge" style="background:var(--africa-gold);color:#000;font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;margin-left:auto;">EDU</span>
+        </a>
         <a href="status.html" class="mobile-drawer-item ${page === 'status' ? 'active' : ''}">
           <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--africa-green);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
           <span style="color:var(--africa-green);font-weight:700;">Status Updates</span>
@@ -2187,10 +2198,6 @@ class waveShell {
         </a>
         <a href="upload.html" class="mobile-nav-btn mobile-nav-create" title="Upload">
           <div class="mobile-create-icon">+</div>
-        </a>
-        <a href="learn.html" class="mobile-nav-btn ${page === 'learn' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" style="width:22px;height:22px;"><path d="M12 3L1 9l4 2.18V15c0 3 3 6 7 6s7-3 7-6v-3.82L21 9 12 3zm0 2.18L18.36 9 12 12.36 5.64 9 12 5.18zM17 13.82V15c0 2.21-2.24 4-5 4s-5-1.79-5-4v-1.18l5 2.73 5-2.73z"/></svg>
-          <span>Learn</span>
         </a>
         <a href="friends.html" class="mobile-nav-btn ${page === 'friends' ? 'active' : ''}">
           <svg viewBox="0 0 24 24" style="width:22px;height:22px;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>

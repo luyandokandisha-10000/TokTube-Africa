@@ -1,4 +1,4 @@
-﻿/* wave.africa - Top Navigation & Sidebar Styles */
+/* wave.africa - Top Navigation & Sidebar Styles */
 
 #navbar {
   height: var(--nav-height);
@@ -264,6 +264,38 @@
 
 .notif-footer-link:hover {
   background: var(--bg-elevated);
+}
+
+/* Learn (EduBoost) Navigation Button */
+.nav-learn-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 184, 0, 0.12);
+  border: 1px solid rgba(255, 184, 0, 0.4);
+  color: var(--africa-gold);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.nav-learn-btn:hover {
+  background: rgba(255, 184, 0, 0.25);
+  border-color: var(--africa-gold);
+  transform: scale(1.04);
+}
+
+.nav-learn-btn.active {
+  background: var(--africa-gold);
+  color: #000;
+  font-weight: 800;
+}
+.nav-learn-btn.active svg {
+  fill: #000 !important;
 }
 
 /* Live Navigation & Pulsing Red Indicator */
@@ -608,7 +640,8 @@
   #btn-nav-golive {
     display: none;
   }
-  .nav-live-btn {
+  .nav-live-btn,
+  .nav-learn-btn {
     display: none;
   }
   .lang-select-btn #current-lang-label,
