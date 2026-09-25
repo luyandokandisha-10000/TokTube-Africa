@@ -10,11 +10,27 @@
   <link rel="stylesheet" href="styles/modal.css">
   <link rel="stylesheet" href="styles/features.css">
   <style>
-    body { overflow: hidden; background: #000; }
+    html, body {
+      overflow: hidden;
+      background: #000;
+      height: 100vh;
+      height: 100dvh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --mobile-bottom-nav-height: calc(56px + env(safe-area-inset-bottom, 0px));
+    }
+    @media (max-width: 680px) {
+      :root {
+        --nav-height: 54px;
+      }
+    }
     #toks-viewport::-webkit-scrollbar { display: none; }
     .tok-reel {
       width: 100%;
-      height: calc(100vh - var(--nav-height));
+      height: 100%;
       scroll-snap-align: start;
       scroll-snap-stop: always;
       position: relative;
@@ -281,19 +297,44 @@
       .tok-nav-arrows-desktop {
         display: none !important;
       }
+      #toks-shell {
+        height: calc(100vh - var(--nav-height, 54px) - var(--mobile-bottom-nav-height, 56px)) !important;
+        height: calc(100dvh - var(--nav-height, 54px) - var(--mobile-bottom-nav-height, 56px)) !important;
+        max-height: calc(100dvh - var(--nav-height, 54px) - var(--mobile-bottom-nav-height, 56px)) !important;
+        flex: none !important;
+        width: 100% !important;
+        overflow: hidden !important;
+      }
+      #toks-viewport {
+        height: 100% !important;
+        max-height: 100% !important;
+        width: 100% !important;
+        overflow-y: scroll !important;
+        scroll-snap-type: y mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
       .tok-reel {
-        width: 100%;
-        /* Subtract top header (56px) + bottom mobile nav (56px) */
-        height: calc(100vh - var(--nav-height, 56px) - 56px);
-        height: calc(100dvh - var(--nav-height, 56px) - 56px);
-        padding: 0;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        max-height: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        scroll-snap-align: start !important;
+        scroll-snap-stop: always !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
       }
       .tok-stage {
-        width: 100%;
-        max-width: 100%;
-        height: 100%;
-        border-radius: 0;
-        box-shadow: none;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .tok-video-el {
+        width: 100% !important;
+        height: 100% !important;
       }
       .tok-bottom-overlay {
         padding: 40px 76px 14px 12px;
@@ -613,7 +654,7 @@
   </style>
 </head>
 <body data-page="toks">
-  <div id="app" style="display:flex;flex-direction:column;width:100%;height:100vh;">
+  <div id="app" style="display:flex;flex-direction:column;width:100%;height:100vh;height:100dvh;overflow:hidden;">
     <div id="navbar-container"></div>
     <div style="flex:1;display:flex;overflow:hidden;background:#000;" id="toks-shell">
       <div id="sidebar-container"></div>

@@ -216,6 +216,45 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
+    // IntersectionObserver to auto-play whichever reel snaps into view when scrolling on phone/touch
+    if ('IntersectionObserver' in window) {
+      const reelObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const reelEl = entry.target;
+          const idx = parseInt(reelEl.dataset.index, 10);
+          const video = reelEl.querySelector('video');
+          if (entry.isIntersecting) {
+            currentIndex = idx;
+            if (video) {
+              activeVideoEl = video;
+              const p = video.play();
+              if (p && p.catch) {
+                p.catch(() => {
+                  video.muted = true;
+                  video.play().catch(() => {});
+                });
+              }
+            }
+            // Preload next video if exists
+            const nextReel = viewport.children[idx + 1];
+            const nextVid = nextReel?.querySelector('video');
+            if (nextVid && nextVid.preload !== 'auto') {
+              nextVid.preload = 'auto';
+            }
+          } else {
+            if (video) {
+              video.pause();
+            }
+          }
+        });
+      }, {
+        root: viewport,
+        threshold: 0.6
+      });
+
+      viewport.querySelectorAll('.tok-reel').forEach(el => reelObserver.observe(el));
+    }
+
     activateReel(0);
   }
 
