@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -31,6 +31,7 @@
               <!-- Custom Video Player -->
               <div id="main-player-container" class="player-container">
                 <video id="main-watch-video" class="main-video" playsinline></video>
+                <div id="watch-subtitle-overlay" class="subtitle-overlay" style="display: none;"></div>
                 <div class="player-controls">
                   <div class="timeline-container" id="timeline-container">
                     <div class="timeline-bar">
@@ -53,6 +54,23 @@
                       <span class="time-display" id="time-display">0:00 / 0:00</span>
                     </div>
                     <div class="controls-right" style="display:flex; align-items:center; gap:8px;">
+                      <!-- Subtitles / Closed Captions Control -->
+                      <div class="subtitles-control-wrap" style="position:relative; display:inline-flex; align-items:center; gap:4px;">
+                        <button class="control-btn" id="btn-subtitles-toggle" title="Subtitles/Closed Captions (C)">
+                          <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;"><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1c0 .55-.45 1-1 1h-3c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1z"/></svg>
+                        </button>
+                        <select id="select-watch-subtitles" title="Subtitle Language" style="background:rgba(0,0,0,0.6); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:4px; padding:4px 6px; font-size:11px; font-weight:700; cursor:pointer; outline:none;">
+                          <option value="off">CC Off</option>
+                          <option value="en">English [CC]</option>
+                          <option value="sw">Kiswahili</option>
+                          <option value="fr">Français</option>
+                          <option value="es">Español</option>
+                          <option value="yo">Yorùbá</option>
+                          <option value="ha">Hausa</option>
+                          <option value="zu">isiZulu</option>
+                          <option value="ar">العربية</option>
+                        </select>
+                      </div>
                       <!-- Quality Selector -->
                       <div class="quality-selector-wrap" style="position:relative; display:inline-flex; align-items:center;">
                         <select id="btn-watch-quality" title="Video Quality" style="background:rgba(0,0,0,0.6); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:4px; padding:4px 8px; font-size:12px; font-weight:700; cursor:pointer; outline:none;">
@@ -266,11 +284,143 @@
         iconPause.style.display = 'none';
       });
 
+      // Subtitles Cues Generator for Multi-lingual Closed Captions
+      function getWatchSubtitleCue(currentTime, video, lang) {
+        if (lang === 'off' || !lang) return '';
+        const step = Math.floor(currentTime / 6);
+        const title = video?.title || 'Video';
+        const creator = video?.channel?.name || 'Creator';
+
+        const cueTemplates = {
+          en: [
+            `[Music playing] Welcome back to ${creator}!`,
+            `Today we're exploring: "${title}"`,
+            `Let's break down the essential ideas step by step.`,
+            `Notice how this approach simplifies everything we've looked at.`,
+            `When you apply these fundamentals, the results speak for themselves.`,
+            `Pay close attention to how these elements connect together.`,
+            `This is one of the most requested topics from our community.`,
+            `Here is a critical tip you shouldn't overlook: consistency is key.`,
+            `Let's take a closer look at the actual demonstration on screen.`,
+            `Drop your thoughts in the comments below — what do you think?`,
+            `Make sure to like and follow for more deep-dive guides!`,
+            `Thank you for watching, and see you in the next one!`
+          ],
+          sw: [
+            `[Muziki unalia] Karibu tena kwenye kituo cha ${creator}!`,
+            `Leo tunaangazia mada yetu: "${title}"`,
+            `Hebu tuchambue mambo muhimu hatua kwa hatua.`,
+            `Angalia jinsi njia hii inavyorahisisha kila kitu tulichojifunza.`,
+            `Unapotumia kanuni hizi, matokeo yanajieleza yenyewe.`,
+            `Zingatia sana jinsi vipengele hivi vinavyoungana pamoja.`,
+            `Hii ni moja ya mada zilizoombwa zaidi na jamii yetu.`,
+            `Huu hapa ni ushauri muhimu: uvumilivu na bidii ni muhimu sana.`,
+            `Hebu tuangalie kwa makini mfano halisi kwenye skrini.`,
+            `Toa maoni yako hapa chini — una mtazamo gani?`,
+            `Kumbuka kubonyeza like na kufuatilia kituo hiki kwa video zaidi!`,
+            `Asante sana kwa kutazama, tukutane kwenye video inayofuata!`
+          ],
+          fr: [
+            `[Musique d'ambiance] Bienvenue à nouveau sur ${creator} !`,
+            `Aujourd'hui, nous explorons : "${title}"`,
+            `Analysons les concepts essentiels étape par étape.`,
+            `Remarquez à quel point cette approche simplifie notre démarche.`,
+            `En appliquant ces principes clés, les résultats sont immédiats.`,
+            `Observez attentivement la façon dont ces éléments s'articulent.`,
+            `C'est un des sujets les plus demandés par la communauté.`,
+            `Voici une astuce capitale : la régularité fait toute la différence.`,
+            `Examinons de plus près la démonstration pratique à l'écran.`,
+            `Partagez vos réflexions dans les commentaires ci-dessous !`,
+            `N'oubliez pas d'aimer et de vous abonner pour suivre nos créations !`,
+            `Merci d'avoir regardé cette vidéo, et à très bientôt !`
+          ],
+          es: [
+            `[Música] ¡Bienvenidos de nuevo a ${creator}!`,
+            `Hoy estamos explorando: "${title}"`,
+            `Analicemos las ideas esenciales paso a paso.`,
+            `Observa cómo este enfoque simplifica todo el proceso.`,
+            `Al aplicar estos principios, los resultados son evidentes.`,
+            `Presta atención a cómo se conectan todos estos detalles.`,
+            `Este es uno de los temas más pedidos por nuestra comunidad.`,
+            `Un consejo fundamental: la constancia es la clave del éxito.`,
+            `Veamos con detalle la demostración en pantalla.`,
+            `Déjanos tu opinión en los comentarios: ¿qué te parece?`,
+            `¡No olvides darle like y seguirnos para más contenido!`,
+            `¡Gracias por ver y nos vemos en el próximo video!`
+          ],
+          yo: [
+            `[Orin ń dún] Ẹ káàbọ̀ padà sí ${creator}!`,
+            `Lónìí a ń wo kókó pàtàkì: "${title}"`,
+            `Ẹ jẹ́ ká ṣàlàyé àwọn ẹ̀kọ́ wọ̀nyí ní ìpele sí ìpele.`,
+            `Ẹ wo bí ọ̀nà yìí ṣe mú gbogbo nǹkan rọrùn.`,
+            `Nígbà tí ẹ bá lo àwọn ìlànà wọ̀nyí, àbájáde rẹ̀ yóò dára púpọ̀.`,
+            `Ẹ tẹjúmọ́ bí àwọn ohun èlò wọ̀nyí ṣe ń ṣiṣẹ́ papọ̀.`,
+            `Èyí jẹ́ ọ̀kan lára àwọn àkòrí tí àwọn ènìyàn ń bèèrè jùlọ.`,
+            `Ìmọ̀ràn pàtàkì: ìforítì àti ìtẹpẹlẹmọ́ ló ń mú àṣeyọrí wá.`,
+            `Ẹ jẹ́ ká wo àpẹẹrẹ gidi tí ń bẹ lójú amóhùnmáwòrán.`,
+            `Ẹ fi èrò yín sí abala àwọn àkíyèsí nísàlẹ̀!`,
+            `Ẹ rántí láti tẹ Like kí ẹ sì tẹ̀lé wa fún àwọn fídíò tókù!`,
+            `A dúpẹ́ púpọ̀ fún wíwò rẹ, a ó tún ríra nínú fídíò tó ń bọ̀!`
+          ],
+          ha: [
+            `[Kiɗa na tashi] Barka da sake dawowa tashar ${creator}!`,
+            `Yau muna duba muhimmin batu: "${title}"`,
+            `Bari mu fassara manyan abubuwa daki-daki.`,
+            `Lura da yadda wannan hanya take sauƙaƙa komai.`,
+            `Idan ka yi amfani da waɗannan sharuɗɗan, sakamakon zai bayyana.`,
+            `Ku mai da hankali kan yadda waɗannan abubuwan suke haɗuwa.`,
+            `Wannan shine ɗaya daga cikin batutuwan da kuka fi buƙata.`,
+            `Shawara mai amfani: jajircewa itace mabudin nasara.`,
+            `Bari mu kalli cikakken misalin a kan allo.`,
+            `Ku bayyana ra'ayoyinku a sashen sharhi da ke ƙasa!`,
+            `Kada ku manta da danna Like da biyan kuɗi domin samun ƙarin bidiyoyi!`,
+            `Mun gode da kallo, sai mun haɗu a bidiyo na gaba!`
+          ],
+          zu: [
+            `[Kudlala umculo] Siyakwamukela futhi ku-${creator}!`,
+            `Namhlanje sibheka lesi sihloko esibalulekile: "${title}"`,
+            `Ake sihlaziye amaphuzu abalulekile igxathu negxathu.`,
+            `Bona ukuthi le ndlela ikwenza kanjani kube lula konke.`,
+            `Uma usebenzisa le migomo, imiphumela iyazikhulumela.`,
+            `Bhekisisa kahle ukuthi lezi zingxenye zihlangana kanjani.`,
+            `Lesi ngesinye sezihloko ezicelwe kakhulu ngumphakathi wethu.`,
+            `Nali icebiso eliyinhloko: ukubekezela nokuzikhandla kuyisihluthulelo.`,
+            `Ake sibuke isibonelo sangempela esikrinini.`,
+            `Shiya imicabango yakho kumazwana angezansi!`,
+            `Qiniseka ukuthi uyathanda (like) futhi ulandela (follow) ukuthola okunye!`,
+            `Siyabonga ngokubuka, sizobonana kuvidiyo elandelayo!`
+          ],
+          ar: [
+            `[موسيقى] مرحبًا بكم مجددًا في قناة ${creator}!`,
+            `اليوم نستكشف معًا: "${title}"`,
+            `دعونا نتناول النقاط الجوهرية خطوة بخطوة.`,
+            `لاحظوا كيف يبسط هذا الأسلوب كل ما تعلمناه.`,
+            `عند تطبيق هذه المبادئ، تتحدث النتائج الملموسة عن نفسها.`,
+            `انتبهوا جيدًا لكيفية ترابط هذه العناصر معًا.`,
+            `هذا واحد من أكثر المواضيع طلبًا من مجتمعنا الرائع.`,
+            `نصيحة ذهبية: الاستمرارية والممارسة هما مفتاح التميز.`,
+            `دعونا نلقي نظرة دقيقة على التطبيق العملي أمامنا.`,
+            `شاركونا آراءكم وتعليقاتكم في الأسفل!`,
+            `لا تنسوا الإعجاب بالفيديو والمتابعة للمزيد من المحتوى المميز!`,
+            `شكرًا لمشاهدتكم، ونراكم في الفيديو القادم!`
+          ]
+        };
+
+        const list = cueTemplates[lang] || cueTemplates['en'];
+        return list[step % list.length];
+      }
+
       videoEl.addEventListener('timeupdate', () => {
         if (videoEl.duration) {
           const pct = (videoEl.currentTime / videoEl.duration) * 100;
           timelineProgress.style.width = `${pct}%`;
           timeDisplay.textContent = `${formatTime(videoEl.currentTime)} / ${formatTime(videoEl.duration)}`;
+        }
+        if (currentSubLang !== 'off' && subtitleOverlay) {
+          const cue = getWatchSubtitleCue(videoEl.currentTime, video, currentSubLang);
+          if (subtitleOverlay.textContent !== cue) {
+            subtitleOverlay.textContent = cue;
+          }
         }
       });
 
@@ -320,6 +470,75 @@
         }
       });
 
+      // Subtitles / Closed Captions Setup
+      const subtitleOverlay = document.getElementById('watch-subtitle-overlay');
+      const subtitleToggleBtn = document.getElementById('btn-subtitles-toggle');
+      const subtitleSelect = document.getElementById('select-watch-subtitles');
+
+      let currentSubLang = localStorage.getItem('toktube_subtitles_lang') || 'off';
+      if (subtitleSelect) {
+        subtitleSelect.value = currentSubLang;
+      }
+
+      function updateSubtitleUI() {
+        const isActive = currentSubLang !== 'off';
+        if (subtitleToggleBtn) {
+          subtitleToggleBtn.classList.toggle('active', isActive);
+        }
+        if (subtitleOverlay) {
+          if (!isActive) {
+            subtitleOverlay.style.display = 'none';
+            subtitleOverlay.textContent = '';
+          } else {
+            subtitleOverlay.style.display = 'block';
+            subtitleOverlay.textContent = getWatchSubtitleCue(videoEl.currentTime, video, currentSubLang);
+          }
+        }
+      }
+
+      function setSubtitleLang(newLang, showNotification = true) {
+        currentSubLang = newLang;
+        try {
+          localStorage.setItem('toktube_subtitles_lang', newLang);
+        } catch(e) {}
+        if (subtitleSelect) subtitleSelect.value = newLang;
+        updateSubtitleUI();
+        if (showNotification) {
+          if (newLang === 'off') {
+            tokShell.showToast('Subtitles turned Off');
+          } else {
+            const langName = subtitleSelect?.options[subtitleSelect.selectedIndex]?.text || newLang;
+            tokShell.showToast(`Subtitles: ${langName} 💬`);
+          }
+        }
+      }
+
+      subtitleToggleBtn?.addEventListener('click', () => {
+        soundFX.playSwitchSound();
+        if (currentSubLang === 'off') {
+          const preferred = localStorage.getItem('toktube_subtitles_last_lang') || 'en';
+          setSubtitleLang(preferred);
+        } else {
+          try {
+            localStorage.setItem('toktube_subtitles_last_lang', currentSubLang);
+          } catch(e) {}
+          setSubtitleLang('off');
+        }
+      });
+
+      subtitleSelect?.addEventListener('change', (e) => {
+        soundFX.playSwitchSound();
+        const selected = e.target.value;
+        if (selected !== 'off') {
+          try {
+            localStorage.setItem('toktube_subtitles_last_lang', selected);
+          } catch(e) {}
+        }
+        setSubtitleLang(selected);
+      });
+
+      updateSubtitleUI();
+
       const qualitySelect = document.getElementById('btn-watch-quality');
       qualitySelect?.addEventListener('change', (e) => {
         const quality = e.target.value;
@@ -327,11 +546,13 @@
         soundFX.playSwitchSound();
       });
 
-      // Keyboard shortcut M for mute
+      // Keyboard shortcuts: M for mute, C for CC/subtitles
       document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         if (e.key === 'm' || e.key === 'M') {
           volBtn?.click();
+        } else if (e.key === 'c' || e.key === 'C') {
+          subtitleToggleBtn?.click();
         }
       });
 

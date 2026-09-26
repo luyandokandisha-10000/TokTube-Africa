@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
     const isGlobalFill = savedSizingMode === 'fill';
 
+    const savedCaptionsMode = (() => {
+      try {
+        return localStorage.getItem('wave_tok_captions_mode') || 'off';
+      } catch(e) { return 'off'; }
+    })();
+    const isCCActive = savedCaptionsMode !== 'off';
+
     viewport.innerHTML = reels.map((reel, idx) => {
       const isLiked = storage.isLiked(reel.id);
       const isFollowed = storage.isSubscribed(reel.creator.id);
@@ -79,19 +86,33 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="tok-stage">
             ${mediaMarkup}
 
+            <!-- Subtitle / Caption Overlay on Toks -->
+            <div id="tok-subtitles-${reel.id}" class="tok-subtitles-overlay" style="${isCCActive ? 'display:block;' : 'display:none;'}"></div>
+
             <!-- Repost Badge (TikTok-style) -->
             <div class="tok-repost-badge" id="repost-badge-${reel.id}" onclick="event.stopPropagation(); window.openRepostModal('${reel.id}')" style="${isReposted ? 'display:flex;cursor:pointer;pointer-events:all;' : 'display:none;cursor:pointer;pointer-events:all;'}" title="Click to manage repost">
               <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#10b981;flex-shrink:0;"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               <span>${repostItem && repostItem.note ? 'You: "' + (repostItem.note.length > 24 ? repostItem.note.substring(0, 22) + '…' : repostItem.note) + '"' : 'You reposted'}</span>
             </div>
 
-            <!-- Quality & Sizing Selector for Shorts -->
+            <!-- Quality, Subtitles & Sizing Selector for Shorts -->
             <div class="tok-quality-overlay" onclick="event.stopPropagation();" style="position: absolute; top: 16px; left: 16px; z-index: 25; display: flex; gap: 6px; align-items: center; ${isPhoto ? 'display:none;' : ''}">
               <select class="tok-quality-select" onchange="window.changeTokQuality(this)" style="background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-full); padding: 5px 10px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px);">
                 <option value="1080p">1080p HD</option>
                 <option value="720p" selected>720p HD</option>
                 <option value="480p">480p</option>
                 <option value="360p">360p DataSaver</option>
+              </select>
+              <select class="tok-cc-select" onchange="window.changeTokCaptionsLang(this)" title="Captions / Subtitles" style="background: rgba(0,0,0,0.65); color: ${isCCActive ? 'var(--tt-cyan)' : '#fff'}; border: 1px solid ${isCCActive ? 'var(--tt-cyan)' : 'rgba(255,255,255,0.25)'}; border-radius: var(--radius-full); padding: 5px 8px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px);">
+                <option value="off" ${savedCaptionsMode === 'off' ? 'selected' : ''}>CC Off</option>
+                <option value="en" ${savedCaptionsMode === 'en' ? 'selected' : ''}>CC English</option>
+                <option value="sw" ${savedCaptionsMode === 'sw' ? 'selected' : ''}>CC Kiswahili</option>
+                <option value="fr" ${savedCaptionsMode === 'fr' ? 'selected' : ''}>CC Français</option>
+                <option value="es" ${savedCaptionsMode === 'es' ? 'selected' : ''}>CC Español</option>
+                <option value="yo" ${savedCaptionsMode === 'yo' ? 'selected' : ''}>CC Yorùbá</option>
+                <option value="ha" ${savedCaptionsMode === 'ha' ? 'selected' : ''}>CC Hausa</option>
+                <option value="zu" ${savedCaptionsMode === 'zu' ? 'selected' : ''}>CC isiZulu</option>
+                <option value="ar" ${savedCaptionsMode === 'ar' ? 'selected' : ''}>CC العربية</option>
               </select>
               <button class="tok-fit-btn" onclick="window.toggleVideoFit(this, '${reel.id}')" title="Switch between Fit to Screen and Fill Screen" style="background: rgba(0,0,0,0.65); color: ${isGlobalFill ? 'var(--tt-pink)' : '#fff'}; border: 1px solid ${isGlobalFill ? 'var(--tt-pink)' : 'rgba(255,255,255,0.25)'}; border-radius: var(--radius-full); padding: 5px 9px; font-size: 11px; font-weight: 700; outline: none; cursor: pointer; backdrop-filter: blur(8px); user-select: none;">
                 ${isGlobalFill ? '⛶ Fill' : '⛶ Fit'}
@@ -165,6 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="tok-action-text" style="color:${isReposted ? '#10b981' : '#fff'};">${isReposted ? 'Reposted' : 'Repost'}</span>
             </div>
 
+            <!-- Subtitles / CC Action Button (TikTok-style) -->
+            <div class="tok-action-btn ${isCCActive ? 'active-cc' : ''}" id="cc-btn-${reel.id}" onclick="event.stopPropagation(); window.toggleTokCaptions('${reel.id}', this)" title="${isCCActive ? 'Disable captions' : 'Enable captions'}">
+              <div class="tok-action-circle">
+                <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;"><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1c0 .55-.45 1-1 1h-3c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1z"/></svg>
+              </div>
+              <span class="tok-action-text">${isCCActive ? 'CC On' : 'CC'}</span>
+            </div>
+
             <!-- Tip Creator Button — hidden until payment system is live -->
             <div class="tok-action-btn tok-tip-btn" style="display:none;" onclick="event.stopPropagation(); tokShell.openTippingModal('${reel.creator.id}')">
               <div class="tok-action-circle" style="background:rgba(255,184,0,0.2); border:1px solid var(--africa-gold);">
@@ -214,6 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
         vid.src = fallbackList[i % fallbackList.length];
         vid.play().catch(() => {});
       };
+
+      vid.addEventListener('timeupdate', () => {
+        window.updateTokSubtitlesForVideo(vid);
+      });
     });
 
     // IntersectionObserver to auto-play whichever reel snaps into view when scrolling on phone/touch
@@ -227,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentIndex = idx;
             if (video) {
               activeVideoEl = video;
+              window.updateTokSubtitlesForVideo(video);
               const p = video.play();
               if (p && p.catch) {
                 p.catch(() => {
@@ -273,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const video = targetEl.querySelector('video');
     if (video) {
       activeVideoEl = video;
+      window.updateTokSubtitlesForVideo(video);
       video.play().catch(() => {
         video.muted = true;
         video.play().catch(() => {});
@@ -309,6 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('keydown', (e) => {
     if (document.getElementById('tok-comments-drawer').classList.contains('open')) return;
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       activateReel(currentIndex + 1);
@@ -322,6 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (e.key.toLowerCase() === 'm') {
       window.toggleTokMute(activeVideoEl || document);
+    } else if (e.key.toLowerCase() === 'c') {
+      const activeReelEl = viewport.children[currentIndex];
+      const activeReelId = activeReelEl ? activeReelEl.dataset.id : null;
+      window.toggleTokCaptions(activeReelId);
     }
   });
 
@@ -380,6 +420,193 @@ document.addEventListener('DOMContentLoaded', () => {
     const quality = selectEl.value;
     tokShell.showToast(`Quality set to ${quality} ✨`);
     soundFX.playSwitchSound();
+  };
+
+  // ── Tok Subtitles & Closed Captions Engine ───────────────────────────
+  window.getTokSubtitlePhrase = function(currentTime, reel, lang) {
+    if (lang === 'off' || !lang) return '';
+    const step = Math.floor(currentTime / 3.5);
+    const title = reel?.title || 'Trending Tok';
+    const creator = reel?.creator?.name || 'Creator';
+
+    const phraseMaps = {
+      en: [
+        `🎵 @${creator}: "${title}"`,
+        `Wait for the best part right here 👀`,
+        `Can't believe how this turned out! 🔥`,
+        `Let me know what you think in the comments! 👇`,
+        `Double tap if you loved this vibe! ❤️`,
+        `Follow @${creator} for more daily toks ✨`
+      ],
+      sw: [
+        `🎵 @${creator}: "${title}"`,
+        `Tazama sehemu nzuri zaidi hapa hapa 👀`,
+        `Siwezi kuamini jinsi hii ilivyotokea! 🔥`,
+        `Niambie maoni yako kwenye maoni hapa chini! 👇`,
+        `Gonga mara mbili kama umependa video hii! ❤️`,
+        `Mfuate @${creator} kwa video zaidi kila siku ✨`
+      ],
+      fr: [
+        `🎵 @${creator} : "${title}"`,
+        `Attendez le meilleur passage juste ici 👀`,
+        `Incroyable ce que ça donne ! 🔥`,
+        `Dites-moi ce que vous en pensez en commentaire ! 👇`,
+        `Tapez deux fois si vous kiffez ! ❤️`,
+        `Suivez @${creator} pour plus de pépites ✨`
+      ],
+      es: [
+        `🎵 @${creator}: "${title}"`,
+        `Espera la mejor parte justo aquí 👀`,
+        `¡No puedo creer este resultado! 🔥`,
+        `¡Cuéntame qué opinas en los comentarios! 👇`,
+        `¡Dale doble toque si te gustó! ❤️`,
+        `¡Sigue a @${creator} para más contenido! ✨`
+      ],
+      yo: [
+        `🎵 @${creator}: "${title}"`,
+        `Ẹ dúró de ibi tó dára jùlọ báyìí 👀`,
+        `Kò ṣe é gbàgbọ́ bí èyí ṣe rí! 🔥`,
+        `Ẹ sọ èrò yín nínú àwọn ọ̀rọ̀ nísàlẹ̀! 👇`,
+        `Tẹ lẹ́ẹ̀mejì tí o bá fẹ́ràn rẹ̀! ❤️`,
+        `Tẹ̀lé @${creator} fún àwọn fídíò tuntun lójoojúmọ́ ✨`
+      ],
+      ha: [
+        `🎵 @${creator}: "${title}"`,
+        `Dakata ka ga ɓangare mafi kyau anan 👀`,
+        `Ba zan iya gaskata yadda hakan ya kasance ba! 🔥`,
+        `Bayanin ra'ayinka a sashen sharhi a ƙasa! 👇`,
+        `Danna sau biyu idan kana son wannan yanayi! ❤️`,
+        `Bi @${creator} domin samun ƙarin bidiyo a kowace rana ✨`
+      ],
+      zu: [
+        `🎵 @${creator}: "${title}"`,
+        `Linda ingxenye enhle kakhulu khona lapha 👀`,
+        `Angikholwa ukuthi lokhu kwenzeke kanjani! 🔥`,
+        `Ngitshele ukuthi ucabangani kumazwana ngezansi! 👇`,
+        `Thinta kabili uma uwuthandile lo mculo! ❤️`,
+        `Landela @${creator} ukuthola okuqukethwe kwansuku zonke ✨`
+      ],
+      ar: [
+        `🎵 @${creator}: "${title}"`,
+        `انتظروا اللحظة الأروع هنا تمامًا 👀`,
+        `لا أصدق هذه النتيجة الرائعة! 🔥`,
+        `شاركونا آراءكم في خانة التعليقات! 👇`,
+        `انقر مرتين إذا أعجبك المقطع! ❤️`,
+        `تابعوا @${creator} لمشاهدة المزيد يوميًا ✨`
+      ]
+    };
+
+    const list = phraseMaps[lang] || phraseMaps['en'];
+    return list[step % list.length];
+  };
+
+  window.updateTokSubtitlesForVideo = function(vid) {
+    if (!vid) return;
+    const reelEl = vid.closest('.tok-reel');
+    if (!reelEl) return;
+    const reelId = reelEl.dataset.id;
+    const subOverlay = document.getElementById(`tok-subtitles-${reelId}`);
+    if (!subOverlay) return;
+
+    const savedMode = localStorage.getItem('wave_tok_captions_mode') || 'off';
+    if (savedMode === 'off') {
+      if (subOverlay.style.display !== 'none') subOverlay.style.display = 'none';
+      return;
+    }
+
+    if (subOverlay.style.display !== 'block') {
+      subOverlay.style.display = 'block';
+    }
+
+    const reel = reels.find(r => r.id === reelId);
+    const phrase = window.getTokSubtitlePhrase(vid.currentTime, reel, savedMode);
+    if (subOverlay.textContent !== phrase) {
+      subOverlay.textContent = phrase;
+    }
+  };
+
+  window.toggleTokCaptions = function(reelId, btn) {
+    if (window.soundFX && soundFX.playSwitchSound) soundFX.playSwitchSound();
+    const currentMode = localStorage.getItem('wave_tok_captions_mode') || 'off';
+    const isNowActive = currentMode === 'off';
+    const lastNonOff = localStorage.getItem('wave_tok_captions_last_lang') || 'en';
+    const newMode = isNowActive ? lastNonOff : 'off';
+
+    try {
+      localStorage.setItem('wave_tok_captions_mode', newMode);
+      if (isNowActive) {
+        localStorage.setItem('wave_tok_captions_last_lang', newMode);
+      }
+    } catch(e) {}
+
+    // Update all CC action buttons in all reels
+    document.querySelectorAll('.tok-action-btn[id^="cc-btn-"]').forEach(b => {
+      b.classList.toggle('active-cc', isNowActive);
+      const textSpan = b.querySelector('.tok-action-text');
+      if (textSpan) textSpan.textContent = isNowActive ? 'CC On' : 'CC';
+      b.setAttribute('title', isNowActive ? 'Disable captions' : 'Enable captions');
+    });
+
+    // Update all CC selects in all reels
+    document.querySelectorAll('.tok-cc-select').forEach(sel => {
+      sel.value = newMode;
+      sel.style.borderColor = isNowActive ? 'var(--tt-cyan)' : 'rgba(255,255,255,0.25)';
+      sel.style.color = isNowActive ? 'var(--tt-cyan)' : '#fff';
+    });
+
+    // Update all subtitle overlays
+    document.querySelectorAll('.tok-subtitles-overlay').forEach(overlay => {
+      overlay.style.display = isNowActive ? 'block' : 'none';
+      if (!isNowActive) overlay.textContent = '';
+    });
+
+    // Immediately trigger update on active video
+    if (activeVideoEl) {
+      window.updateTokSubtitlesForVideo(activeVideoEl);
+    }
+
+    tokShell.showToast(isNowActive ? `Captions enabled (${newMode.toUpperCase()}) 💬` : 'Captions disabled');
+  };
+
+  window.changeTokCaptionsLang = function(selectEl) {
+    if (window.soundFX && soundFX.playSwitchSound) soundFX.playSwitchSound();
+    const newLang = selectEl.value;
+    const isNowActive = newLang !== 'off';
+
+    try {
+      localStorage.setItem('wave_tok_captions_mode', newLang);
+      if (isNowActive) {
+        localStorage.setItem('wave_tok_captions_last_lang', newLang);
+      }
+    } catch(e) {}
+
+    // Sync all selects across all reels
+    document.querySelectorAll('.tok-cc-select').forEach(sel => {
+      sel.value = newLang;
+      sel.style.borderColor = isNowActive ? 'var(--tt-cyan)' : 'rgba(255,255,255,0.25)';
+      sel.style.color = isNowActive ? 'var(--tt-cyan)' : '#fff';
+    });
+
+    // Sync all CC action buttons
+    document.querySelectorAll('.tok-action-btn[id^="cc-btn-"]').forEach(b => {
+      b.classList.toggle('active-cc', isNowActive);
+      const textSpan = b.querySelector('.tok-action-text');
+      if (textSpan) textSpan.textContent = isNowActive ? 'CC On' : 'CC';
+      b.setAttribute('title', isNowActive ? 'Disable captions' : 'Enable captions');
+    });
+
+    // Update overlays
+    document.querySelectorAll('.tok-subtitles-overlay').forEach(overlay => {
+      overlay.style.display = isNowActive ? 'block' : 'none';
+      if (!isNowActive) overlay.textContent = '';
+    });
+
+    if (activeVideoEl) {
+      window.updateTokSubtitlesForVideo(activeVideoEl);
+    }
+
+    const selectedName = selectEl.options[selectEl.selectedIndex]?.text || newLang;
+    tokShell.showToast(`Captions: ${selectedName} 💬`);
   };
 
   // Sizing Toggle (Fit to Screen vs Fill Screen — applies globally to all Tok videos)

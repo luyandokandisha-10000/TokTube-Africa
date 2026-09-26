@@ -1,4 +1,4 @@
-﻿/* wave - YouTube Watch Page & Custom Video Player Styles */
+/* wave - YouTube Watch Page & Custom Video Player Styles */
 
 #view-watch {
   padding: 24px;
@@ -576,4 +576,50 @@
 .related-views {
   font-size: 12px;
   color: var(--text-muted);
+}
+
+/* Subtitle / Closed Caption Overlay */
+.subtitle-overlay {
+  position: absolute;
+  bottom: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 85%;
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(6px);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 15;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+  transition: opacity 0.15s ease;
+}
+
+@media (max-width: 680px) {
+  .subtitle-overlay {
+    bottom: 50px;
+    font-size: 13px;
+    padding: 4px 12px;
+    max-width: 90%;
+  }
+}
+
+.subtitles-control-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+#btn-subtitles-toggle.active {
+  color: var(--tt-cyan) !important;
+}
+
+#btn-subtitles-toggle.active svg {
+  fill: var(--tt-cyan) !important;
 }
