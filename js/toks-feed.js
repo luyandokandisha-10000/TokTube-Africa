@@ -210,6 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="tok-action-text">${reel.shares || 120}</span>
             </div>
 
+            <!-- Admin Delete Reel Button (Super Admin) -->
+            ${(window.isSuperAdmin ? window.isSuperAdmin() : (auth.isSuperAdmin && auth.isSuperAdmin())) ? `
+              <div class="tok-action-btn tok-admin-delete-btn" onclick="event.stopPropagation(); window.adminDeleteTokReel('${reel.id}')" title="Admin Delete Tok">
+                <div class="tok-action-circle" style="background:rgba(255,71,87,0.3); border:1px solid #ff4757;">
+                  <span style="font-size:16px;">🗑️</span>
+                </div>
+                <span class="tok-action-text" style="color:#ff6b81;font-weight:700;">Delete</span>
+              </div>
+            ` : ''}
+
             <!-- Vinyl / Spinning disc — doubles as Remix button -->
             <div class="tok-vinyl-wrap" onclick="event.stopPropagation(); window.remixTokReel('${reel.id}')" title="Remix this Tok 🎛️" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
               <div class="tok-vinyl">
@@ -930,6 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeReplyAuthor = null;
 
   function loadReelComments(reelId) {
+    const deletedList = JSON.parse(localStorage.getItem(`wave_deleted_comments_${reelId}`) || '[]');
     let stored = [];
     try {
       stored = JSON.parse(localStorage.getItem(`wave_comments_${reelId}`)) || [];
@@ -952,12 +963,20 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'c2', author: 'Zola_Cape', text: 'Awesome engineering breakdown. Clean energy across Africa! ⚡', likes: 19, time: '4h ago', replies: [] }
     ];
 
-    return [...defaults, ...stored];
+    const all = [...defaults, ...stored];
+    return all.filter(c => !deletedList.includes(c.id)).map(c => {
+      const copy = { ...c };
+      if (copy.replies) {
+        copy.replies = copy.replies.filter(r => !deletedList.includes(r.id));
+      }
+      return copy;
+    });
   }
 
   function renderCommentsUI() {
     if (!currentCommentReelId) return;
     const comments = loadReelComments(currentCommentReelId);
+    const isSuper = (window.isSuperAdmin ? window.isSuperAdmin() : (auth.isSuperAdmin && auth.isSuperAdmin()));
 
     commentsList.innerHTML = comments.map(c => `
       <div class="tiktok-comment-node" id="node-${c.id}" style="padding: 12px 0; border-bottom: 1px solid #222;">
@@ -976,6 +995,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <span style="cursor:pointer; display:flex; align-items:center; gap:4px;" onclick="window.likeComment('${c.id}', this)">
                 ❤️ <span class="c-like-val">${c.likes || 0}</span>
               </span>
+              ${isSuper ? `
+                <span style="cursor:pointer; font-weight:700; color:#ff6b81; margin-left:auto;" onclick="window.adminDeleteTokComment('${c.id}', false)">🗑️ Delete</span>
+              ` : ''}
             </div>
           </div>
         </div>
@@ -994,7 +1016,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span style="font-size:10px; color:#777;">${r.time || 'Just now'}</span>
                   </div>
                   <p style="font-size:12px; margin-top:2px; color:#ccc; line-height:1.35;">${r.text}</p>
-                  <span style="cursor:pointer; font-size:11px; font-weight:700; color:var(--tt-cyan); margin-top:2px; display:inline-block;" onclick="window.startReplyTo('${c.id}', '${r.author.replace(/'/g, "\\'")}')">Reply</span>
+                  <div style="display:flex; align-items:center; gap:10px; margin-top:3px;">
+                    <span style="cursor:pointer; font-size:11px; font-weight:700; color:var(--tt-cyan);" onclick="window.startReplyTo('${c.id}', '${r.author.replace(/'/g, "\\'")}')">Reply</span>
+                    ${isSuper ? `
+                      <span style="cursor:pointer; font-size:11px; font-weight:700; color:#ff6b81;" onclick="window.adminDeleteTokComment('${c.id}', true, '${r.id}')">🗑️ Delete</span>
+                    ` : ''}
+                  </div>
                 </div>
               </div>
             `).join('')}
@@ -1120,6 +1147,23 @@ document.addEventListener('DOMContentLoaded', () => {
         postCommentOrReply();
       }
     });
+
+    // Super Admin deletion handlers (luyandokandisha@gmail.com)
+    window.adminDeleteTokReel = function(reelId) {
+      const reel = reels.find(r => r.id === reelId);
+      const title = reel ? (reel.title || reel.caption || 'this Tok') : 'this Tok';
+      if (!confirm(`ADMIN ACTION:\nAre you sure you want to permanently delete "${title}"?\nThis cannot be undone.`)) return;
+      storage.deleteVideo(reelId);
+      tokShell.showToast('Tok deleted permanently by Super Admin 🗑️');
+      setTimeout(() => location.reload(), 600);
+    };
+
+    window.adminDeleteTokComment = function(commentId, isReply = false, replyId = null) {
+      if (!confirm('ADMIN ACTION:\nAre you sure you want to delete this comment permanently?')) return;
+      storage.deleteComment(commentId, currentCommentReelId, isReply, replyId, true);
+      renderCommentsUI();
+      tokShell.showToast('Comment deleted by Super Admin 🗑️');
+    };
   }
 
   renderReels();

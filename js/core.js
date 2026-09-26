@@ -1723,17 +1723,67 @@ class SoundFX {
 const soundFX = new SoundFX();
 
 // ==========================================
-// 4. PERSISTENT STORAGE LAYER
+// 4. PERSISTENT STORAGE LAYER & SUPER ADMIN
 // ==========================================
+const SUPER_ADMIN_EMAIL = 'luyandokandisha@gmail.com';
+
+function isSuperAdminUser(user) {
+  try {
+    const target = SUPER_ADMIN_EMAIL.toLowerCase();
+    if (user && user.email && (user.email + '').trim().toLowerCase() === target) return true;
+
+    const session = JSON.parse(localStorage.getItem('wave_session') || 'null');
+    if (session && session.email && (session.email + '').trim().toLowerCase() === target) return true;
+
+    const profile = JSON.parse(localStorage.getItem('wave_user_profile') || 'null');
+    if (profile && profile.email && (profile.email + '').trim().toLowerCase() === target) return true;
+
+    const currentUser = JSON.parse(localStorage.getItem('wave_current_user') || 'null');
+    if (currentUser && currentUser.email && (currentUser.email + '').trim().toLowerCase() === target) return true;
+
+    return false;
+  } catch(e) {
+    return false;
+  }
+}
+
+window.isSuperAdmin = isSuperAdminUser;
+
+window.loginAsSuperAdmin = function() {
+  const adminObj = {
+    uid: 'admin-luyando',
+    id: 'admin-luyando',
+    email: 'luyandokandisha@gmail.com',
+    displayName: 'Luyando Kandisha',
+    handle: '@luyandokandisha',
+    avatarLetter: 'L',
+    avatarUrl: '',
+    role: 'superadmin',
+    bio: 'TokTube Super Administrator & Lead Moderator 🛡️'
+  };
+  localStorage.setItem('wave_session', JSON.stringify(adminObj));
+  localStorage.setItem('wave_user_profile', JSON.stringify({
+    name: adminObj.displayName,
+    email: adminObj.email,
+    handle: adminObj.handle,
+    bio: adminObj.bio,
+    avatarLetter: adminObj.avatarLetter,
+    avatarUrl: adminObj.avatarUrl
+  }));
+  localStorage.setItem('wave_current_user', JSON.stringify(adminObj));
+  if (window.tokShell && tokShell.showToast) {
+    tokShell.showToast('Logged in as Super Admin (luyandokandisha@gmail.com) 🛡️');
+  }
+  setTimeout(() => location.reload(), 400);
+};
+
 class StorageManager {
   getYoutubeVideos() {
     try {
+      const deletedIds = JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]');
       const stored = JSON.parse(localStorage.getItem('wave_videos'));
-      if (stored && stored.length >= INITIAL_DATA.youtubeVideos.length) {
-        return stored;
-      }
-      localStorage.setItem('wave_videos', JSON.stringify(INITIAL_DATA.youtubeVideos));
-      return INITIAL_DATA.youtubeVideos;
+      let list = (stored && Array.isArray(stored)) ? stored : INITIAL_DATA.youtubeVideos;
+      return list.filter(v => !deletedIds.includes(v.id));
     } catch {
       return INITIAL_DATA.youtubeVideos;
     }
@@ -1744,12 +1794,22 @@ class StorageManager {
   }
 
   getVideoComments(videoId) {
+    const deletedList = JSON.parse(localStorage.getItem(`wave_deleted_comments_${videoId}`) || '[]');
+    let comments = [];
     try {
       const stored = localStorage.getItem(`wave_tube_comments_${videoId}`);
-      if (stored) return JSON.parse(stored);
+      if (stored) comments = JSON.parse(stored);
     } catch {}
-    const v = this.getYoutubeVideoById(videoId);
-    return (v && v.comments) ? v.comments : [];
+    if (!comments || comments.length === 0) {
+      const v = this.getYoutubeVideoById(videoId);
+      comments = (v && v.comments) ? JSON.parse(JSON.stringify(v.comments)) : [];
+    }
+    return comments.filter(c => !deletedList.includes(c.id)).map(c => {
+      if (c.replies && Array.isArray(c.replies)) {
+        c.replies = c.replies.filter(r => !deletedList.includes(r.id));
+      }
+      return c;
+    });
   }
 
   addVideoComment(videoId, comment) {
@@ -1763,12 +1823,10 @@ class StorageManager {
 
   getTiktokReels() {
     try {
+      const deletedIds = JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]');
       const stored = JSON.parse(localStorage.getItem('wave_reels'));
-      if (stored && stored.length >= INITIAL_DATA.tiktokReels.length) {
-        return stored;
-      }
-      localStorage.setItem('wave_reels', JSON.stringify(INITIAL_DATA.tiktokReels));
-      return INITIAL_DATA.tiktokReels;
+      let list = (stored && Array.isArray(stored)) ? stored : INITIAL_DATA.tiktokReels;
+      return list.filter(r => !deletedIds.includes(r.id));
     } catch {
       return INITIAL_DATA.tiktokReels;
     }
@@ -1780,14 +1838,149 @@ class StorageManager {
 
   getCreators() {
     try {
+      const deletedIds = JSON.parse(localStorage.getItem('wave_deleted_accounts') || '[]');
       const stored = JSON.parse(localStorage.getItem('wave_creators'));
-      if (stored && stored.length >= INITIAL_DATA.creators.length) {
-        return stored;
-      }
-      localStorage.setItem('wave_creators', JSON.stringify(INITIAL_DATA.creators));
-      return INITIAL_DATA.creators;
+      let list = (stored && Array.isArray(stored)) ? stored : INITIAL_DATA.creators;
+      return list.filter(c => 
+        !deletedIds.includes((c.id || '').toLowerCase()) && 
+        !deletedIds.includes((c.handle || '').toLowerCase()) && 
+        !deletedIds.includes((c.name || '').toLowerCase())
+      );
     } catch {
       return INITIAL_DATA.creators;
+    }
+  }
+
+  getRegisteredUsers() {
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('wave_deleted_accounts') || '[]');
+      const stored = JSON.parse(localStorage.getItem('wave_users') || '[]');
+      return stored.filter(u => 
+        !deletedIds.includes((u.email || '').toLowerCase()) && 
+        !deletedIds.includes((u.id || '').toLowerCase()) &&
+        !deletedIds.includes((u.uid || '').toLowerCase())
+      );
+    } catch {
+      return [];
+    }
+  }
+
+  // ---- Admin Deletion Capabilities (luyandokandisha@gmail.com) ----
+  deleteVideo(videoId) {
+    if (!videoId) return false;
+    try {
+      // 1. YouTube videos blacklist & store
+      const deletedVideoIds = JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]');
+      if (!deletedVideoIds.includes(videoId)) {
+        deletedVideoIds.push(videoId);
+        localStorage.setItem('wave_deleted_video_ids', JSON.stringify(deletedVideoIds));
+      }
+      const curVideos = JSON.parse(localStorage.getItem('wave_videos') || 'null');
+      if (curVideos) {
+        localStorage.setItem('wave_videos', JSON.stringify(curVideos.filter(v => v.id !== videoId)));
+      }
+
+      // 2. Tok Reels blacklist & store
+      const deletedReelIds = JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]');
+      if (!deletedReelIds.includes(videoId)) {
+        deletedReelIds.push(videoId);
+        localStorage.setItem('wave_deleted_reel_ids', JSON.stringify(deletedReelIds));
+      }
+      const curReels = JSON.parse(localStorage.getItem('wave_reels') || 'null');
+      if (curReels) {
+        localStorage.setItem('wave_reels', JSON.stringify(curReels.filter(r => r.id !== videoId)));
+      }
+
+      // 3. Clear comments & local blobs
+      localStorage.removeItem(`wave_tube_comments_${videoId}`);
+      localStorage.removeItem(`wave_comments_${videoId}`);
+      if (this.deleteVideoBlob) this.deleteVideoBlob(videoId).catch(() => {});
+
+      return true;
+    } catch(e) {
+      console.error('Error deleting video:', e);
+      return false;
+    }
+  }
+
+  deleteComment(commentId, videoOrReelId, isReply = false, replyId = null, isTok = false) {
+    if (!commentId || !videoOrReelId) return false;
+    try {
+      const delKey = `wave_deleted_comments_${videoOrReelId}`;
+      const deletedList = JSON.parse(localStorage.getItem(delKey) || '[]');
+      const idToBlacklist = isReply && replyId ? replyId : commentId;
+      if (!deletedList.includes(idToBlacklist)) {
+        deletedList.push(idToBlacklist);
+        localStorage.setItem(delKey, JSON.stringify(deletedList));
+      }
+
+      if (isTok) {
+        let stored = [];
+        try { stored = JSON.parse(localStorage.getItem(`wave_comments_${videoOrReelId}`)) || []; } catch(e) {}
+        if (isReply && replyId) {
+          const parent = stored.find(c => c.id === commentId);
+          if (parent && parent.replies) {
+            parent.replies = parent.replies.filter(r => r.id !== replyId);
+          }
+        } else {
+          stored = stored.filter(c => c.id !== commentId);
+        }
+        localStorage.setItem(`wave_comments_${videoOrReelId}`, JSON.stringify(stored));
+      } else {
+        let stored = this.getVideoComments(videoOrReelId);
+        if (isReply && replyId) {
+          const parent = stored.find(c => c.id === commentId);
+          if (parent && parent.replies) {
+            parent.replies = parent.replies.filter(r => r.id !== replyId);
+          }
+        } else {
+          stored = stored.filter(c => c.id !== commentId);
+        }
+        localStorage.setItem(`wave_tube_comments_${videoOrReelId}`, JSON.stringify(stored));
+      }
+      return true;
+    } catch(e) {
+      console.error('Error deleting comment:', e);
+      return false;
+    }
+  }
+
+  deleteAccount(accountIdOrEmail) {
+    if (!accountIdOrEmail) return false;
+    try {
+      const key = (accountIdOrEmail + '').trim().toLowerCase();
+      const deleted = JSON.parse(localStorage.getItem('wave_deleted_accounts') || '[]');
+      if (!deleted.includes(key)) {
+        deleted.push(key);
+        localStorage.setItem('wave_deleted_accounts', JSON.stringify(deleted));
+      }
+
+      const curCreators = JSON.parse(localStorage.getItem('wave_creators') || 'null');
+      if (curCreators) {
+        localStorage.setItem('wave_creators', JSON.stringify(curCreators.filter(c => 
+          (c.id || '').toLowerCase() !== key && 
+          (c.handle || '').toLowerCase() !== key &&
+          (c.name || '').toLowerCase() !== key
+        )));
+      }
+
+      const curUsers = JSON.parse(localStorage.getItem('wave_users') || '[]');
+      localStorage.setItem('wave_users', JSON.stringify(curUsers.filter(u => 
+        (u.email || '').toLowerCase() !== key && 
+        (u.id || '').toLowerCase() !== key &&
+        (u.uid || '').toLowerCase() !== key &&
+        (u.handle || '').toLowerCase() !== key
+      )));
+
+      const session = JSON.parse(localStorage.getItem('wave_session') || 'null');
+      if (session && ((session.email || '').toLowerCase() === key || (session.id || '').toLowerCase() === key)) {
+        localStorage.removeItem('wave_session');
+      }
+
+      return true;
+    } catch(e) {
+      console.error('Error deleting account:', e);
+      return false;
     }
   }
 
@@ -2509,7 +2702,7 @@ const auth = (() => {
     });
   }
 
-  return { signup, login, signInWithGoogle, logout, isAuthenticated, getCurrentUser };
+  return { signup, login, signInWithGoogle, logout, isAuthenticated, getCurrentUser, isSuperAdmin: isSuperAdminUser, loginAsSuperAdmin };
 })();
 
 // ==========================================
@@ -2684,6 +2877,14 @@ class waveShell {
             </div>
           </div>
 
+          <!-- Admin Studio Button (Super Admin only) -->
+          ${(typeof isSuperAdminUser === 'function' && isSuperAdminUser()) ? `
+            <button id="btn-admin-studio" class="btn-secondary" style="border-color:#ff4757;color:#ff6b81;font-weight:700;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;" onclick="tokShell.openAdminModal()" title="Admin Control Center (luyandokandisha@gmail.com)">
+              <span style="font-size:14px;">🛡️</span>
+              <span style="display:inline-block;">Admin Studio</span>
+            </button>
+          ` : ''}
+
           <!-- User Avatar / Profile -->
           <div id="header-user-avatar" class="user-avatar" title="Profile / Sign In" onclick="tokShell.openProfileModal()" style="cursor:pointer; overflow:hidden;">
             ${auth.isAuthenticated() && auth.getCurrentUser()
@@ -2756,6 +2957,13 @@ class waveShell {
             <svg viewBox="0 0 24 24" style="fill: var(--tt-pink);"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
             <span>Creator Studio</span>
           </a>
+          ${(typeof isSuperAdminUser === 'function' && isSuperAdminUser()) ? `
+            <a href="javascript:void(0)" onclick="tokShell.openAdminModal()" class="sidebar-item" style="color:#ff6b81;font-weight:700;">
+              <svg viewBox="0 0 24 24" style="fill:#ff4757;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+              <span>Admin Studio</span>
+              <span class="badge" style="background:#ff4757;color:#fff;font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;margin-left:auto;">ADMIN</span>
+            </a>
+          ` : ''}
           <a href="feedback.html" class="sidebar-item ${page === 'feedback' ? 'active' : ''}">
             <svg viewBox="0 0 24 24" style="fill: var(--tt-cyan);"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
             <span data-i18n="nav_feedback" style="color: var(--tt-cyan); font-weight: 700;">Feedback & Ideas</span>
@@ -2805,6 +3013,13 @@ class waveShell {
           <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:currentColor;"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
           <span style="color:var(--tt-cyan);font-weight:700;">Feedback &amp; Ideas</span>
         </a>
+        ${(typeof isSuperAdminUser === 'function' && isSuperAdminUser()) ? `
+          <a href="javascript:void(0)" onclick="tokShell.closeMobileDrawer();tokShell.openAdminModal()" class="mobile-drawer-item" style="color:#ff6b81;font-weight:700;">
+            <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:#ff4757;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            <span>Admin Studio</span>
+            <span class="badge" style="background:#ff4757;color:#fff;font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;margin-left:auto;">ADMIN</span>
+          </a>
+        ` : ''}
       </div>
 
       <!-- Always-visible bottom navigation bar -->
@@ -2842,6 +3057,7 @@ class waveShell {
 
     // Build profile modal body using real auth data
     let profileModalBody = '';
+    const isAdmin = (typeof isSuperAdminUser === 'function' && isSuperAdminUser()) || (window.isSuperAdmin && window.isSuperAdmin());
     if (!auth.isAuthenticated()) {
       profileModalBody = `
         <div style="text-align:center;padding:24px 0;">
@@ -2851,6 +3067,9 @@ class waveShell {
           <div style="display:flex;gap:10px;justify-content:center;">
             <button class="btn-primary" style="min-width:110px;" onclick="tokShell.closeModals();openAuthModal('signin')">Sign In</button>
             <button class="btn-secondary" style="min-width:110px;" onclick="tokShell.closeModals();openAuthModal('signup')">Create Account</button>
+          </div>
+          <div style="margin-top:16px;">
+            <button type="button" class="btn-secondary" style="width:100%;font-size:12px;border:1px dashed #ff4757;color:#ff6b81;padding:8px;" onclick="window.loginAsSuperAdmin()">⚡ Switch to Admin (luyandokandisha@gmail.com)</button>
           </div>
         </div>`;
     } else {
@@ -2865,6 +3084,22 @@ class waveShell {
         : `<span id="modal-user-avatar-text" style="font-size:26px;font-weight:800;">${letter}</span>`;
 
       profileModalBody = `
+        ${isAdmin ? `
+          <div style="background:rgba(255,71,87,0.15);border:1px solid rgba(255,71,87,0.4);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:20px;">🛡️</span>
+              <div>
+                <div style="color:#ff6b81;font-size:13px;font-weight:800;">Super Administrator</div>
+                <div style="font-size:11px;color:var(--text-muted);">Privileges active (Delete videos, comments, accounts)</div>
+              </div>
+            </div>
+            <button type="button" class="btn-primary" style="background:#ff4757;font-size:11px;padding:6px 12px;white-space:nowrap;border:none;" onclick="tokShell.openAdminModal()">Admin Studio</button>
+          </div>
+        ` : `
+          <div style="margin-bottom:14px;">
+            <button type="button" class="btn-secondary" style="width:100%;font-size:12px;border:1px dashed #ff4757;color:#ff6b81;padding:7px;" onclick="window.loginAsSuperAdmin()">⚡ Switch to Admin (luyandokandisha@gmail.com)</button>
+          </div>
+        `}
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border-subtle);">
           <div id="modal-user-avatar" class="user-avatar" style="width:72px;height:72px;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer;" onclick="document.getElementById('input-avatar-file').click()" title="Click to change photo">
             ${avatarHtml}
@@ -2944,6 +3179,11 @@ class waveShell {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
               </svg>
               <span id="google-btn-text">Continue with Google</span>
+            </button>
+
+            <!-- Quick Admin Sign-In Button -->
+            <button type="button" class="btn-secondary" style="width:100%;border:1px dashed rgba(255,71,87,0.6);color:#ff6b81;padding:9px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,71,87,0.06);" onclick="tokShell.closeModals();window.loginAsSuperAdmin()">
+              <span>🛡️ Sign In as Admin (luyandokandisha@gmail.com)</span>
             </button>
 
             <!-- Divider -->
@@ -3145,6 +3385,50 @@ class waveShell {
             <button type="button" onclick="tokShell.skipLocationSetup()" style="background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 4px;">
               Skip for now
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Studio & Moderation Modal (luyandokandisha@gmail.com) -->
+      <div id="admin-control-modal" class="modal-backdrop">
+        <div class="modal-window" style="max-width: 800px; width: 95%; max-height: 88vh; display: flex; flex-direction: column;">
+          <div class="modal-header" style="border-bottom: 1px solid var(--border-subtle); padding: 14px 20px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:38px; height:38px; border-radius:50%; background:rgba(255,71,87,0.15); border:1px solid rgba(255,71,87,0.3); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;">🛡️</div>
+              <div>
+                <div class="modal-title" style="font-size:17px; font-weight:800;">Admin Studio &amp; Moderation Center</div>
+                <div style="font-size:12px; color:var(--text-muted);">Master Account: <strong style="color:#ff6b81;">luyandokandisha@gmail.com</strong></div>
+              </div>
+            </div>
+            <button class="modal-close-btn" onclick="tokShell.closeAdminModal()">✕</button>
+          </div>
+
+          <div style="padding: 12px 20px 0; border-bottom: 1px solid var(--border-subtle); display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:space-between; background:var(--bg-card);">
+            <!-- Admin Tabs -->
+            <div style="display:flex; gap:6px; overflow-x:auto;">
+              <button id="admin-tab-btn-videos" class="btn-secondary active" onclick="tokShell.switchAdminTab('videos')" style="font-size:13px; font-weight:700; border-radius:6px 6px 0 0; border-bottom:none; padding:8px 14px;">
+                📹 Videos &amp; Toks (<span id="admin-badge-videos-count">0</span>)
+              </button>
+              <button id="admin-tab-btn-comments" class="btn-secondary" onclick="tokShell.switchAdminTab('comments')" style="font-size:13px; font-weight:700; border-radius:6px 6px 0 0; border-bottom:none; padding:8px 14px;">
+                💬 Comments (<span id="admin-badge-comments-count">0</span>)
+              </button>
+              <button id="admin-tab-btn-accounts" class="btn-secondary" onclick="tokShell.switchAdminTab('accounts')" style="font-size:13px; font-weight:700; border-radius:6px 6px 0 0; border-bottom:none; padding:8px 14px;">
+                👥 Accounts &amp; Creators (<span id="admin-badge-accounts-count">0</span>)
+              </button>
+            </div>
+            <!-- Search bar inside admin modal -->
+            <div style="margin-bottom:8px; min-width:200px;">
+              <input type="text" id="admin-search-input" class="form-input" placeholder="Filter items..." oninput="tokShell.onAdminSearch(this.value)" style="font-size:12px; padding:6px 12px; width:100%;">
+            </div>
+          </div>
+
+          <div class="modal-body" id="admin-modal-body" style="padding:16px 20px; overflow-y:auto; flex:1; max-height:calc(88vh - 165px); display:flex; flex-direction:column; gap:12px;">
+            <!-- Injected dynamically by tokShell.renderAdmin... -->
+          </div>
+
+          <div style="padding:10px 20px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text-muted); background:var(--bg-elevated); border-radius:0 0 var(--radius-lg) var(--radius-lg);">
+            <span>🛡️ Super Admin items are deleted immediately and permanently.</span>
+            <button class="btn-secondary" style="font-size:12px; padding:5px 12px;" onclick="tokShell.closeAdminModal()">Close</button>
           </div>
         </div>
       </div>
@@ -3548,6 +3832,330 @@ class waveShell {
 
   closeModals() {
     document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+  }
+
+  // ----------------------------------------------------
+  // Super Admin Control Center Methods (luyandokandisha@gmail.com)
+  // ----------------------------------------------------
+  openAdminModal() {
+    const isSuper = (typeof isSuperAdminUser === 'function' && isSuperAdminUser()) || (window.isSuperAdmin && window.isSuperAdmin());
+    if (!isSuper) {
+      if (confirm('Admin Studio is reserved for master account: luyandokandisha@gmail.com.\n\nWould you like to activate and log in as Super Admin now?')) {
+        window.loginAsSuperAdmin();
+      }
+      return;
+    }
+
+    this.renderGlobalModals();
+    const modal = document.getElementById('admin-control-modal');
+    if (modal) {
+      modal.classList.add('open');
+      this.currentAdminTab = this.currentAdminTab || 'videos';
+      this.switchAdminTab(this.currentAdminTab);
+      if (window.soundFX && soundFX.playSwitchSound) soundFX.playSwitchSound();
+    }
+  }
+
+  closeAdminModal() {
+    const modal = document.getElementById('admin-control-modal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  onAdminSearch(query) {
+    this.adminFilterQuery = (query || '').trim().toLowerCase();
+    this.switchAdminTab(this.currentAdminTab || 'videos');
+  }
+
+  switchAdminTab(tabName) {
+    this.currentAdminTab = tabName;
+    ['videos', 'comments', 'accounts'].forEach(t => {
+      const btn = document.getElementById(`admin-tab-btn-${t}`);
+      if (btn) {
+        if (t === tabName) {
+          btn.classList.add('active');
+          btn.style.background = '#ff4757';
+          btn.style.color = '#fff';
+        } else {
+          btn.classList.remove('active');
+          btn.style.background = 'var(--bg-elevated)';
+          btn.style.color = 'var(--text-secondary)';
+        }
+      }
+    });
+
+    if (tabName === 'videos') {
+      this.renderAdminVideos(this.adminFilterQuery);
+    } else if (tabName === 'comments') {
+      this.renderAdminComments(this.adminFilterQuery);
+    } else if (tabName === 'accounts') {
+      this.renderAdminAccounts(this.adminFilterQuery);
+    }
+  }
+
+  renderAdminVideos(filter = '') {
+    const container = document.getElementById('admin-modal-body');
+    const badgeEl = document.getElementById('admin-badge-videos-count');
+    if (!container) return;
+
+    const longVideos = storage.getYoutubeVideos().map(v => ({ ...v, _type: 'Video', _creatorName: v.channel?.name || 'Creator' }));
+    const tokReels = storage.getTiktokReels().map(r => ({ ...r, _type: 'Tok Reel', _creatorName: r.creator?.name || 'Creator' }));
+    const allVideos = [...longVideos, ...tokReels];
+
+    if (badgeEl) badgeEl.textContent = allVideos.length;
+
+    let filtered = allVideos;
+    if (filter) {
+      filtered = allVideos.filter(v => 
+        (v.title || '').toLowerCase().includes(filter) ||
+        (v._creatorName || '').toLowerCase().includes(filter) ||
+        (v.category || '').toLowerCase().includes(filter) ||
+        (v.id || '').toLowerCase().includes(filter)
+      );
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:36px 0; color:var(--text-muted);"><div style="font-size:36px; margin-bottom:8px;">📹</div>No videos matching "${filter || ''}"</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(v => `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px 14px;">
+        <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+          <img src="${v.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=120'}" style="width:72px; height:46px; object-fit:cover; border-radius:6px; flex-shrink:0;">
+          <div style="min-width:0; flex:1;">
+            <div style="font-size:13px; font-weight:700; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${v.title || 'Untitled'}</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:3px; font-size:11px; color:var(--text-muted);">
+              <span>${v._creatorName}</span>
+              <span>•</span>
+              <span class="badge ${v._type === 'Tok Reel' ? 'badge-tok' : 'badge-tube'}" style="font-size:9px; padding:1px 5px;">${v._type}</span>
+              <span>•</span>
+              <span>ID: ${v.id}</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-secondary" style="border-color:#ff4757; color:#ff6b81; font-size:12px; font-weight:700; padding:6px 12px; white-space:nowrap; flex-shrink:0;" onclick="tokShell.deleteVideoByAdmin('${v.id}', '${(v.title || '').replace(/'/g, "\\'")}')">
+          🗑️ Delete Video
+        </button>
+      </div>
+    `).join('');
+  }
+
+  renderAdminComments(filter = '') {
+    const container = document.getElementById('admin-modal-body');
+    const badgeEl = document.getElementById('admin-badge-comments-count');
+    if (!container) return;
+
+    let allComments = [];
+    storage.getYoutubeVideos().forEach(v => {
+      const vComments = storage.getVideoComments(v.id);
+      vComments.forEach(c => {
+        allComments.push({
+          id: c.id,
+          sourceId: v.id,
+          sourceTitle: v.title,
+          isTok: false,
+          author: c.author || 'User',
+          avatar: c.avatar || '',
+          text: c.text || '',
+          time: c.time || '1d ago'
+        });
+        if (c.replies && Array.isArray(c.replies)) {
+          c.replies.forEach(r => {
+            allComments.push({
+              id: r.id,
+              parentId: c.id,
+              sourceId: v.id,
+              sourceTitle: v.title,
+              isTok: false,
+              isReply: true,
+              author: r.author || 'User',
+              avatar: r.avatar || '',
+              text: r.text || '',
+              time: r.time || '1d ago'
+            });
+          });
+        }
+      });
+    });
+
+    storage.getTiktokReels().forEach(r => {
+      let rComments = [];
+      try {
+        const deletedIds = JSON.parse(localStorage.getItem(`wave_deleted_comments_${r.id}`) || '[]');
+        const stored = JSON.parse(localStorage.getItem(`wave_comments_${r.id}`)) || [];
+        const defaults = (r.comments || []);
+        rComments = [...defaults, ...stored].filter(c => !deletedIds.includes(c.id));
+      } catch(e) {}
+      rComments.forEach(c => {
+        allComments.push({
+          id: c.id,
+          sourceId: r.id,
+          sourceTitle: r.title || 'Tok Reel',
+          isTok: true,
+          author: c.author || 'User',
+          avatar: c.avatar || '',
+          text: c.text || '',
+          time: c.time || '1d ago'
+        });
+        if (c.replies && Array.isArray(c.replies)) {
+          c.replies.forEach(rep => {
+            allComments.push({
+              id: rep.id,
+              parentId: c.id,
+              sourceId: r.id,
+              sourceTitle: r.title || 'Tok Reel',
+              isTok: true,
+              isReply: true,
+              author: rep.author || 'User',
+              avatar: rep.avatar || '',
+              text: rep.text || '',
+              time: rep.time || '1d ago'
+            });
+          });
+        }
+      });
+    });
+
+    if (badgeEl) badgeEl.textContent = allComments.length;
+
+    let filtered = allComments;
+    if (filter) {
+      filtered = allComments.filter(c => 
+        (c.text || '').toLowerCase().includes(filter) ||
+        (c.author || '').toLowerCase().includes(filter) ||
+        (c.sourceTitle || '').toLowerCase().includes(filter)
+      );
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:36px 0; color:var(--text-muted);"><div style="font-size:36px; margin-bottom:8px;">💬</div>No comments found</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(c => `
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px 14px;">
+        <div style="display:flex; align-items:flex-start; gap:10px; min-width:0; flex:1;">
+          <div class="user-avatar" style="width:32px; height:32px; font-size:12px; flex-shrink:0;">
+            ${c.avatar ? `<img src="${c.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : c.author.charAt(0).toUpperCase()}
+          </div>
+          <div style="min-width:0; flex:1;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:13px; font-weight:700; color:#fff;">${c.author}</span>
+              ${c.isReply ? '<span class="badge" style="font-size:9px; background:rgba(255,255,255,0.1); color:#ccc;">Reply</span>' : ''}
+              <span style="font-size:11px; color:var(--text-muted);">${c.time}</span>
+              <span class="badge ${c.isTok ? 'badge-tok' : 'badge-tube'}" style="font-size:9px; padding:1px 5px;">${c.isTok ? 'Tok' : 'Tube'}</span>
+            </div>
+            <p style="font-size:13px; color:#ddd; margin:4px 0; line-height:1.4;">${c.text}</p>
+            <div style="font-size:11px; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              On: <span style="color:var(--text-secondary);">${c.sourceTitle}</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-secondary" style="border-color:#ff4757; color:#ff6b81; font-size:12px; font-weight:700; padding:6px 12px; white-space:nowrap; flex-shrink:0;" onclick="tokShell.deleteCommentByAdmin('${c.id}', '${c.sourceId}', ${c.isTok}, '${(c.author || '').replace(/'/g, "\\'")}', ${c.isReply ? 'true' : 'false'}, '${c.parentId || ''}')">
+          🗑️ Delete
+        </button>
+      </div>
+    `).join('');
+  }
+
+  renderAdminAccounts(filter = '') {
+    const container = document.getElementById('admin-modal-body');
+    const badgeEl = document.getElementById('admin-badge-accounts-count');
+    if (!container) return;
+
+    const creators = storage.getCreators().map(c => ({
+      key: c.id,
+      name: c.name,
+      handle: c.handle,
+      avatar: c.avatar,
+      subscribers: c.subscribers || '10K',
+      type: 'Creator Channel'
+    }));
+
+    const registered = storage.getRegisteredUsers().map(u => ({
+      key: u.email || u.id,
+      name: u.displayName || u.username || 'Registered User',
+      handle: u.email,
+      avatar: u.avatarUrl || '',
+      letter: u.avatarLetter || 'U',
+      subscribers: u.role || 'Member',
+      type: 'User Account'
+    }));
+
+    const allAccounts = [...creators, ...registered];
+    if (badgeEl) badgeEl.textContent = allAccounts.length;
+
+    let filtered = allAccounts;
+    if (filter) {
+      filtered = allAccounts.filter(a => 
+        (a.name || '').toLowerCase().includes(filter) ||
+        (a.handle || '').toLowerCase().includes(filter) ||
+        (a.key || '').toLowerCase().includes(filter)
+      );
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:36px 0; color:var(--text-muted);"><div style="font-size:36px; margin-bottom:8px;">👥</div>No accounts matching "${filter || ''}"</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(a => `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px 14px;">
+        <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+          <div class="user-avatar" style="width:40px; height:40px; font-size:15px; flex-shrink:0;">
+            ${a.avatar ? `<img src="${a.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : (a.letter || a.name.charAt(0).toUpperCase())}
+          </div>
+          <div style="min-width:0; flex:1;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:14px; font-weight:700; color:#fff;">${a.name}</span>
+              <span class="badge ${a.type === 'Creator Channel' ? 'badge-tok' : 'badge-edu'}" style="font-size:9px; padding:1px 6px;">${a.type}</span>
+            </div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">
+              ${a.handle} • ${a.subscribers}
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-secondary" style="border-color:#ff4757; color:#ff6b81; font-size:12px; font-weight:700; padding:6px 12px; white-space:nowrap; flex-shrink:0;" onclick="tokShell.deleteAccountByAdmin('${a.key}', '${(a.name || '').replace(/'/g, "\\'")}')">
+          🗑️ Delete Account
+        </button>
+      </div>
+    `).join('');
+  }
+
+  deleteVideoByAdmin(videoId, title) {
+    if (!confirm(`ADMIN ACTION:\nAre you sure you want to permanently delete "${title}"?\nThis cannot be undone.`)) return;
+    const ok = storage.deleteVideo(videoId);
+    if (ok) {
+      this.showToast('Video deleted permanently by Super Admin 🗑️');
+      this.renderAdminVideos(this.adminFilterQuery);
+      if (window.soundFX && soundFX.playSubscribeSound) soundFX.playSubscribeSound();
+    } else {
+      this.showToast('Could not delete video');
+    }
+  }
+
+  deleteCommentByAdmin(commentId, videoOrReelId, isTok, author, isReply = false, parentId = '') {
+    if (!confirm(`ADMIN ACTION:\nAre you sure you want to delete this comment by "${author}"?`)) return;
+    const ok = storage.deleteComment(commentId, videoOrReelId, isReply, isReply ? commentId : null, isTok);
+    if (ok) {
+      this.showToast('Comment deleted by Super Admin 🗑️');
+      this.renderAdminComments(this.adminFilterQuery);
+      if (window.soundFX && soundFX.playSubscribeSound) soundFX.playSubscribeSound();
+    } else {
+      this.showToast('Could not delete comment');
+    }
+  }
+
+  deleteAccountByAdmin(accountKey, name) {
+    if (!confirm(`ADMIN ACTION:\nAre you sure you want to permanently delete the account "${name}" (${accountKey})?\nAll profile data and channel access will be removed.`)) return;
+    const ok = storage.deleteAccount(accountKey);
+    if (ok) {
+      this.showToast(`Account "${name}" deleted permanently 🗑️`);
+      this.renderAdminAccounts(this.adminFilterQuery);
+      if (window.soundFX && soundFX.playSubscribeSound) soundFX.playSubscribeSound();
+    } else {
+      this.showToast('Could not delete account');
+    }
   }
 
   showToast(message) {

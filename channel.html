@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -495,6 +495,11 @@
               <span>💼</span>
               <span>Sponsor Creator</span>
             </button>
+            <!-- Super Admin Delete Account Button -->
+            <button class="btn btn-admin-delete" id="btn-admin-delete-account" style="display:none;background:rgba(255,71,87,0.15);border:1px solid #ff4757;color:#ff6b81;font-weight:700;">
+              <span>🗑️</span>
+              <span>Delete Account (Admin)</span>
+            </button>
           </div>
         </div>
 
@@ -803,6 +808,26 @@
           });
         }
 
+        // Super Admin Account Deletion Wiring (luyandokandisha@gmail.com)
+        const btnAdminDelAcc = qs('#btn-admin-delete-account');
+        const isSuper = (window.isSuperAdmin ? window.isSuperAdmin() : (auth.isSuperAdmin && auth.isSuperAdmin()));
+        if (btnAdminDelAcc && isSuper) {
+          btnAdminDelAcc.style.display = 'inline-flex';
+          btnAdminDelAcc.addEventListener('click', () => {
+            if (!confirm(`ADMIN ACTION:\nAre you sure you want to permanently delete the account/channel "${creator.name}" (${creator.handle})?\nAll channel data will be removed.`)) return;
+            storage.deleteAccount(creatorId);
+            showToast(`Channel "${creator.name}" deleted permanently by Super Admin 🗑️`);
+            setTimeout(() => window.location.href = 'index.html', 800);
+          });
+        }
+
+        window.adminDeleteChannelVideo = function(videoId) {
+          if (!confirm('ADMIN ACTION:\nAre you sure you want to delete this video permanently?')) return;
+          storage.deleteVideo(videoId);
+          showToast('Video deleted by Super Admin 🗑️');
+          setTimeout(() => location.reload(), 600);
+        };
+
         // 4. Render Creator Videos with Tab Filtering
         const videos = storage.getVideosByCreatorId ? storage.getVideosByCreatorId(creatorId) : [];
         const tubeVideos = videos.filter(v => !v.creator);
@@ -838,10 +863,15 @@
             const timeText = v.timestamp ? `• ${v.timestamp}` : '';
 
             return `
-              <a href="${link}" class="video-card">
-                <div class="video-thumb-wrap">
+              <a href="${link}" class="video-card" style="position:relative;">
+                <div class="video-thumb-wrap" style="position:relative;">
                   <img src="${v.thumbnail || ''}" alt="${v.title || ''}" class="video-thumb" loading="lazy" />
                   <span class="video-type-badge ${badgeClass}">${badgeText}</span>
+                  ${isSuper ? `
+                    <button type="button" onclick="event.preventDefault(); event.stopPropagation(); window.adminDeleteChannelVideo('${v.id}')" title="Admin Delete Video" style="position:absolute;top:6px;right:6px;background:rgba(255,71,87,0.88);color:#fff;border:none;border-radius:4px;padding:3px 7px;font-size:11px;font-weight:700;cursor:pointer;z-index:10;">
+                      🗑️
+                    </button>
+                  ` : ''}
                 </div>
                 <div class="video-info">
                   <h3 class="video-title">${v.title || 'Untitled Video'}</h3>

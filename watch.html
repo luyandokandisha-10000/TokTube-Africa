@@ -122,6 +122,11 @@
                     <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                     <span id="watch-download-label">Save</span>
                   </button>
+                  <!-- Admin Delete Video Button (Super Admin) -->
+                  <button id="btn-admin-delete-video" class="watch-action-pill" style="display:none;background:rgba(255,71,87,0.15);border:1px solid #ff4757;color:#ff6b81;font-weight:700;" title="Delete Video (Admin)">
+                    <span>🗑️</span>
+                    <span>Delete (Admin)</span>
+                  </button>
                   <!-- Tip Creator Button — hidden until payment system is live -->
                   <button id="btn-watch-tip" class="watch-action-pill watch-pill-tip" style="display:none !important;" title="Tip creator">
                     <span>☕</span>
@@ -653,6 +658,7 @@
         let totalCount = comments.length;
         comments.forEach(c => { if (c.replies) totalCount += c.replies.length; });
         commentsCount.textContent = totalCount;
+        const isSuper = (window.isSuperAdmin ? window.isSuperAdmin() : (auth.isSuperAdmin && auth.isSuperAdmin()));
 
         commentsList.innerHTML = comments.map(c => {
           const repliesHtml = (c.replies && c.replies.length > 0) ? `
@@ -670,6 +676,11 @@
                       <button style="cursor: pointer; display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--text-muted);" onclick="window.likeWatchComment('${c.id}', true, '${r.id}')">
                         👍 <span>${r.likes || 1}</span>
                       </button>
+                      ${isSuper ? `
+                        <button style="cursor: pointer; background: none; border: none; color: #ff6b81; font-weight: 700; margin-left: 6px;" onclick="window.adminDeleteWatchComment('${c.id}', true, '${r.id}')">
+                          🗑️ Delete
+                        </button>
+                      ` : ''}
                     </div>
                   </div>
                 </div>
@@ -699,6 +710,11 @@
                     👍 <span>${c.likes || 0}</span>
                   </button>
                   <button style="cursor: pointer; background: none; border: none; color: var(--text-muted);" onclick="window.openReplyTo('${c.id}')">Reply</button>
+                  ${isSuper ? `
+                    <button style="cursor: pointer; background: none; border: none; color: #ff6b81; font-weight: 700; margin-left: 6px;" onclick="window.adminDeleteWatchComment('${c.id}', false)">
+                      🗑️ Delete
+                    </button>
+                  ` : ''}
                 </div>
                 ${replyBoxHtml}
                 ${repliesHtml}
@@ -794,6 +810,27 @@
       });
 
       renderComments();
+
+      // Admin Deletion Capabilities (luyandokandisha@gmail.com)
+      window.adminDeleteWatchComment = function(commentId, isReply = false, replyId = null) {
+        if (!confirm('ADMIN ACTION:\nAre you sure you want to permanently delete this comment?')) return;
+        storage.deleteComment(commentId, video.id, isReply, replyId, false);
+        comments = storage.getVideoComments(video.id);
+        renderComments();
+        tokShell.showToast('Comment deleted by Super Admin 🗑️');
+      };
+
+      const btnAdminDelVideo = document.getElementById('btn-admin-delete-video');
+      const isSuperUser = (window.isSuperAdmin ? window.isSuperAdmin() : (auth.isSuperAdmin && auth.isSuperAdmin()));
+      if (btnAdminDelVideo && isSuperUser) {
+        btnAdminDelVideo.style.display = 'inline-flex';
+        btnAdminDelVideo.addEventListener('click', () => {
+          if (!confirm(`ADMIN ACTION:\nAre you sure you want to permanently delete "${video.title}"?\nThis cannot be undone.`)) return;
+          storage.deleteVideo(video.id);
+          tokShell.showToast('Video deleted permanently by Super Admin 🗑️');
+          setTimeout(() => window.location.href = 'index.html', 800);
+        });
+      }
 
       // Related Videos Queue
       const relatedList = document.getElementById('related-videos-list');
