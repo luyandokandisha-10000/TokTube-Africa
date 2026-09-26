@@ -640,9 +640,24 @@
   #btn-nav-golive {
     display: none;
   }
-  .nav-live-btn,
-  .nav-learn-btn {
+  .nav-live-btn {
     display: none;
+  }
+  .nav-learn-btn {
+    display: inline-flex;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .nav-learn-btn span {
+    display: none;
+  }
+  .nav-learn-btn svg {
+    width: 17px !important;
+    height: 17px !important;
   }
   .lang-select-btn #current-lang-label,
   .lang-select-btn svg {
@@ -713,6 +728,12 @@
   }
   .btn-search {
     width: 38px;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-learn-btn {
+    display: none;
   }
 }
 

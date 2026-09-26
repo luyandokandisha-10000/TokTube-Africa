@@ -1920,20 +1920,22 @@ class waveShell {
   }
 
   init() {
-    this.renderHeader();
-    this.renderSidebar();
-    this.renderMobileNav();
-    this.renderGlobalModals();
-    this.bindGlobalEvents();
-    i18n.setLanguage(i18n.currentLang);
+    try { this.renderHeader(); } catch (e) { console.error('Error in renderHeader:', e); }
+    try { this.renderSidebar(); } catch (e) { console.error('Error in renderSidebar:', e); }
+    try { this.renderMobileNav(); } catch (e) { console.error('Error in renderMobileNav:', e); }
+    try { this.renderGlobalModals(); } catch (e) { console.error('Error in renderGlobalModals:', e); }
+    try { this.bindGlobalEvents(); } catch (e) { console.error('Error in bindGlobalEvents:', e); }
+    try { i18n.setLanguage(i18n.currentLang); } catch (e) { console.error('Error in setLanguage:', e); }
 
     // Auto-prompt location on Toks feed if not configured yet
     setTimeout(() => {
-      const hasLocation = localStorage.getItem('wave_user_location');
-      const skipped = sessionStorage.getItem('wave_location_skipped');
-      if (!hasLocation && !skipped && document.body.dataset.page === 'toks') {
-        this.openLocationModal();
-      }
+      try {
+        const hasLocation = localStorage.getItem('wave_user_location');
+        const skipped = sessionStorage.getItem('wave_location_skipped');
+        if (!hasLocation && !skipped && document.body.dataset.page === 'toks') {
+          this.openLocationModal();
+        }
+      } catch (e) {}
     }, 1200);
   }
 
@@ -1941,6 +1943,7 @@ class waveShell {
     const headerContainer = document.getElementById('navbar-container');
     if (!headerContainer) return;
 
+    const page = this.currentPage;
     const profile = storage.getUserProfile();
     const streak = storage.getEduStreak();
     const isEduActive = storage.isEduBoostActive();
