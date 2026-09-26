@@ -425,7 +425,7 @@ class TranslationEngine {
 const i18n = new TranslationEngine();
 
 // ==========================================
-// 2. ENRICHED PAN-AFRICAN & EDUCATIONAL DATA
+// 2. ENRICHED GLOBAL & EDUCATIONAL DATA
 // ==========================================
 const INITIAL_DATA = {
   // African Creators & Innovators
@@ -1839,7 +1839,7 @@ class waveApp {
     const whatsappBtn = document.getElementById('btn-invite-whatsapp');
     if (whatsappBtn) {
       whatsappBtn.addEventListener('click', () => {
-        const text = encodeURIComponent("Join me on wave.africa! Watch African toks, learn STEM & chat: https://wave.africa");
+        const text = encodeURIComponent("Join me on wave.africa! Watch toks, learn STEM & chat: https://wave.africa");
         window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
       });
     }
@@ -1847,7 +1847,7 @@ class waveApp {
     const telegramBtn = document.getElementById('btn-invite-telegram');
     if (telegramBtn) {
       telegramBtn.addEventListener('click', () => {
-        const text = encodeURIComponent("Join wave.africa! The Pan-African video & learning community.");
+        const text = encodeURIComponent("Join wave.africa! The video & learning community.");
         window.open(`https://t.me/share/url?url=https://wave.africa&text=${text}`, '_blank');
       });
     }
@@ -2140,7 +2140,7 @@ class waveApp {
       handle: "@creator",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
       banner: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200",
-      bio: "Creator on wave.africa! Inspiring youth across the continent 🌍✨",
+      bio: "Creator on wave! Inspiring creativity everywhere ✨🌟",
       followers: "120K",
       following: 54,
       likes: "1.2M",

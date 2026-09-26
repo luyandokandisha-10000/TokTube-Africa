@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Streams - wave.africa</title>
+  <title>Live Streams - wave</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF0000'><circle cx='12' cy='12' r='8'/></svg>">
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/navbar.css">
@@ -310,11 +310,11 @@
             </div>
             <div>
               <div style="display:flex; align-items:center; gap:8px;">
-                <h1 style="font-size:18px; font-weight:800; letter-spacing:0.2px;">Pan-African Live Broadcasts</h1>
+                <h1 style="font-size:18px; font-weight:800; letter-spacing:0.2px;">Live Broadcasts</h1>
                 <span class="live-tag-badge" style="position:static; box-shadow:none; padding:2px 8px; font-size:10px;"><span class="live-pulse-dot"></span> ON AIR</span>
               </div>
               <p style="font-size:12px; color:var(--text-muted); margin-top:2px;">
-                Watch Pan-African streams or broadcast your own: Video Live (16:9) or Short Live (9:16).
+                Watch live streams or broadcast your own: Video Live (16:9) or Short Live (9:16).
               </p>
             </div>
           </div>
@@ -394,7 +394,7 @@
             <div class="live-chat-messages" id="live-chat-box">
               <div class="live-msg"><span class="live-msg-author">Faraji_Tech:</span><span>Greetings from Nairobi! Great rhythms Kwame 🇰🇪🔥</span></div>
               <div class="live-msg"><span class="live-msg-author">Adaeze_Dev:</span><span>The audio quality is crystal clear over wave!</span></div>
-              <div class="live-msg"><span class="live-msg-author">Kofi_Accra:</span><span>Shoutout to everyone building African STEM tech 🇬🇭💻</span></div>
+              <div class="live-msg"><span class="live-msg-author">Kofi_Accra:</span><span>Shoutout to everyone building STEM tech! 💻✨</span></div>
             </div>
 
             <div class="live-reaction-bar">
@@ -420,7 +420,7 @@
                 <span>📡</span> Choose a Live Stream to Watch
               </h2>
               <p id="live-browse-desc" style="font-size:13px; color:var(--text-muted); margin-top:3px;">
-                Select any active Pan-African livestream below to start watching and join the live chat
+                Select any active livestream below to start watching and join the live chat
               </p>
             </div>
             <!-- Format Filter Tabs -->
@@ -469,7 +469,7 @@
 
         <div style="margin-bottom:16px;">
           <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">2. Stream Title</label>
-          <input type="text" id="live-setup-title" class="form-input" placeholder="e.g., Live Coding Python & AI in Nairobi 🚀🇰🇪" value="My Live African Broadcast 🔴">
+          <input type="text" id="live-setup-title" class="form-input" placeholder="e.g., Live Coding Python & AI in Nairobi 🚀🇰🇪" value="My Live Broadcast 🔴">
         </div>
 
         <div style="margin-bottom:16px;">
@@ -478,7 +478,7 @@
             <option value="Music & Culture">🎵 Music & Culture</option>
             <option value="STEM & Robotics">⚡ STEM & Robotics</option>
             <option value="Coding & AI">💻 Coding & AI</option>
-            <option value="African Comedy">😂 African Comedy</option>
+            <option value="Comedy">😂 Comedy</option>
             <option value="AgriTech">🌱 AgriTech & Food</option>
           </select>
         </div>
@@ -806,7 +806,7 @@
         if (playerContainer) playerContainer.style.display = 'grid';
         if (backBar) backBar.style.display = 'flex';
         if (browseTitle) browseTitle.textContent = 'Explore More Live Streams';
-        if (browseDesc) browseDesc.textContent = 'Switch to another Pan-African broadcast or filter by format';
+        if (browseDesc) browseDesc.textContent = 'Switch to another live broadcast or filter by format';
 
         // Update URL query parameter without full reload
         const newUrl = new URL(window.location.href);
@@ -850,7 +850,7 @@
         if (playerContainer) playerContainer.style.display = 'none';
         if (backBar) backBar.style.display = 'none';
         if (browseTitle) browseTitle.textContent = 'Choose a Live Stream to Watch';
-        if (browseDesc) browseDesc.textContent = 'Select any active Pan-African livestream below to start watching and join the live chat';
+        if (browseDesc) browseDesc.textContent = 'Select any active livestream below to start watching and join the live chat';
 
         // Clean up URL without stream param
         const newUrl = new URL(window.location.href);
@@ -896,7 +896,7 @@
           const browseTitle = document.getElementById('live-browse-title');
           const browseDesc = document.getElementById('live-browse-desc');
           if (browseTitle) browseTitle.textContent = 'Choose a Live Stream to Watch';
-          if (browseDesc) browseDesc.textContent = 'Select any active Pan-African livestream below to start watching and join the live chat';
+          if (browseDesc) browseDesc.textContent = 'Select any active livestream below to start watching and join the live chat';
           renderFullStreams(currentFilter);
         }
       });
@@ -983,7 +983,7 @@
       const simMessages = [
         { author: "Zola_Agri", text: "Connecting autonomous drone telemetry now! 🚁" },
         { author: "SolarNakuru", text: "Microgrid output is at 98% efficiency today ⚡" },
-        { author: "NairobiCoder", text: "Greetings to all Pan-African tech innovators!" },
+        { author: "NairobiCoder", text: "Greetings to all tech innovators!" },
         { author: "Troll_Bots", text: "Spam link http://bad-link.com click now!" },
         { author: "Moyo_Harare", text: "Loving this session! Great sound Kwame 🎧" }
       ];
@@ -1294,7 +1294,7 @@
         try {
           const titleInput = document.getElementById('live-setup-title');
           const categorySelect = document.getElementById('live-setup-category');
-          const title = (titleInput && titleInput.value.trim()) || 'My African Live Broadcast 🔴';
+          const title = (titleInput && titleInput.value.trim()) || 'My Live Broadcast 🔴';
           const category = (categorySelect && categorySelect.value) || 'Music & Culture';
 
           // Get creator profile or auth user safely
@@ -1397,7 +1397,7 @@
           if (playerContainer) playerContainer.style.display = 'grid';
           if (backBar) backBar.style.display = 'flex';
           if (browseTitle) browseTitle.textContent = 'Explore More Live Streams';
-          if (browseDesc) browseDesc.textContent = 'Switch to another Pan-African broadcast or filter by format';
+          if (browseDesc) browseDesc.textContent = 'Switch to another live broadcast or filter by format';
           loadStream(initialStream);
         }
       } else {
@@ -1409,7 +1409,7 @@
         if (playerContainer) playerContainer.style.display = 'none';
         if (backBar) backBar.style.display = 'none';
         if (browseTitle) browseTitle.textContent = 'Choose a Live Stream to Watch';
-        if (browseDesc) browseDesc.textContent = 'Select any active Pan-African livestream below to start watching and join the live chat';
+        if (browseDesc) browseDesc.textContent = 'Select any active livestream below to start watching and join the live chat';
       }
       renderFullStreams('all');
     });

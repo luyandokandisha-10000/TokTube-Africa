@@ -1,7 +1,7 @@
 /**
  * wave.africa — Personalised Recommendation Engine & Feed Algorithm
  * Ranks Toks tailored to:
- *  1. User Location (country, city, Pan-African priority)
+ *  1. User Location (country, city, Personalised & Trending priority)
  *  2. User Attention & Intent (likes, bookmarks, reposts, watch history, subscriptions)
  *  3. Trending velocity & Content freshness
  */
@@ -26,8 +26,8 @@ function scoreReel(reel, userProfile, context, allReels) {
     score += 15; // City-level hyper-local relevance (e.g. Lusaka, Ndola)
   }
 
-  // Pan-African content bonus
-  if ((reel.continent || '').toLowerCase() === 'africa') {
+  // Content engagement quality bonus
+  if (reel.views > 1000 || reel.likes > 100) {
     score += 8;
   }
 

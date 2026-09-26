@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Direct Messages - wave.africa</title>
+  <title>Direct Messages - wave</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FE2C55'><path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z'/></svg>">
 
   <!-- Stylesheets -->
@@ -83,7 +83,7 @@
 
             <!-- Chat Footer Input -->
             <div class="chat-input-bar" style="padding: 14px 20px; border-top: 1px solid var(--border-subtle); background: var(--bg-surface); display: flex; gap: 10px; align-items: center;">
-              <input type="text" id="chat-msg-input" class="form-input" placeholder="Type a message to this African creator..." style="flex: 1;">
+              <input type="text" id="chat-msg-input" class="form-input" placeholder="Type a message to this creator..." style="flex: 1;">
               <button id="btn-send-message" class="btn-primary" style="padding: 8px 18px;" data-i18n="send">Send</button>
             </div>
           </div>
@@ -113,7 +113,7 @@
 
       <div style="margin-bottom:16px;">
         <label style="display:block; font-size:12px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Group Description</label>
-        <input type="text" id="input-group-desc" class="form-input" placeholder="Pan-African developer collective">
+        <input type="text" id="input-group-desc" class="form-input" placeholder="Global developer collective">
       </div>
 
       <div style="margin-bottom:16px;">
@@ -148,14 +148,14 @@
         groups = [
           {
             id: "grp-1",
-            name: "Pan-African STEM Innovators 🌍⚡",
+            name: "STEM & Tech Innovators 🚀⚡",
             desc: "Collaboration on solar microgrids, drone agriculture, and clean tech across Africa",
             avatar: "🌍",
             members: ["ch-amina", "ch-zola", "ch-fatima", "ch-user"],
             lastMessage: "Amina: New solar telemetry dashboard is now online!",
             time: "12m ago",
             messages: [
-              { id: "gm-1", author: "Amina Mwangi", sender: "ch-amina", text: "Habari everyone! Welcome to the Pan-African STEM group.", time: "10:30 AM" },
+              { id: "gm-1", author: "Amina Mwangi", sender: "ch-amina", text: "Welcome everyone! Excited to connect in this STEM group.", time: "10:30 AM" },
               { id: "gm-2", author: "Zola Dlamini", sender: "ch-zola", text: "Excited to share the latest drone aerial crop multispectral data.", time: "11:15 AM" },
               { id: "gm-3", author: "Amina Mwangi", sender: "ch-amina", text: "New solar telemetry dashboard is now online!", time: "12m ago" }
             ]
@@ -528,7 +528,7 @@
         const newGroup = {
           id: 'grp-' + Date.now(),
           name: name,
-          desc: desc || "African community group",
+          desc: desc || "Community group",
           avatar: "👥",
           members: selectedMembers,
           lastMessage: "Group created",

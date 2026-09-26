@@ -1,27 +1,27 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wave.africa - Pan-African Video, Shorts & Live Streaming Platform</title>
-  <meta name="description" content="wave.africa is the Pan-African video, short-form Toks, and live streaming platform. Watch, create, and connect across Africa. Afrobeats, STEM, Nollywood, gaming and more.">
-  <meta name="keywords" content="wave.africa, Africa, Pan-African, video platform, live streaming, Afrobeats, Nollywood, STEM, African creators, Toks, shorts">
-  <meta name="author" content="wave.africa">
+  <title>wave - Video, Shorts & Live Streaming Platform</title>
+  <meta name="description" content="wave is the video, short-form Toks, and live streaming platform for everyone. Watch, create, and connect worldwide. Music, STEM, entertainment, gaming and more.">
+  <meta name="keywords" content="wave, video platform, live streaming, music, STEM, entertainment, creators, Toks, shorts">
+  <meta name="author" content="wave">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#FE2C55">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://wave.africa/">
-  <meta property="og:title" content="wave.africa - Pan-African Video & Live Streaming">
-  <meta property="og:description" content="Watch, create and go live with African creators. Afrobeats, STEM, Nollywood, gaming, comedy and more — all on wave.africa.">
+  <meta property="og:title" content="wave - Video, Shorts & Live Streaming">
+  <meta property="og:description" content="Watch, create and go live with creators worldwide. Music, STEM, gaming, comedy and more — all on wave.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@waveafrica">
-  <meta name="twitter:title" content="wave.africa - Pan-African Video & Live Streaming">
-  <meta name="twitter:description" content="Watch, create and go live with African creators.">
+  <meta name="twitter:site" content="@wave">
+  <meta name="twitter:title" content="wave - Video, Shorts & Live Streaming">
+  <meta name="twitter:description" content="Watch, create and go live with creators worldwide.">
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?w=1200">
 
   <!-- PWA / App -->
@@ -56,15 +56,15 @@
             </button>
             <div class="category-chips-bar" id="category-chips-bar">
               <button class="category-chip active" data-category="All">All</button>
-              <button class="category-chip" data-category="Music">🎵 Afrobeats & Amapiano</button>
-              <button class="category-chip" data-category="Culture">🌍 African Heritage & Nollywood</button>
-              <button class="category-chip" data-category="Comedy">😂 African Comedy & Toks</button>
-              <button class="category-chip" data-category="Gaming">🎮 African Esports & Gaming</button>
-              <button class="category-chip" data-category="Fashion">👗 African Fashion & Streetwear</button>
-              <button class="category-chip" data-category="Food">🍲 Jollof & Pan-African Cuisine</button>
+              <button class="category-chip" data-category="Music">🎵 Music & Beats</button>
+              <button class="category-chip" data-category="Culture">🎬 Cinema & Culture</button>
+              <button class="category-chip" data-category="Comedy">😂 Comedy & Skits</button>
+              <button class="category-chip" data-category="Gaming">🎮 Esports & Gaming</button>
+              <button class="category-chip" data-category="Fashion">👗 Fashion & Style</button>
+              <button class="category-chip" data-category="Food">🍲 Food & Cuisine</button>
               <button class="category-chip" data-category="STEM">🎓 EduBoost STEM</button>
               <button class="category-chip" data-category="Coding">💻 Coding & AI</button>
-              <button class="category-chip" data-category="Agriculture">🌱 AgriTech & Drones</button>
+              <button class="category-chip" data-category="Agriculture">🌱 AgriTech & Nature</button>
               <button class="category-chip" data-category="Clean Energy">⚡ Clean Energy</button>
             </div>
             <button class="chips-scroll-btn chips-scroll-right" id="btn-chips-right" aria-label="Scroll right">
@@ -72,12 +72,12 @@
             </button>
           </div>
 
-          <!-- Trending African Toks Shelf -->
+          <!-- Trending Toks Shelf -->
           <section class="shorts-shelf">
             <div class="shorts-shelf-header">
               <div class="shorts-shelf-title">
                 <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-                <span>Trending African Toks</span>
+                <span>Trending Toks</span>
               </div>
               <a href="toks.html" class="shorts-shelf-more btn-secondary">
                 <span>Watch Toks</span> <span class="more-arrow">➔</span>
@@ -90,7 +90,7 @@
 
           <!-- Feed Title & Search Notice -->
           <div class="feed-header-row">
-            <h2 id="feed-heading" class="feed-heading">Recommended Pan-African Videos</h2>
+            <h2 id="feed-heading" class="feed-heading">Recommended Videos</h2>
             <span id="video-count-badge" class="feed-count-badge"></span>
           </div>
 
@@ -147,7 +147,7 @@
           videos = videos.filter(v => v.category === category || (category === 'STEM' && v.isEducational));
           if (feedHeading) feedHeading.textContent = `${category} Videos`;
         } else {
-          if (feedHeading) feedHeading.textContent = 'Recommended Pan-African Videos';
+          if (feedHeading) feedHeading.textContent = 'Recommended Videos';
         }
 
         if (countBadge) countBadge.textContent = `${videos.length} videos`;
@@ -155,9 +155,9 @@
         if (videos.length === 0) {
           videoGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
-              <div style="font-size: 48px; margin-bottom: 12px;">🌍</div>
+              <div style="font-size: 48px; margin-bottom: 12px;">🎬</div>
               <h3>No videos found matching "${query || category}"</h3>
-              <p style="margin-top: 8px;">Try searching for "Solar", "Python", "Amapiano", or "Lagos"!</p>
+              <p style="margin-top: 8px;">Try searching for "Solar", "Python", "Music", or "Gaming"!</p>
             </div>
           `;
           return;

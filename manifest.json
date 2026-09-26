@@ -1,7 +1,7 @@
 {
-  "name": "wave.africa",
-  "short_name": "wave.africa",
-  "description": "Pan-African video, short-form Toks, and live streaming platform.",
+  "name": "wave",
+  "short_name": "wave",
+  "description": "Video, short-form Toks, and live streaming platform for everyone.",
   "start_url": "/index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -24,7 +24,7 @@
     }
   ],
   "shortcuts": [
-    { "name": "Live", "short_name": "Live", "url": "/live.html", "description": "Watch Pan-African live streams" },
-    { "name": "Toks", "short_name": "Toks", "url": "/toks.html", "description": "Watch short-form African Toks" }
+    { "name": "Live", "short_name": "Live", "url": "/live.html", "description": "Watch live streams" },
+    { "name": "Toks", "short_name": "Toks", "url": "/toks.html", "description": "Watch short-form Toks" }
   ]
 }
