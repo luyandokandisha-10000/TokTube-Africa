@@ -2191,23 +2191,23 @@ class waveShell {
 
       <!-- Always-visible bottom navigation bar -->
       <nav id="mobile-bottom-nav">
-        <a href="index.html" class="mobile-nav-btn ${page === 'home' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" style="width:22px;height:22px;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <a href="index.html" class="mobile-nav-btn nav-home ${page === 'home' ? 'active' : ''}">
+          <svg viewBox="0 0 24 24" style="width:23px;height:23px;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
           <span>Home</span>
         </a>
-        <a href="toks.html" class="mobile-nav-btn ${page === 'toks' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" style="width:22px;height:22px;"><path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+        <a href="toks.html" class="mobile-nav-btn nav-toks ${page === 'toks' ? 'active' : ''}">
+          <svg viewBox="0 0 24 24" style="width:23px;height:23px;"><path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
           <span>Toks</span>
         </a>
         <a href="upload.html" class="mobile-nav-btn mobile-nav-create" title="Upload">
           <div class="mobile-create-icon">+</div>
         </a>
-        <a href="friends.html" class="mobile-nav-btn ${page === 'friends' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" style="width:22px;height:22px;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <a href="friends.html" class="mobile-nav-btn nav-friends ${page === 'friends' ? 'active' : ''}">
+          <svg viewBox="0 0 24 24" style="width:23px;height:23px;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
           <span>Friends</span>
         </a>
-        <a href="library.html" class="mobile-nav-btn ${page === 'library' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" style="width:22px;height:22px;"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+        <a href="library.html" class="mobile-nav-btn nav-library ${page === 'library' ? 'active' : ''}">
+          <svg viewBox="0 0 24 24" style="width:23px;height:23px;"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
           <span>Library</span>
         </a>
       </nav>
