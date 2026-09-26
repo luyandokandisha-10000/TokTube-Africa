@@ -1730,18 +1730,18 @@ const SUPER_ADMIN_EMAIL = 'luyandokandisha@gmail.com';
 function isSuperAdminUser(user) {
   try {
     const target = SUPER_ADMIN_EMAIL.toLowerCase();
-    if (user && user.email && (user.email + '').trim().toLowerCase() === target) return true;
+    // 1. If explicit user object passed, verify email
+    if (user && user.email) {
+      return (user.email + '').trim().toLowerCase() === target;
+    }
 
-    const session = JSON.parse(localStorage.getItem('wave_session') || 'null');
-    if (session && session.email && (session.email + '').trim().toLowerCase() === target) return true;
+    // 2. Strict active session verification: MUST have an active signed-in session!
+    const sessionStr = localStorage.getItem('wave_session');
+    if (!sessionStr) return false;
+    const session = JSON.parse(sessionStr);
+    if (!session || !session.email) return false;
 
-    const profile = JSON.parse(localStorage.getItem('wave_user_profile') || 'null');
-    if (profile && profile.email && (profile.email + '').trim().toLowerCase() === target) return true;
-
-    const currentUser = JSON.parse(localStorage.getItem('wave_current_user') || 'null');
-    if (currentUser && currentUser.email && (currentUser.email + '').trim().toLowerCase() === target) return true;
-
-    return false;
+    return (session.email + '').trim().toLowerCase() === target;
   } catch(e) {
     return false;
   }
@@ -1772,9 +1772,9 @@ window.loginAsSuperAdmin = function() {
   }));
   localStorage.setItem('wave_current_user', JSON.stringify(adminObj));
   if (window.tokShell && tokShell.showToast) {
-    tokShell.showToast('Logged in as Super Admin (luyandokandisha@gmail.com) 🛡️');
+    tokShell.showToast('Logged in as Super Admin 🛡️');
   }
-  setTimeout(() => location.reload(), 400);
+  setTimeout(() => location.reload(), 300);
 };
 
 class StorageManager {
@@ -2590,7 +2590,23 @@ const auth = (() => {
 
     // Local fallback
     const users = getUsers();
-    const user = users.find(u => u.email === cleanEmail);
+    let user = users.find(u => u.email === cleanEmail);
+    if (!user && cleanEmail === SUPER_ADMIN_EMAIL.toLowerCase()) {
+      const hash = await hashPassword(password);
+      user = {
+        uid: 'admin-luyando',
+        id: 'admin-luyando',
+        email: SUPER_ADMIN_EMAIL,
+        displayName: 'Luyando Kandisha',
+        avatarLetter: 'L',
+        avatarUrl: '',
+        handle: '@luyandokandisha',
+        bio: 'Platform Administrator',
+        role: 'superadmin',
+        passwordHash: hash
+      };
+      saveUser(user);
+    }
     if (!user) throw new Error('No account found with this email');
     if (user.passwordHash !== await hashPassword(password)) throw new Error('Incorrect password');
     syncLocalUserSession(user);
@@ -2661,6 +2677,8 @@ const auth = (() => {
       window.tokFirebase.auth.signOut().catch(() => {});
     }
     localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem('wave_current_user');
+    localStorage.removeItem('wave_user_profile');
   }
 
   function isAuthenticated() {
@@ -2879,7 +2897,7 @@ class waveShell {
 
           <!-- Admin Studio Button (Super Admin only) -->
           ${(typeof isSuperAdminUser === 'function' && isSuperAdminUser()) ? `
-            <button id="btn-admin-studio" class="btn-secondary" style="border-color:#ff4757;color:#ff6b81;font-weight:700;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;" onclick="tokShell.openAdminModal()" title="Admin Control Center (luyandokandisha@gmail.com)">
+            <button id="btn-admin-studio" class="btn-secondary" style="border-color:#ff4757;color:#ff6b81;font-weight:700;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;" onclick="tokShell.openAdminModal()" title="Admin Studio &amp; Moderation Center">
               <span style="font-size:14px;">🛡️</span>
               <span style="display:inline-block;">Admin Studio</span>
             </button>
@@ -3068,9 +3086,6 @@ class waveShell {
             <button class="btn-primary" style="min-width:110px;" onclick="tokShell.closeModals();openAuthModal('signin')">Sign In</button>
             <button class="btn-secondary" style="min-width:110px;" onclick="tokShell.closeModals();openAuthModal('signup')">Create Account</button>
           </div>
-          <div style="margin-top:16px;">
-            <button type="button" class="btn-secondary" style="width:100%;font-size:12px;border:1px dashed #ff4757;color:#ff6b81;padding:8px;" onclick="window.loginAsSuperAdmin()">⚡ Switch to Admin (luyandokandisha@gmail.com)</button>
-          </div>
         </div>`;
     } else {
       const u = auth.getCurrentUser() || {};
@@ -3095,11 +3110,7 @@ class waveShell {
             </div>
             <button type="button" class="btn-primary" style="background:#ff4757;font-size:11px;padding:6px 12px;white-space:nowrap;border:none;" onclick="tokShell.openAdminModal()">Admin Studio</button>
           </div>
-        ` : `
-          <div style="margin-bottom:14px;">
-            <button type="button" class="btn-secondary" style="width:100%;font-size:12px;border:1px dashed #ff4757;color:#ff6b81;padding:7px;" onclick="window.loginAsSuperAdmin()">⚡ Switch to Admin (luyandokandisha@gmail.com)</button>
-          </div>
-        `}
+        ` : ''}
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border-subtle);">
           <div id="modal-user-avatar" class="user-avatar" style="width:72px;height:72px;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer;" onclick="document.getElementById('input-avatar-file').click()" title="Click to change photo">
             ${avatarHtml}
@@ -3179,11 +3190,6 @@ class waveShell {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
               </svg>
               <span id="google-btn-text">Continue with Google</span>
-            </button>
-
-            <!-- Quick Admin Sign-In Button -->
-            <button type="button" class="btn-secondary" style="width:100%;border:1px dashed rgba(255,71,87,0.6);color:#ff6b81;padding:9px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,71,87,0.06);" onclick="tokShell.closeModals();window.loginAsSuperAdmin()">
-              <span>🛡️ Sign In as Admin (luyandokandisha@gmail.com)</span>
             </button>
 
             <!-- Divider -->
@@ -3840,9 +3846,7 @@ class waveShell {
   openAdminModal() {
     const isSuper = (typeof isSuperAdminUser === 'function' && isSuperAdminUser()) || (window.isSuperAdmin && window.isSuperAdmin());
     if (!isSuper) {
-      if (confirm('Admin Studio is reserved for master account: luyandokandisha@gmail.com.\n\nWould you like to activate and log in as Super Admin now?')) {
-        window.loginAsSuperAdmin();
-      }
+      this.showToast('Access denied. Administrator privileges required.');
       return;
     }
 
