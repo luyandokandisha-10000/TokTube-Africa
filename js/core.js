@@ -2713,8 +2713,8 @@ class waveShell {
             <span data-i18n="nav_home">Home</span>
           </a>
           <a href="toks.html" class="sidebar-item ${page === 'toks' ? 'active' : ''}">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span data-i18n="nav_toks">Toks (Shorts)</span>
+            <svg viewBox="0 0 24 24" style="fill: var(--tt-pink);"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 2.5h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1s.45-1 1-1zm.8 3.5C5.1 9.8 7.5 12.8 10.5 13.8v3.2c-1.6.4-2.8 1.3-3.3 2.7-.15.45.18 1 .68 1h8.24c.5 0 .83-.55.68-1-.5-1.4-1.7-2.3-3.3-2.7v-3.2c3-1 5.4-4 5.7-7.8H4.8zM10.2 8.2v5.6l4.8-2.8-4.8-2.8zM6.8 6.8l1.4 3.8-.8.3-1.4-3.8.8-.3zm10.4 0l.8.3-1.4 3.8-.8-.3 1.4-3.8z"/></svg>
+            <span data-i18n="nav_toks">Toks</span>
           </a>
           <a href="live.html" class="sidebar-item ${page === 'live' ? 'active' : ''}">
             <svg viewBox="0 0 24 24" style="fill: var(--yt-red);"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
@@ -2814,7 +2814,7 @@ class waveShell {
           <span>Home</span>
         </a>
         <a href="toks.html" class="mobile-nav-btn nav-toks ${page === 'toks' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" style="width:23px;height:23px;"><path d="M17.77 10.32l-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+          <svg viewBox="0 0 24 24" style="width:23px;height:23px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 2.5h16c.55 0 1 .45 1 1s-.45 1-1 1H4c-.55 0-1-.45-1-1s.45-1 1-1zm.8 3.5C5.1 9.8 7.5 12.8 10.5 13.8v3.2c-1.6.4-2.8 1.3-3.3 2.7-.15.45.18 1 .68 1h8.24c.5 0 .83-.55.68-1-.5-1.4-1.7-2.3-3.3-2.7v-3.2c3-1 5.4-4 5.7-7.8H4.8zM10.2 8.2v5.6l4.8-2.8-4.8-2.8zM6.8 6.8l1.4 3.8-.8.3-1.4-3.8.8-.3zm10.4 0l.8.3-1.4 3.8-.8-.3 1.4-3.8z"/></svg>
           <span>Toks</span>
         </a>
         <a href="upload.html" class="mobile-nav-btn mobile-nav-create" title="Upload">
