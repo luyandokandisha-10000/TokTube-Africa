@@ -1,9 +1,9 @@
 @echo off
-title TokTube - YouTube + TikTok Hybrid Web App
+title Wave - Video, Shorts & Live Streaming Platform
 echo =======================================================
-echo          Launching TokTube Web Application
+echo          Launching Wave Web Application
 echo =======================================================
-echo Opening TokTube in your default browser...
+echo Opening Wave in your default browser...
 start "" "%~dp0index.html"
 echo.
 echo Application opened successfully!

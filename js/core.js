@@ -487,6 +487,177 @@ const TRANSLATIONS = {
     online: "U teñi fa Intaneti • Muezi wa mwa Zambia",
     search_placeholder: "Bata baezi ba mwa Zambia, luto lwa tuto, lipina..."
   }
+,
+xh: { // isiXhosa (South Africa)
+    nav_home: "Ekhaya", nav_toks: "I-Toks", nav_learn: "Funda (EduBoost)", nav_friends: "Abahlobo",
+    nav_messages: "Imiyalezo", nav_you: "Wena & Inkxaso", nav_library: "Ithala leencwadi", nav_feedback: "Izimvo",
+    btn_create: "Yenza", nav_tube: "Iividiyo", title_notifications: "Izaziso", btn_mark_read: "Phawula zonke njengezifundiweyo",
+    subscribers: "ababhalisileyo", subscribe: "Bhalisa", subscribed: "Ubhalisile ✓", comments: "Amagqabaza",
+    translate_caption: "🌍 Tolika ngesiXhosa", translated_by: "Iguqulelwe kwisiXhosa", share: "Yabelana",
+    download: "Khuphela", downloaded: "Ikhutshelwe ✓", tip_creator: "Nika Umdali", save: "Gcina",
+    follow: "Landela", following: "Uyalandela ✓", block_user: "Vala Umsebenzisi", unblock_user: "Vula Umsebenzisi",
+    send: "Thumela", online: "Ukhona kwi-intanethi • Umdali we-Wave", search_placeholder: "Khangela abadali, i-STEM, umculo, izifundo..."
+  },
+  sn: { // ChiShona (Zimbabwe)
+    nav_home: "Kumba", nav_toks: "Toks", nav_learn: "Dzidza (EduBoost)", nav_friends: "Shamwari",
+    nav_messages: "Mameseji", nav_you: "Iwe & Rubatsiro", nav_library: "Raibhurari", nav_feedback: "Mhinduro",
+    btn_create: "Gadzira", nav_tube: "Mavhidhiyo", title_notifications: "Zviziviso", btn_mark_read: "Maka zvese sezvaverengwa",
+    subscribers: "vanyoreri", subscribe: "Nyorera", subscribed: "Wanyorera ✓", comments: "Matauriro",
+    translate_caption: "🌍 Shandura kuChiShona", translated_by: "Yashandurwa kuChiShona", share: "Govera",
+    download: "Dhawunirodha", downloaded: "Zvadhaunirodhwa ✓", tip_creator: "Tsigira Musiki", save: "Chengetedza",
+    follow: "Tevera", following: "Kutevera ✓", block_user: "Vhara Mushandisi", unblock_user: "Vhura Mushandisi",
+    send: "Tumira", online: "Ari paIndaneti • Musiki weWave", search_placeholder: "Tsvaga vagadziri, STEM, mimhanzi, zvidzidzo..."
+  },
+  rw: { // Ikinyarwanda (Rwanda)
+    nav_home: "Ahabanza", nav_toks: "Toks", nav_learn: "Kwiga (EduBoost)", nav_friends: "Inshuti",
+    nav_messages: "Ubutumwa", nav_you: "Wowe & Ubufasha", nav_library: "Isomero", nav_feedback: "Ibitekerezo",
+    btn_create: "Kora", nav_tube: "Amashusho", title_notifications: "Ibyamenyeshejwe", btn_mark_read: "Kora byose nk'ibyasomwe",
+    subscribers: "abafatabuguzi", subscribe: "Iyandikishe", subscribed: "Wiyandikishije ✓", comments: "Ibitekerezo",
+    translate_caption: "🌍 Semura mu Kinyarwanda", translated_by: "Byasemuwe mu Kinyarwanda", share: "Sangiza",
+    download: "Kura kuri murandasi", downloaded: "Byakuweho ✓", tip_creator: "Fasha Umuhanga", save: "Bika",
+    follow: "Kurikira", following: "Urakurikira ✓", block_user: "Hagarika", unblock_user: "Fungura",
+    send: "Ohereza", online: "Ari kuri interineti • Umuhanga kuri Wave", search_placeholder: "Shakisha abahanzi, STEM, umuziki, amasomo..."
+  },
+  so: { // Af-Soomaali (Somalia / Horn of Africa)
+    nav_home: "Bogga Hore", nav_toks: "Toks", nav_learn: "Barashada (EduBoost)", nav_friends: "Saaxiibada",
+    nav_messages: "Fariimaha", nav_you: "Adiga & Taageero", nav_library: "Maktabadda", nav_feedback: "Fikradaha",
+    btn_create: "Abuur", nav_tube: "Fiidiyowyo", title_notifications: "Ogeysiisyada", btn_mark_read: "Dhammaan u calaamadee sidii la akhriyay",
+    subscribers: "macaamiisha", subscribe: "Is-diiwaangeli", subscribed: "Waad is-diiwaangelisay ✓", comments: "Faallooyinka",
+    translate_caption: "🌍 Ku tarjun Af-Soomaali", translated_by: "Waxaa lagu tarjumay Af-Soomaali", share: "La wadaag",
+    download: "Soo deji", downloaded: "Waa la soo dejiyay ✓", tip_creator: "Taageer Abuuraha", save: "Keydi",
+    follow: "Raac", following: "Waad raacaysaa ✓", block_user: "Xannib", unblock_user: "Ka qaad xannibaadda",
+    send: "Dir", online: "Khadka ku jira • Abuuraha Wave", search_placeholder: "Raadi abuureyaasha, STEM, muusigga, casharrada..."
+  },
+  om: { // Afaan Oromoo (Ethiopia / Kenya)
+    nav_home: "Fuula Duraa", nav_toks: "Toks", nav_learn: "Baradhu (EduBoost)", nav_friends: "Hiriyaa",
+    nav_messages: "Ergaa", nav_you: "Ati & Gargaarsa", nav_library: "Kuusaa", nav_feedback: "Yaada",
+    btn_create: "Uumi", nav_tube: "Viidiyoo", title_notifications: "Beeksisa", btn_mark_read: "Hunda dubbifame godhi",
+    subscribers: "hordoftoota", subscribe: "Galmaa'i", subscribed: "Galmoofteetta ✓", comments: "Yaada",
+    translate_caption: "🌍 Afaan Oromootti hiiki", translated_by: "Afaan Oromootti hiikame", share: "Qoodi",
+    download: "Buusi", downloaded: "Buufameera ✓", tip_creator: "Uumaa Gargaari", save: "Olkaa'i",
+    follow: "Hordofi", following: "Hordofaa jirta ✓", block_user: "Cufi", unblock_user: "Bani",
+    send: "Ergi", online: "Talaallii jira • Uumaa Wave", search_placeholder: "Uumtoota, STEM, muuziqaa, barnoota barbaadi..."
+  },
+  ln: { // Lingála (DR Congo / Congo)
+    nav_home: "Ndako", nav_toks: "Toks", nav_learn: "Koyekola (EduBoost)", nav_friends: "Baninga",
+    nav_messages: "Basango", nav_you: "Yo & Lisalisi", nav_library: "Buku", nav_feedback: "Makanisi",
+    btn_create: "Kela", nav_tube: "Bavideo", title_notifications: "Mayebisi", btn_mark_read: "Tia nionso etangami",
+    subscribers: "bakomi", subscribe: "Miyebisa", subscribed: "Omiyeisi ✓", comments: "Makanisi",
+    translate_caption: "🌍 Bongola na Lingála", translated_by: "Ebongolami na Lingála", share: "Kabola",
+    download: "Kitisá", downloaded: "Ekitisami ✓", tip_creator: "Pesa Mokeli Mbongo", save: "Bomba",
+    follow: "Landa", following: "Ozolanda ✓", block_user: "Kanga Mosaleli", unblock_user: "Fungola Mosaleli",
+    send: "Tinda", online: "Azali na Internet • Mokeli ya Wave", search_placeholder: "Luka bakeli, STEM, miziki, mateya..."
+  },
+  wo: { // Wolof (Senegal / Gambia)
+    nav_home: "Kër", nav_toks: "Toks", nav_learn: "Jàng (EduBoost)", nav_friends: "Xarit",
+    nav_messages: "Bataaxal", nav_you: "Yaw & Ndimbal", nav_library: "Téere", nav_feedback: "Xalaat",
+    btn_create: "Sos", nav_tube: "Wideo", title_notifications: "Yégle", btn_mark_read: "Fésal lépp ni lu jàngu",
+    subscribers: "tëkkotkat yi", subscribe: "Bokk", subscribed: "Bokk nga ✓", comments: "Kàddu",
+    translate_caption: "🌍 Tekki ci Wolof", translated_by: "Tekkinañ ko ci Wolof", share: "Séeddoo",
+    download: "Yeb", downloaded: "Yebnañ ko ✓", tip_creator: "May Soskat bi", save: "Denc",
+    follow: "Topp", following: "Yaa ngi topp ✓", block_user: "Tëj", unblock_user: "Ubbi",
+    send: "Yónnee", online: "Mu ngi ci net bi • Soskat ci Wave", search_placeholder: "Seet soskat yi, STEM, woy, jàngale..."
+  },
+  lg: { // Oluganda (Uganda)
+    nav_home: "Awaka", nav_toks: "Toks", nav_learn: "Yiga (EduBoost)", nav_friends: "Mikwano",
+    nav_messages: "Obubaka", nav_you: "Ggwe & Obuyambi", nav_library: "Tterekero", nav_feedback: "Endowooza",
+    btn_create: "Kola", nav_tube: "Vidiyo", title_notifications: "Obubaka bw'amawulire", btn_mark_read: "Lamba byonna ng'ebisomeddwa",
+    subscribers: "abawagizi", subscribe: "Wandiisa", subscribed: "Owandiise ✓", comments: "Ebirowoozo",
+    translate_caption: "🌍 Vvuunula mu Luganda", translated_by: "Kivvunuddwa mu Luganda", share: "Gaba",
+    download: "Wanula", downloaded: "Kiwanuddwa ✓", tip_creator: "Wa Omutonzi Akayasano", save: "Kaza",
+    follow: "Goberera", following: "Ogoberera ✓", block_user: "Ziyiza", unblock_user: "Ggyako okuziyiza",
+    send: "Weereza", online: "Ali ku mutimbagano • Omutonzi wa Wave", search_placeholder: "Noonya abatonzi, STEM, ennyimba, eby'okuyiga..."
+  },
+  ak: { // Twi / Akan (Ghana)
+    nav_home: "Fie", nav_toks: "Toks", nav_learn: "Sua Ade (EduBoost)", nav_friends: "Nnamfonom",
+    nav_messages: "Nkrasɛm", nav_you: "Wo & Mmoa", nav_library: "Nwomakorabea", nav_feedback: "Adwene",
+    btn_create: "Bɔ", nav_tube: "Mfonin", title_notifications: "Nkaebɔ", btn_mark_read: "Kyerɛ sɛ wɔakan ne nyinaa",
+    subscribers: "akyidifo", subscribe: "Fa wo ho bɔ ho", subscribed: "Woafa wo ho abɔ ho ✓", comments: "Nsɛm a Wɔaka",
+    translate_caption: "🌍 Kyerɛ ase kɔ Twi mu", translated_by: "Wɔakyerɛ ase kɔ Twi mu", share: "Kyɛ",
+    download: "Twe gu so", downloaded: "Watwe agu so ✓", tip_creator: "Kye Obɔfo no", save: "Kora so",
+    follow: "Di akyi", following: "Woredi akyi ✓", block_user: "Siw Kwan", unblock_user: "Yi Siw no",
+    send: "Mene", online: "Ɔwɔ Intanɛt so • Wave Bɔfo", search_placeholder: "Hwehwɛ abɔfo, STEM, nnwom, adesua..."
+  },
+  st: { // Sesotho (Lesotho / South Africa)
+    nav_home: "Lapeng", nav_toks: "Toks", nav_learn: "Ithute (EduBoost)", nav_friends: "Metsoalle",
+    nav_messages: "Melaetsa", nav_you: "Wena & Thuso", nav_library: "Laebrari", nav_feedback: "Maikutlo",
+    btn_create: "Bopa", nav_tube: "Livideo", title_notifications: "Litsebiso", btn_mark_read: "Tšoaea kaofela e le tse baliloeng",
+    subscribers: "bangolisi", subscribe: "Ingolise", subscribed: "O ngolisitse ✓", comments: "Maikutlo",
+    translate_caption: "🌍 Fetolela ho Sesotho", translated_by: "E fetoletsoe ho Sesotho", share: "Arolelana",
+    download: "Khoasolla", downloaded: "E khoasollotsoe ✓", tip_creator: "Fa Moetsi Mpho", save: "Boloka",
+    follow: "Latela", following: "U ntse u latela ✓", block_user: "Thibela", unblock_user: "Tlosa thibelo",
+    send: "Reka", online: "O inthaneteng • Moetsi oa Wave", search_placeholder: "Batla baetsi, STEM, mmino, lithuto..."
+  },
+  tn: { // Setswana (Botswana / South Africa)
+    nav_home: "Gae", nav_toks: "Toks", nav_learn: "Ithute (EduBoost)", nav_friends: "Ditsala",
+    nav_messages: "Melaetsa", nav_you: "Wena & Tshegetso", nav_library: "Laeborari", nav_feedback: "Maikutlo",
+    btn_create: "Tlhama", nav_tube: "Divideo", title_notifications: "Dikitsiso", btn_mark_read: "Tshwaya tsotlhe di badilwe",
+    subscribers: "baikwetsi", subscribe: "Ikwadise", subscribed: "O ikwadiseditse ✓", comments: "Ditshwaelo",
+    translate_caption: "🌍 Ranolela mo Setswaneng", translated_by: "E ranotswe mo Setswaneng", share: "Abelana",
+    download: "Kopolola", downloaded: "E kopolotswe ✓", tip_creator: "Naya Motlhami Mpho", save: "Boloka",
+    follow: "Latela", following: "O a latela ✓", block_user: "Thibela Modirisi", unblock_user: "Bula Modirisi",
+    send: "Romela", online: "O mo inthaneteng • Motlhami wa Wave", search_placeholder: "Batla batlhami, STEM, mmino, dithuto..."
+  },
+  af: { // Afrikaans (South Africa / Namibia)
+    nav_home: "Tuis", nav_toks: "Toks", nav_learn: "Leer (EduBoost)", nav_friends: "Vriende",
+    nav_messages: "Boodskappe", nav_you: "Jy & Ondersteuning", nav_library: "Biblioteek", nav_feedback: "Terugvoer",
+    btn_create: "Skep", nav_tube: "Video's", title_notifications: "Kennisgewings", btn_mark_read: "Merk alles as gelees",
+    subscribers: "intekenare", subscribe: "Teken in", subscribed: "Ingeskryf ✓", comments: "Kommentaar",
+    translate_caption: "🌍 Vertaal in Afrikaans", translated_by: "Vertaal in Afrikaans", share: "Deel",
+    download: "Aflaai", downloaded: "Afgelaai ✓", tip_creator: "Gee Skepper Fooi", save: "Stoor",
+    follow: "Volg", following: "Volg tans ✓", block_user: "Blokkeer Gebruiker", unblock_user: "Deblokkeer",
+    send: "Stuur", online: "Aanlyn • Wave Skepper", search_placeholder: "Soek skeppers, STEM, musiek, tutoriale..."
+  },
+  ti: { // Tigrinya (Eritrea / Ethiopia)
+    nav_home: "መበገሲ", nav_toks: "Toks", nav_learn: "ምምሃር (EduBoost)", nav_friends: "ፈተውቲ",
+    nav_messages: "መልእኽትታት", nav_you: "ንስኻ & ደገፍ", nav_library: "ቤተ-መጻሕፍቲ", nav_feedback: "ርእይቶ",
+    btn_create: "ፍጠር", nav_tube: "ቪድዮታት", title_notifications: "መፍለጢታት", btn_mark_read: "ኩሉ ከም እተነበበ ግበር",
+    subscribers: "ተመዝገብቲ", subscribe: "ተመዝገብ", subscribed: "ተመዝጊብካ ✓", comments: "ርእይቶታት",
+    translate_caption: "🌍 ናብ ትግርኛ ተርጉም", translated_by: "ናብ ትግርኛ ተተርጒሙ", share: "ኣካፍል",
+    download: "ኣውርድ", downloaded: "ወሪዱ ✓", tip_creator: "ንፈጣሪ ሓግዝ", save: "ዕቀብ",
+    follow: "ተኸተል", following: "ትከታተል ኣለኻ ✓", block_user: "ዕጸው", unblock_user: "ክፈት",
+    send: "ስደድ", online: "ኣብ ኢንተርነት ኣሎ • ፈጣሪ Wave", search_placeholder: "ፈጠርቲ፣ STEM፣ ሙዚቃ፣ ትምህርቲ ድለ..."
+  },
+  mg: { // Malagasy (Madagascar)
+    nav_home: "Fandraisana", nav_toks: "Toks", nav_learn: "Mianatra (EduBoost)", nav_friends: "Namana",
+    nav_messages: "Hafatra", nav_you: "Ianao & Fanampiana", nav_library: "Trano Fitehirizana", nav_feedback: "Hevitra",
+    btn_create: "Mamorona", nav_tube: "Horonantsary", title_notifications: "Fampandrenesana", btn_mark_read: "Mariho ho voavaky daholo",
+    subscribers: "mppanjifa", subscribe: "Misoratra Anarana", subscribed: "Voasoratra anarana ✓", comments: "Hevitra",
+    translate_caption: "🌍 Nadika tamin'ny teny Malagasy", translated_by: "Nadika tamin'ny teny Malagasy", share: "Zaraina",
+    download: "Ampidino", downloaded: "Voasintona ✓", tip_creator: "Omeo Fanomezana ny Mpamorona", save: "Tehirizo",
+    follow: "Araho", following: "Manaraka ✓", block_user: "Sakano", unblock_user: "Esory ny sakana",
+    send: "Alefaso", online: "Ao amin'ny Internet • Mpamorona Wave", search_placeholder: "Hikaroka mpamorona, STEM, mozika, fampianarana..."
+  },
+  bm: { // Bamanankan (Mali / West Africa)
+    nav_home: "So", nav_toks: "Toks", nav_learn: "Kalan (EduBoost)", nav_friends: "Terikɛw",
+    nav_messages: "Cikanw", nav_you: "Ite & Dɛmɛ", nav_library: "Kalandenw", nav_feedback: "Hakilina",
+    btn_create: "Da", nav_tube: "Wideyow", title_notifications: "Laseliw", btn_mark_read: "A bɛɛ kɛ kalanlen ye",
+    subscribers: "tɔgɔbɔla", subscribe: "I tɔgɔ sɛbɛn", subscribed: "I tɔgɔ sɛbɛnna ✓", comments: "Kumaw",
+    translate_caption: "🌍 A bayɛlɛma Bamanankan na", translated_by: "A bayɛlɛmana Bamanankan na", share: "Tila",
+    download: "Lajigi", downloaded: "Lajiginna ✓", tip_creator: "Dɛmɛ Dabaga ma", save: "Mara",
+    follow: "Tugu", following: "I bɛ tugu a kɔ ✓", block_user: "Datugu", unblock_user: "Dayɛlɛ",
+    send: "Ci", online: "A bɛ net kan • Wave Dabaga", search_placeholder: "Dabagaw, STEM, dɔnkili, kalanw ɲini..."
+  },
+  pt: { // Português
+    nav_home: "Início", nav_toks: "Toks", nav_learn: "Aprender (EduBoost)", nav_friends: "Amigos",
+    nav_messages: "Mensagens", nav_you: "Você & Suporte", nav_library: "Biblioteca", nav_feedback: "Feedback",
+    btn_create: "Criar", nav_tube: "Vídeos", title_notifications: "Notificações", btn_mark_read: "Marcar todas como lidas",
+    subscribers: "inscritos", subscribe: "Inscrever-se", subscribed: "Inscrito ✓", comments: "Comentários",
+    translate_caption: "🌍 Traduzir para Português", translated_by: "Traduzido para Português", share: "Compartilhar",
+    download: "Baixar", downloaded: "Baixado ✓", tip_creator: "Apoiar Criador", save: "Salvar",
+    follow: "Seguir", following: "Seguindo ✓", block_user: "Bloquear Usuário", unblock_user: "Desbloquear",
+    send: "Enviar", online: "Online • Criador Wave", search_placeholder: "Buscar criadores, STEM, música, tutoriais..."
+  },
+  es: { // Español
+    nav_home: "Inicio", nav_toks: "Toks", nav_learn: "Aprender (EduBoost)", nav_friends: "Amigos",
+    nav_messages: "Mensajes", nav_you: "Tú & Soporte", nav_library: "Biblioteca", nav_feedback: "Comentarios",
+    btn_create: "Crear", nav_tube: "Videos", title_notifications: "Notificaciones", btn_mark_read: "Marcar todo como leído",
+    subscribers: "suscriptores", subscribe: "Suscribirse", subscribed: "Suscrito ✓", comments: "Comentarios",
+    translate_caption: "🌍 Traducir al Español", translated_by: "Traducido al Español", share: "Compartir",
+    download: "Descargar", downloaded: "Descargado ✓", tip_creator: "Apoyar al Creador", save: "Guardar",
+    follow: "Seguir", following: "Siguiendo ✓", block_user: "Bloquear Usuario", unblock_user: "Desbloquear",
+    send: "Enviar", online: "En línea • Creador de Wave", search_placeholder: "Buscar creadores, STEM, música, tutoriales..."
+  }
 };
 
 class TranslationEngine {
@@ -503,8 +674,12 @@ class TranslationEngine {
     if (label) {
       const names = {
         en: 'English', sw: 'Kiswahili', yo: 'Yorùbá', ha: 'Hausa',
-        ig: 'Igbo', am: 'አማርኛ', zu: 'isiZulu', fr: 'Français', ar: 'العربية',
-        bem: 'ChiBemba (Zambia)', nya: 'ChiNyanja (Zambia)', toi: 'ChiTonga (Zambia)', loz: 'SiLozi (Zambia)'
+        ig: 'Igbo', am: 'አማርኛ', zu: 'isiZulu', xh: 'isiXhosa', sn: 'ChiShona',
+        rw: 'Ikinyarwanda', so: 'Af-Soomaali', om: 'Afaan Oromoo', ln: 'Lingála',
+        wo: 'Wolof', lg: 'Oluganda', ak: 'Twi / Akan', st: 'Sesotho',
+        tn: 'Setswana', af: 'Afrikaans', ti: 'ትግርኛ', mg: 'Malagasy',
+        bm: 'Bamanankan', bem: 'ChiBemba', nya: 'ChiNyanja', toi: 'ChiTonga',
+        loz: 'SiLozi', fr: 'Français', pt: 'Português', ar: 'العربية', es: 'Español'
       };
       label.textContent = names[langCode] || langCode;
     }
@@ -553,11 +728,12 @@ const INITIAL_DATA = {
       city: "Nairobi",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
       banner: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80",
-      bio: "Nairobi IoT & Robotics Engineer. Building smart solar microgrids & open-source African AgriTech 🌱⚡",
-      followers: "340K",
+      bio: "Nairobi IoT & Robotics Engineer. Building smart solar microgrids & open-source AgriTech 🌱⚡",
+      followers: "840K",
       following: 142,
-      likes: "2.8M",
-      verified: true
+      likes: "5.8M",
+      verified: true,
+      category: "STEM"
     },
     {
       id: "ch-kwame",
@@ -567,11 +743,12 @@ const INITIAL_DATA = {
       city: "Accra",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
       banner: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&auto=format&fit=crop&q=80",
-      bio: "Accra-based Software Architect & STEM Educator. Teaching AI & Web3 across West Africa 💻🇬🇭",
-      followers: "198K",
+      bio: "Software Architect & AI Educator. Teaching modern coding, web architecture & neural nets 💻✨",
+      followers: "590K",
       following: 89,
-      likes: "1.4M",
-      verified: true
+      likes: "3.4M",
+      verified: true,
+      category: "Coding"
     },
     {
       id: "ch-zola",
@@ -581,11 +758,12 @@ const INITIAL_DATA = {
       city: "Cape Town",
       avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
       banner: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=1200&auto=format&fit=crop&q=80",
-      bio: "Drone cinematography & AgriTech. Capturing African landscapes & automated drone farming 🚁🌾",
-      followers: "520K",
+      bio: "Drone cinematography & AgriTech. Capturing landscapes & automated precision farming 🚁🌾",
+      followers: "1.2M",
       following: 210,
-      likes: "4.9M",
-      verified: true
+      likes: "9.9M",
+      verified: true,
+      category: "Nature"
     },
     {
       id: "ch-tunde",
@@ -595,11 +773,12 @@ const INITIAL_DATA = {
       city: "Lagos",
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
       banner: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
-      bio: "Lagos AI Researcher. Natural Language Processing for African Languages (Yoruba, Hausa, Igbo) 🇳🇬🧠",
-      followers: "410K",
+      bio: "Lagos AI Researcher. Natural Language Processing, voice AI models & deep learning 🧠⚡",
+      followers: "910K",
       following: 95,
-      likes: "3.1M",
-      verified: true
+      likes: "7.1M",
+      verified: true,
+      category: "Coding"
     },
     {
       id: "ch-fatima",
@@ -609,13 +788,148 @@ const INITIAL_DATA = {
       city: "Cairo",
       avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
       banner: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=1200&auto=format&fit=crop&q=80",
-      bio: "Astrophysics & Renewable Energy in North Africa. Inspiring young African scientists 🔭⚡",
-      followers: "285K",
+      bio: "Astrophysics & Renewable Energy. Exploring space telescopes, solar power & clean tech 🔭⚡",
+      followers: "785K",
       following: 76,
-      likes: "2.1M",
-      verified: true
-    }
-  ],
+      likes: "6.1M",
+      verified: true,
+      category: "STEM"
+    },
+    {
+      id: "ch-thabo",
+      name: "Thabo Mokoena",
+      handle: "@thabo_beats",
+      country: "🇿🇦 South Africa",
+      city: "Johannesburg",
+      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&auto=format&fit=crop&q=80",
+      bio: "Music Producer & Sound Designer. Creating global beats, synthesizer jams & studio mixing masterclasses 🎵🎧",
+      followers: "1.5M",
+      following: 340,
+      likes: "14.2M",
+      verified: true,
+      category: "Music"
+    },
+    {
+      id: "ch-chileshe",
+      name: "Chileshe Mulenga",
+      handle: "@chileshe_wild",
+      country: "🇿🇲 Zambia",
+      city: "Lusaka",
+      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=1200&auto=format&fit=crop&q=80",
+      bio: "Wildlife Photographer & Safari Explorer. Documenting Zambezi waterfalls, rivers & wildlife in 4K 🦁🌿",
+      followers: "620K",
+      following: 115,
+      likes: "4.8M",
+      verified: true,
+      category: "Nature"
+    },
+    {
+      id: "ch-nia",
+      name: "Nia Osei",
+      handle: "@nia_style",
+      country: "🇬🇭 Ghana",
+      city: "Kumasi",
+      avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&auto=format&fit=crop&q=80",
+      bio: "Contemporary Fashion Designer & Digital Stylist. Wearable art, modern streetwear & textiles 👗✨",
+      followers: "890K",
+      following: 180,
+      likes: "8.3M",
+      verified: true,
+      category: "Fashion"
+    },
+    {
+      id: "ch-kato",
+      name: "Kato Mukasa",
+      handle: "@kato_gaming",
+      country: "🇺🇬 Uganda",
+      city: "Kampala",
+      avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&auto=format&fit=crop&q=80",
+      bio: "Esports Pro & Indie Game Developer. Unreal Engine tutorials, live competitive matches & game design 🎮🔥",
+      followers: "1.1M",
+      following: 92,
+      likes: "11.5M",
+      verified: true,
+      category: "Gaming"
+    },
+    {
+      id: "ch-aicha",
+      name: "Aïcha Diallo",
+      handle: "@aicha_chef",
+      country: "🇸🇳 Senegal",
+      city: "Dakar",
+      avatar: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=80",
+      bio: "Culinary Artist & Food Scientist. Fusion cooking, spice secrets, street food tours & plating art 🍲✨",
+      followers: "1.4M",
+      following: 205,
+      likes: "16.8M",
+      verified: true,
+      category: "Food"
+    },
+    {
+      id: "ch-tendai",
+      name: "Tendai Moyo",
+      handle: "@tendai_comedy",
+      country: "🇿🇼 Zimbabwe",
+      city: "Harare",
+      avatar: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&auto=format&fit=crop&q=80",
+      bio: "Comedian & Skit Creator. Everyday humor, relatable sketches & viral comedy Toks that brighten your feed 😂🎭",
+      followers: "2.1M",
+      following: 150,
+      likes: "22.4M",
+      verified: true,
+      category: "Comedy"
+    },
+    {
+      id: "ch-maya",
+      name: "Maya Chen",
+      handle: "@maya_animates",
+      country: "🌐 Global",
+      city: "London",
+      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
+      bio: "3D Animator & Visual Effects Artist. Blender tutorials, dynamic physics simulations & character art 🎨🚀",
+      followers: "980K",
+      following: 160,
+      likes: "10.2M",
+      verified: true,
+      category: "Animation"
+    },
+    {
+      id: "ch-david",
+      name: "David Kim",
+      handle: "@david_maker",
+      country: "🌐 Global",
+      city: "San Francisco",
+      avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&auto=format&fit=crop&q=80",
+      bio: "Hardware Hacker & DIY Electronics. 3D printing, custom Arduino gadgets & robotic limbs 🛠️💡",
+      followers: "1.3M",
+      following: 88,
+      likes: "12.7M",
+      verified: true,
+      category: "STEM"
+    },
+    {
+      id: "ch-elena",
+      name: "Elena Rossi",
+      handle: "@elena_fitness",
+      country: "🌐 Global",
+      city: "Rome",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      banner: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=1200&auto=format&fit=crop&q=80",
+      bio: "Athletic Coach & Kinesiology Trainer. Functional movement, daily fitness routines & motivation 🏃‍♀️💪",
+      followers: "760K",
+      following: 110,
+      likes: "6.9M",
+      verified: true,
+      category: "Fitness"
+    }  ],
 
   conversations: [
     {
@@ -763,6 +1077,151 @@ const INITIAL_DATA = {
         subscribers: "285K"
       },
       comments: []
+    },
+    {
+      id: "tube-6",
+      title: "Afro-House & Amapiano Masterclass: Crafting Deep Basslines and Shakers",
+      description: "Johannesburg producer Thabo Mokoena breaks down the signature groove, polyrhythms, log drum patterns, and atmospheric vocal layers that drive contemporary Afro-House dancefloors worldwide.",
+      videoUrl: "https://vjs.zencdn.net/v/oceans.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80",
+      duration: "22:18",
+      views: 742000,
+      likes: 68400,
+      timestamp: "1 day ago",
+      category: "Music",
+      isEducational: false,
+      channel: {
+        id: "ch-thabo",
+        name: "Thabo Mokoena",
+        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+        subscribers: "1.5M",
+        verified: true
+      },
+      comments: [
+        { id: "c6-1", author: "BeatCrafter_99", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100", text: "That second shaker rhythm at 11:40 changed my whole mix! Legend 🙌", time: "18h ago", likes: 320 },
+        { id: "c6-2", author: "Lucia_Vocalist", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", text: "Your tutorials are always masterclass level Thabo. Much love from Nairobi!", time: "14h ago", likes: 185 }
+      ]
+    },
+    {
+      id: "tube-7",
+      title: "Safari 4K: Tracking Lions Across South Luangwa & The Zambezi River",
+      description: "Wildlife photographer Chileshe Mulenga captures breathtaking 4K footage of lions, elephants, and predatory raptors in Zambia's Luangwa Valley. Includes camera settings, lens selection, and conservation insights.",
+      videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&auto=format&fit=crop&q=80",
+      duration: "19:40",
+      views: 510000,
+      likes: 42300,
+      timestamp: "3 days ago",
+      category: "Agriculture",
+      isEducational: true,
+      eduTopic: "Biodiversity & Nature Conservation",
+      channel: {
+        id: "ch-chileshe",
+        name: "Chileshe Mulenga",
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+        subscribers: "620K",
+        verified: true
+      },
+      comments: [
+        { id: "c7-1", author: "NatureLover_Mark", avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100", text: "The slow-mo at the watering hole gave me chills. Absolutely cinematic.", time: "2 days ago", likes: 215 },
+        { id: "c7-2", author: "Mwape_Z", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100", text: "Proud to see Zambia looking this gorgeous! Keep representing Chileshe 🇿🇲", time: "1 day ago", likes: 140 }
+      ]
+    },
+    {
+      id: "tube-8",
+      title: "Sustainable Streetwear: Upcycling Vintage Kente and Denim into Runway Fashion",
+      description: "Designer Nia Osei walks through pattern drafting, deconstructing thrifted denim jackets, and tailoring bespoke contemporary streetwear with handwoven Ghanaian textiles in Kumasi.",
+      videoUrl: "https://media.w3.org/2010/05/video/movie_300.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      duration: "15:22",
+      views: 430000,
+      likes: 39100,
+      timestamp: "2 days ago",
+      category: "Fashion",
+      isEducational: false,
+      channel: {
+        id: "ch-nia",
+        name: "Nia Osei",
+        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80",
+        subscribers: "890K",
+        verified: true
+      },
+      comments: [
+        { id: "c8-1", author: "Chloe_Style", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100", text: "That collar stitch detail is revolutionary! Where can I buy this jacket?!", time: "1 day ago", likes: 178 }
+      ]
+    },
+    {
+      id: "tube-9",
+      title: "Building an Open-World Game in Unreal Engine 5: Physics, Shaders & Combat",
+      description: "Indie game studio lead Kato Mukasa demonstrates building procedural terrain, dynamic lighting with Lumen, and responsive melee combat in Unreal Engine 5.",
+      videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80",
+      duration: "28:10",
+      views: 890000,
+      likes: 76000,
+      timestamp: "4 days ago",
+      category: "Gaming",
+      isEducational: true,
+      eduTopic: "Game Engine Programming",
+      channel: {
+        id: "ch-kato",
+        name: "Kato Mukasa",
+        avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+        subscribers: "1.1M",
+        verified: true
+      },
+      comments: [
+        { id: "c9-1", author: "GameDev_Sam", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", text: "The way you handled the animation state machine in blueprints was so clean!", time: "3 days ago", likes: 410 },
+        { id: "c9-2", author: "PixelRunner", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100", text: "Can't wait to play this on launch day. Supporting the studio 100% 🎮", time: "2 days ago", likes: 290 }
+      ]
+    },
+    {
+      id: "tube-10",
+      title: "The Ultimate Jollof & Senegalese Thieboudienne Masterclass",
+      description: "Chef Aïcha Diallo uncovers the authentic culinary heritage of Thieboudienne (the original ancestor of West African Jollof rice), from broken jasmine rice to slow-simmered tamarind herb sauce and crispy socarrat.",
+      videoUrl: "https://vjs.zencdn.net/v/oceans.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80",
+      duration: "17:45",
+      views: 1150000,
+      likes: 98200,
+      timestamp: "5 days ago",
+      category: "Food",
+      isEducational: false,
+      channel: {
+        id: "ch-aicha",
+        name: "Aïcha Diallo",
+        avatar: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150&auto=format&fit=crop&q=80",
+        subscribers: "1.4M",
+        verified: true
+      },
+      comments: [
+        { id: "c10-1", author: "FoodieFemi", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100", text: "As a Nigerian, I have to admit this Senegalese recipe is perfection! Respect Chef Aïcha 🔥", time: "4 days ago", likes: 890 },
+        { id: "c10-2", author: "Sarah_Bakes", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", text: "Cooked this for Sunday dinner and everyone asked for seconds! Amazing tutorial.", time: "3 days ago", likes: 312 }
+      ]
+    },
+    {
+      id: "tube-11",
+      title: "When You Introduce Smart Home Automation to African Parents 😂",
+      description: "Viral comedy skit by Tendai Moyo exploring hilarious misunderstandings when smart voice assistants (Alexa & Siri) try to interpret African parenting logic, chores, and household rules.",
+      videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=80",
+      duration: "08:12",
+      views: 1820000,
+      likes: 165000,
+      timestamp: "2 days ago",
+      category: "Comedy",
+      isEducational: false,
+      channel: {
+        id: "ch-tendai",
+        name: "Tendai Moyo",
+        avatar: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=150&auto=format&fit=crop&q=80",
+        subscribers: "2.1M",
+        verified: true
+      },
+      comments: [
+        { id: "c11-1", author: "Tariq_Laughs", avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100", text: "'Why is this machine answering back to me?!' I CANNOT BREATHE 😂😂😂", time: "1 day ago", likes: 1450 },
+        { id: "c11-2", author: "Chichi_N", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100", text: "My mom does the EXACT same side-eye when the smart lights turn on lmao", time: "20h ago", likes: 820 }
+      ]
     }
   ],
 
@@ -855,7 +1314,134 @@ const INITIAL_DATA = {
         "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800&auto=format&fit=crop&q=80"
-      ],
+    ,
+    {
+      id: "tok-6",
+      title: "Turning random kitchen sounds into an Amapiano log drum groove! 🎹🔥 #MusicProducer #Beats #Toks",
+      videoUrl: "https://media.w3.org/2010/05/video/movie_300.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80",
+      likes: 198000,
+      commentsCount: 3120,
+      shares: 24500,
+      musicTitle: "Studio Kitchen Jam (Original) - Thabo Mokoena",
+      musicArtist: "Thabo Mokoena",
+      isEducational: false,
+      creator: {
+        id: "ch-thabo",
+        name: "Thabo Mokoena",
+        handle: "@thabo_beats",
+        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc6-1", author: "DJ_Vibe", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100", text: "The way the bass drops at 0:12 is illegal 🔥🔥🔥", likes: 890 }
+      ]
+    },
+    {
+      id: "tok-7",
+      title: "Golden hour sunset over Victoria Falls in Zambia 🌊🇿🇲 The smoke that thunders! #Nature #Zambia #Travel",
+      videoUrl: "https://vjs.zencdn.net/v/oceans.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&auto=format&fit=crop&q=80",
+      likes: 145000,
+      commentsCount: 1890,
+      shares: 19200,
+      musicTitle: "Spirit of Zambezi (Acoustic) - Chileshe Mulenga",
+      musicArtist: "Chileshe Mulenga",
+      isEducational: false,
+      creator: {
+        id: "ch-chileshe",
+        name: "Chileshe Mulenga",
+        handle: "@chileshe_wild",
+        avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc7-1", author: "ExploreGlobe", avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100", text: "Adding Zambia to my bucket list immediately! Gorgeous footage.", likes: 450 }
+      ]
+    },
+    {
+      id: "tok-8",
+      title: "Styling 3 luxury looks using traditional handwoven fabrics 👗✨ Which is your favorite? #FashionTok #Style",
+      videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&auto=format&fit=crop&q=80",
+      likes: 182000,
+      commentsCount: 2750,
+      shares: 21300,
+      musicTitle: "Afro Chic Runway Beats - Nia Osei",
+      musicArtist: "Nia Osei",
+      isEducational: false,
+      creator: {
+        id: "ch-nia",
+        name: "Nia Osei",
+        handle: "@nia_style",
+        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc8-1", author: "Zara_Stylist", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100", text: "Look #2 is breathtaking! The silhouette is perfection 💫", likes: 620 }
+      ]
+    },
+    {
+      id: "tok-9",
+      title: "Unreal Engine 5 AI guards vs player stealth tactics! 😂🎮 Who programmed this guard? #IndieGame #GamingTok",
+      videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80",
+      likes: 240000,
+      commentsCount: 4100,
+      shares: 38000,
+      musicTitle: "Cyber Strike Boss Theme - Kato Mukasa",
+      musicArtist: "Kato Mukasa",
+      isEducational: false,
+      creator: {
+        id: "ch-kato",
+        name: "Kato Mukasa",
+        handle: "@kato_gaming",
+        avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc9-1", author: "GamerBro", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100", text: "The guard looked right at you and said 'must have been the wind' 😂", likes: 1120 }
+      ]
+    },
+    {
+      id: "tok-10",
+      title: "Chef secret: How to get the golden crispy crust on Jollof rice every time 🫕😋 #Foodie #CookingTips",
+      videoUrl: "https://vjs.zencdn.net/v/oceans.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80",
+      likes: 310000,
+      commentsCount: 5400,
+      shares: 49000,
+      musicTitle: "Kitchen Grooves - Aïcha Diallo",
+      musicArtist: "Aïcha Diallo",
+      isEducational: false,
+      creator: {
+        id: "ch-aicha",
+        name: "Aïcha Diallo",
+        handle: "@aicha_chef",
+        avatar: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc10-1", author: "TasteBuds", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", text: "My grandmother taught me this exact trick with parchment paper! So true!", likes: 980 }
+      ]
+    },
+    {
+      id: "tok-11",
+      title: "When you try to explain what a 'Cloud Architect' does to African uncles at a wedding 😂👨‍💻 #Comedy #Family",
+      videoUrl: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      thumbnail: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80",
+      likes: 420000,
+      commentsCount: 7800,
+      shares: 82000,
+      musicTitle: "Wedding Day Afrobeats - Tendai Moyo",
+      musicArtist: "Tendai Moyo",
+      isEducational: false,
+      creator: {
+        id: "ch-tendai",
+        name: "Tendai Moyo",
+        handle: "@tendai_comedy",
+        avatar: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=150&auto=format&fit=crop&q=80"
+      },
+      comments: [
+        { id: "tc11-1", author: "Simba_C", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100", text: "'So you are building houses in the sky?' DEAD 💀😂😂", likes: 2300 }
+      ]
+    }
+  ],
       title: "Victoria Falls & Zambian Wildlife Photo Expedition 📸🇿🇲 Swipe to explore! #Zambia #Nature #Photography",
       thumbnail: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600&auto=format&fit=crop&q=80",
       likes: 215000,
@@ -1142,7 +1728,12 @@ const soundFX = new SoundFX();
 class StorageManager {
   getYoutubeVideos() {
     try {
-      return JSON.parse(localStorage.getItem('wave_videos')) || INITIAL_DATA.youtubeVideos;
+      const stored = JSON.parse(localStorage.getItem('wave_videos'));
+      if (stored && stored.length >= INITIAL_DATA.youtubeVideos.length) {
+        return stored;
+      }
+      localStorage.setItem('wave_videos', JSON.stringify(INITIAL_DATA.youtubeVideos));
+      return INITIAL_DATA.youtubeVideos;
     } catch {
       return INITIAL_DATA.youtubeVideos;
     }
@@ -1172,7 +1763,12 @@ class StorageManager {
 
   getTiktokReels() {
     try {
-      return JSON.parse(localStorage.getItem('wave_reels')) || INITIAL_DATA.tiktokReels;
+      const stored = JSON.parse(localStorage.getItem('wave_reels'));
+      if (stored && stored.length >= INITIAL_DATA.tiktokReels.length) {
+        return stored;
+      }
+      localStorage.setItem('wave_reels', JSON.stringify(INITIAL_DATA.tiktokReels));
+      return INITIAL_DATA.tiktokReels;
     } catch {
       return INITIAL_DATA.tiktokReels;
     }
@@ -1184,7 +1780,12 @@ class StorageManager {
 
   getCreators() {
     try {
-      return JSON.parse(localStorage.getItem('wave_creators')) || INITIAL_DATA.creators;
+      const stored = JSON.parse(localStorage.getItem('wave_creators'));
+      if (stored && stored.length >= INITIAL_DATA.creators.length) {
+        return stored;
+      }
+      localStorage.setItem('wave_creators', JSON.stringify(INITIAL_DATA.creators));
+      return INITIAL_DATA.creators;
     } catch {
       return INITIAL_DATA.creators;
     }
@@ -1990,19 +2591,36 @@ class waveShell {
               <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor;"><path d="M7 10l5 5 5-5z"/></svg>
             </button>
             <div id="lang-dropdown-menu" class="lang-dropdown-menu">
-              <div class="lang-option" data-lang="en">🇬🇧 English</div>
+              <div class="lang-option" data-lang="en">🌐 English</div>
               <div class="lang-option" data-lang="sw">🇰🇪 Kiswahili (Swahili)</div>
               <div class="lang-option" data-lang="yo">🇳🇬 Yorùbá</div>
               <div class="lang-option" data-lang="ha">🇳🇬 Hausa</div>
               <div class="lang-option" data-lang="ig">🇳🇬 Igbo</div>
               <div class="lang-option" data-lang="am">🇪🇹 አማርኛ (Amharic)</div>
               <div class="lang-option" data-lang="zu">🇿🇦 isiZulu</div>
-              <div class="lang-option" data-lang="fr">🇨🇮 Français (Afrique)</div>
-              <div class="lang-option" data-lang="ar">🇪🇬 العربية (Arabic)</div>
+              <div class="lang-option" data-lang="xh">🇿🇦 isiXhosa</div>
+              <div class="lang-option" data-lang="sn">🇿🇼 ChiShona (Shona)</div>
+              <div class="lang-option" data-lang="rw">🇷🇼 Ikinyarwanda</div>
+              <div class="lang-option" data-lang="so">🇸🇴 Af-Soomaali (Somali)</div>
+              <div class="lang-option" data-lang="om">🇪🇹 Afaan Oromoo</div>
+              <div class="lang-option" data-lang="ln">🇨🇩 Lingála (Congo)</div>
+              <div class="lang-option" data-lang="wo">🇸🇳 Wolof</div>
+              <div class="lang-option" data-lang="lg">🇺🇬 Oluganda (Luganda)</div>
+              <div class="lang-option" data-lang="ak">🇬🇭 Twi / Akan</div>
+              <div class="lang-option" data-lang="st">🇱🇸 Sesotho (Sotho)</div>
+              <div class="lang-option" data-lang="tn">🇧🇼 Setswana</div>
+              <div class="lang-option" data-lang="af">🇿🇦 Afrikaans</div>
+              <div class="lang-option" data-lang="ti">🇪🇷 ትግርኛ (Tigrinya)</div>
+              <div class="lang-option" data-lang="mg">🇲🇬 Malagasy</div>
+              <div class="lang-option" data-lang="bm">🇲🇱 Bamanankan (Bambara)</div>
               <div class="lang-option" data-lang="bem">🇿🇲 ChiBemba (Zambia)</div>
               <div class="lang-option" data-lang="nya">🇿🇲 ChiNyanja / Chewa (Zambia)</div>
               <div class="lang-option" data-lang="toi">🇿🇲 ChiTonga (Zambia)</div>
               <div class="lang-option" data-lang="loz">🇿🇲 SiLozi (Zambia)</div>
+              <div class="lang-option" data-lang="fr">🇫🇷 Français</div>
+              <div class="lang-option" data-lang="pt">🇵🇹 Português</div>
+              <div class="lang-option" data-lang="ar">🇪🇬 العربية (Arabic)</div>
+              <div class="lang-option" data-lang="es">🇪🇸 Español</div>
             </div>
           </div>
 
