@@ -1,4 +1,4 @@
-﻿# backend/server.js
+# backend/server.js
 // wave.africa - Real MTN MoMo & Airtel Money API Gateway
 require('dotenv').config();
 const express = require('express');
@@ -269,6 +269,47 @@ app.post('/api/sponsor', async (req, res) => {
     console.error('[Sponsorship Error]', err);
     res.status(500).json({ status: 'error', message: err.message || 'Sponsorship booking failed.' });
   }
+});
+
+// -------------------------------------------------------------
+// Cross-Device Moderation & Deletion Sync (Local Server Fallback)
+// -------------------------------------------------------------
+const fs = require('fs');
+const path = require('path');
+const MODERATION_FILE = path.join(__dirname, 'deleted_records.json');
+
+function loadDeletedRecords() {
+  try {
+    if (fs.existsSync(MODERATION_FILE)) {
+      return JSON.parse(fs.readFileSync(MODERATION_FILE, 'utf8'));
+    }
+  } catch(e) {}
+  return { deletedVideoIds: {}, deletedReelIds: {}, deletedAccounts: {}, deletedCommentIds: {}, updatedAt: Date.now() };
+}
+
+function saveDeletedRecords(data) {
+  try {
+    fs.writeFileSync(MODERATION_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch(e) {}
+}
+
+app.get('/api/moderation/deleted', (req, res) => {
+  res.json(loadDeletedRecords());
+});
+
+app.post('/api/moderation/deleted', (req, res) => {
+  const { videoId, reelId, accountKey, commentId } = req.body;
+  const records = loadDeletedRecords();
+  if (videoId) {
+    records.deletedVideoIds[videoId] = true;
+    records.deletedReelIds[videoId] = true;
+  }
+  if (reelId) records.deletedReelIds[reelId] = true;
+  if (accountKey) records.deletedAccounts[accountKey.toLowerCase()] = true;
+  if (commentId) records.deletedCommentIds[commentId] = true;
+  records.updatedAt = Date.now();
+  saveDeletedRecords(records);
+  res.json({ status: 'success', records });
 });
 
 // Health check endpoint

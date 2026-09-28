@@ -1164,6 +1164,18 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCommentsUI();
       tokShell.showToast('Comment deleted by Super Admin 🗑️');
     };
+
+    window.addEventListener('tokModerationSynced', () => {
+      const deletedVideoIds = JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]');
+      const deletedReelIds = JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]');
+      const allDeleted = new Set([...deletedVideoIds, ...deletedReelIds]);
+      const filtered = reels.filter(r => !allDeleted.has(r.id));
+      if (filtered.length !== reels.length) {
+        reels.length = 0;
+        reels.push(...filtered);
+        renderReels();
+      }
+    });
   }
 
   renderReels();

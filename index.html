@@ -285,8 +285,16 @@
       };
 
       window.tokFeed = {
-        render: (q) => renderVideos(q, 'All')
+        render: (q) => {
+          renderVideos(q || searchParam || '', activeCategory);
+          renderShortsPreview();
+        }
       };
+
+      window.addEventListener('tokModerationSynced', () => {
+        renderVideos(searchParam || '', activeCategory);
+        renderShortsPreview();
+      });
 
       renderShortsPreview();
       renderVideos(searchParam || '', 'All');

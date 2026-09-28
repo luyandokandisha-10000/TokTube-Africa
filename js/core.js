@@ -16,6 +16,7 @@
   const fbConfig = {
     apiKey: "AIzaSyDKjVraXVL5CmqvwAq5NAlIWzQ58mLlptI",
     authDomain: "toktube-africa.firebaseapp.com",
+    databaseURL: "https://toktube-africa-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "toktube-africa",
     storageBucket: "toktube-africa.firebasestorage.app",
     messagingSenderId: "801478450004",
@@ -31,11 +32,17 @@
         }
         window.tokFirebase = {
           app: firebase.app(),
-          auth: firebase.auth(),
-          db: firebase.firestore(),
-          googleProvider: new firebase.auth.GoogleAuthProvider(),
+          auth: firebase.auth ? firebase.auth() : null,
+          db: firebase.firestore ? firebase.firestore() : null,
+          rtdb: firebase.database ? firebase.database() : null,
+          databaseURL: fbConfig.databaseURL,
+          googleProvider: firebase.auth ? new firebase.auth.GoogleAuthProvider() : null,
           isReady: () => true
         };
+        window.dispatchEvent(new CustomEvent('tokFirebaseReady', { detail: window.tokFirebase }));
+        if (typeof storage !== 'undefined' && storage && typeof storage.syncCloudModeration === 'function') {
+          storage.syncCloudModeration();
+        }
       }
     } catch (e) {
       console.warn('Firebase auto-init:', e);
@@ -50,16 +57,20 @@
       sAuth.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js';
       const sDb = document.createElement('script');
       sDb.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js';
+      const sRtdb = document.createElement('script');
+      sRtdb.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
       
       let loaded = 0;
       const onDepLoaded = () => {
         loaded++;
-        if (loaded === 2) initFb();
+        if (loaded === 3) initFb();
       };
       sAuth.onload = onDepLoaded;
       sDb.onload = onDepLoaded;
+      sRtdb.onload = onDepLoaded;
       document.head.appendChild(sAuth);
       document.head.appendChild(sDb);
+      document.head.appendChild(sRtdb);
     };
     document.head.appendChild(sApp);
   } else {
@@ -1781,9 +1792,11 @@ class StorageManager {
   getYoutubeVideos() {
     try {
       const deletedIds = JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]');
+      const deletedReels = JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]');
+      const allDeleted = new Set([...deletedIds, ...deletedReels]);
       const stored = JSON.parse(localStorage.getItem('wave_videos'));
       let list = (stored && Array.isArray(stored)) ? stored : INITIAL_DATA.youtubeVideos;
-      return list.filter(v => !deletedIds.includes(v.id));
+      return list.filter(v => !allDeleted.has(v.id));
     } catch {
       return INITIAL_DATA.youtubeVideos;
     }
@@ -1795,6 +1808,8 @@ class StorageManager {
 
   getVideoComments(videoId) {
     const deletedList = JSON.parse(localStorage.getItem(`wave_deleted_comments_${videoId}`) || '[]');
+    const globalDeletedComments = JSON.parse(localStorage.getItem('wave_deleted_comments') || '[]');
+    const allDeletedComments = new Set([...deletedList, ...globalDeletedComments]);
     let comments = [];
     try {
       const stored = localStorage.getItem(`wave_tube_comments_${videoId}`);
@@ -1804,9 +1819,9 @@ class StorageManager {
       const v = this.getYoutubeVideoById(videoId);
       comments = (v && v.comments) ? JSON.parse(JSON.stringify(v.comments)) : [];
     }
-    return comments.filter(c => !deletedList.includes(c.id)).map(c => {
+    return comments.filter(c => !allDeletedComments.has(c.id)).map(c => {
       if (c.replies && Array.isArray(c.replies)) {
-        c.replies = c.replies.filter(r => !deletedList.includes(r.id));
+        c.replies = c.replies.filter(r => !allDeletedComments.has(r.id));
       }
       return c;
     });
@@ -1824,9 +1839,11 @@ class StorageManager {
   getTiktokReels() {
     try {
       const deletedIds = JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]');
+      const deletedVideos = JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]');
+      const allDeleted = new Set([...deletedIds, ...deletedVideos]);
       const stored = JSON.parse(localStorage.getItem('wave_reels'));
       let list = (stored && Array.isArray(stored)) ? stored : INITIAL_DATA.tiktokReels;
-      return list.filter(r => !deletedIds.includes(r.id));
+      return list.filter(r => !allDeleted.has(r.id));
     } catch {
       return INITIAL_DATA.tiktokReels;
     }
@@ -1865,6 +1882,244 @@ class StorageManager {
     }
   }
 
+  // ---- Cross-Device Cloud Synchronization Engine ----
+  async syncCloudModeration() {
+    const RTDB_URL = 'https://toktube-africa-default-rtdb.europe-west1.firebasedatabase.app/moderation/deleted_records.json';
+    try {
+      let cloudData = null;
+
+      // 1. Fetch from Firebase Realtime Database
+      try {
+        const res = await fetch(RTDB_URL, { cache: 'no-store' });
+        if (res.ok) {
+          cloudData = await res.json();
+        }
+      } catch (e) {}
+
+      // 2. Fallback to Cloud Firestore
+      if (!cloudData && window.tokFirebase && window.tokFirebase.db) {
+        try {
+          const doc = await window.tokFirebase.db.collection('moderation').doc('deleted_records').get();
+          if (doc.exists) cloudData = doc.data();
+        } catch (e) {}
+      }
+
+      // 3. Fallback to local server API
+      if (!cloudData) {
+        try {
+          const res = await fetch('/api/moderation/deleted', { cache: 'no-store' });
+          if (res.ok) cloudData = await res.json();
+        } catch (e) {}
+      }
+
+      if (!cloudData) return;
+
+      const parseIds = (raw) => {
+        if (!raw) return [];
+        if (Array.isArray(raw)) return raw;
+        if (typeof raw === 'object') {
+          return Object.keys(raw).map(k => {
+            try { return decodeURIComponent(k); } catch(e) { return k; }
+          });
+        }
+        return [];
+      };
+
+      const cloudVideoIds = parseIds(cloudData.deletedVideoIds);
+      const cloudReelIds = parseIds(cloudData.deletedReelIds);
+      const cloudAccounts = parseIds(cloudData.deletedAccounts);
+      const cloudComments = parseIds(cloudData.deletedCommentIds);
+
+      // Merge Video IDs
+      const localVideoIds = JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]');
+      const newVideoIds = cloudVideoIds.filter(id => !localVideoIds.includes(id));
+      if (newVideoIds.length > 0) {
+        const updated = Array.from(new Set([...localVideoIds, ...cloudVideoIds]));
+        localStorage.setItem('wave_deleted_video_ids', JSON.stringify(updated));
+      }
+
+      // Merge Reel IDs
+      const localReelIds = JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]');
+      const newReelIds = cloudReelIds.filter(id => !localReelIds.includes(id));
+      if (newReelIds.length > 0) {
+        const updated = Array.from(new Set([...localReelIds, ...cloudReelIds]));
+        localStorage.setItem('wave_deleted_reel_ids', JSON.stringify(updated));
+      }
+
+      // Merge Accounts
+      const localAccounts = JSON.parse(localStorage.getItem('wave_deleted_accounts') || '[]');
+      const newAccounts = cloudAccounts.filter(a => !localAccounts.includes((a + '').toLowerCase()));
+      if (newAccounts.length > 0) {
+        const updated = Array.from(new Set([...localAccounts, ...cloudAccounts.map(a => (a + '').toLowerCase())]));
+        localStorage.setItem('wave_deleted_accounts', JSON.stringify(updated));
+      }
+
+      // Merge Comments
+      const localComments = JSON.parse(localStorage.getItem('wave_deleted_comments') || '[]');
+      const newComments = cloudComments.filter(c => !localComments.includes(c));
+      if (newComments.length > 0) {
+        const updated = Array.from(new Set([...localComments, ...cloudComments]));
+        localStorage.setItem('wave_deleted_comments', JSON.stringify(updated));
+      }
+
+      const totalNew = newVideoIds.length + newReelIds.length + newAccounts.length + newComments.length;
+      if (totalNew > 0) {
+        // Prune wave_videos in localStorage
+        const curVideos = JSON.parse(localStorage.getItem('wave_videos') || 'null');
+        if (curVideos && Array.isArray(curVideos)) {
+          const allDeletedVids = new Set(JSON.parse(localStorage.getItem('wave_deleted_video_ids') || '[]'));
+          localStorage.setItem('wave_videos', JSON.stringify(curVideos.filter(v => !allDeletedVids.has(v.id))));
+        }
+
+        // Prune wave_reels in localStorage
+        const curReels = JSON.parse(localStorage.getItem('wave_reels') || 'null');
+        if (curReels && Array.isArray(curReels)) {
+          const allDeletedReels = new Set(JSON.parse(localStorage.getItem('wave_deleted_reel_ids') || '[]'));
+          localStorage.setItem('wave_reels', JSON.stringify(curReels.filter(r => !allDeletedReels.has(r.id))));
+        }
+
+        // Purge deleted cards from DOM across active page
+        this.purgeDeletedFromDOM([...newVideoIds, ...newReelIds]);
+
+        // Dispatch sync event
+        window.dispatchEvent(new CustomEvent('tokModerationSynced', {
+          detail: { newVideoIds, newReelIds, newAccounts, newComments }
+        }));
+
+        if (window.tokFeed && typeof window.tokFeed.render === 'function') {
+          window.tokFeed.render();
+        }
+      }
+    } catch(err) {
+      console.warn('Cross-device moderation sync:', err);
+    }
+  }
+
+  pushCloudDeletion({ videoId, reelId, accountKey, commentId }) {
+    const RTDB_BASE = 'https://toktube-africa-default-rtdb.europe-west1.firebasedatabase.app/moderation/deleted_records';
+
+    // 1. Firebase Realtime Database Atomic Patch
+    try {
+      if (videoId) {
+        const safeVid = encodeURIComponent(videoId).replace(/\./g, '%2E');
+        fetch(`${RTDB_BASE}/deletedVideoIds.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [safeVid]: true })
+        }).catch(e => console.warn('Cloud video deletion error:', e));
+
+        fetch(`${RTDB_BASE}/deletedReelIds.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [safeVid]: true })
+        }).catch(() => {});
+      }
+
+      if (reelId && reelId !== videoId) {
+        const safeReel = encodeURIComponent(reelId).replace(/\./g, '%2E');
+        fetch(`${RTDB_BASE}/deletedReelIds.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [safeReel]: true })
+        }).catch(() => {});
+      }
+
+      if (accountKey) {
+        const safeAcc = encodeURIComponent(accountKey).replace(/\./g, '%2E');
+        fetch(`${RTDB_BASE}/deletedAccounts.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [safeAcc]: true })
+        }).catch(() => {});
+      }
+
+      if (commentId) {
+        const safeComm = encodeURIComponent(commentId).replace(/\./g, '%2E');
+        fetch(`${RTDB_BASE}/deletedCommentIds.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ [safeComm]: true })
+        }).catch(() => {});
+      }
+
+      fetch(`${RTDB_BASE}.json`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updatedAt: Date.now() })
+      }).catch(() => {});
+    } catch(err) {
+      console.warn('Push cloud deletion error:', err);
+    }
+
+    // 2. Cloud Firestore (if enabled)
+    try {
+      if (window.tokFirebase && window.tokFirebase.db && typeof firebase !== 'undefined' && firebase.firestore && firebase.firestore.FieldValue) {
+        const update = { updatedAt: new Date().toISOString() };
+        if (videoId) {
+          update.deletedVideoIds = firebase.firestore.FieldValue.arrayUnion(videoId);
+          update.deletedReelIds = firebase.firestore.FieldValue.arrayUnion(videoId);
+        }
+        if (reelId && reelId !== videoId) update.deletedReelIds = firebase.firestore.FieldValue.arrayUnion(reelId);
+        if (accountKey) update.deletedAccounts = firebase.firestore.FieldValue.arrayUnion(accountKey);
+        if (commentId) update.deletedCommentIds = firebase.firestore.FieldValue.arrayUnion(commentId);
+        window.tokFirebase.db.collection('moderation').doc('deleted_records').set(update, { merge: true }).catch(() => {});
+      }
+    } catch(e) {}
+
+    // 3. Local Node server fallback (if running)
+    try {
+      fetch('/api/moderation/deleted', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoId, reelId, accountKey, commentId })
+      }).catch(() => {});
+    } catch(e) {}
+  }
+
+  purgeDeletedFromDOM(deletedIds) {
+    if (!deletedIds || !deletedIds.length) return;
+    const idSet = new Set(deletedIds);
+
+    // 1. YouTube & video preview cards
+    document.querySelectorAll('.yt-card, .video-card, .video-item, .shorts-preview-card').forEach(card => {
+      const onclickAttr = card.getAttribute('onclick') || '';
+      for (const id of idSet) {
+        if (onclickAttr.includes(id) || card.innerHTML.includes(id)) {
+          card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+          setTimeout(() => card.remove(), 250);
+          break;
+        }
+      }
+    });
+
+    // 2. Tok reels on toks.html
+    document.querySelectorAll('.reel-container, .tok-card, [data-reel-id]').forEach(el => {
+      const reelId = el.getAttribute('data-reel-id') || (el.dataset && el.dataset.reelId);
+      if (reelId && idSet.has(reelId)) {
+        el.remove();
+      }
+    });
+
+    // 3. Watch page active player
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentVideoId = urlParams.get('v');
+    if (currentVideoId && idSet.has(currentVideoId) && window.location.pathname.includes('watch.html')) {
+      const playerWrapper = document.querySelector('.video-player-wrapper') || document.querySelector('main');
+      if (playerWrapper) {
+        playerWrapper.innerHTML = `
+          <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:40px 20px;text-align:center;margin:30px auto;max-width:600px;">
+            <div style="font-size:48px;margin-bottom:12px;">🚫</div>
+            <h2 style="font-size:20px;font-weight:800;color:var(--text-primary);margin-bottom:8px;">Video Removed</h2>
+            <p style="font-size:14px;color:var(--text-secondary);margin-bottom:20px;">This video has been deleted by the platform administrator and is no longer available.</p>
+            <a href="index.html" class="btn-primary" style="display:inline-block;padding:10px 24px;text-decoration:none;">Back to Home</a>
+          </div>
+        `;
+      }
+    }
+  }
+
   // ---- Admin Deletion Capabilities (luyandokandisha@gmail.com) ----
   deleteVideo(videoId) {
     if (!videoId) return false;
@@ -1896,6 +2151,12 @@ class StorageManager {
       localStorage.removeItem(`wave_comments_${videoId}`);
       if (this.deleteVideoBlob) this.deleteVideoBlob(videoId).catch(() => {});
 
+      // 4. Cross-device cloud synchronization
+      this.pushCloudDeletion({ videoId, reelId: videoId });
+
+      // 5. Purge from current DOM immediately
+      this.purgeDeletedFromDOM([videoId]);
+
       return true;
     } catch(e) {
       console.error('Error deleting video:', e);
@@ -1912,6 +2173,13 @@ class StorageManager {
       if (!deletedList.includes(idToBlacklist)) {
         deletedList.push(idToBlacklist);
         localStorage.setItem(delKey, JSON.stringify(deletedList));
+      }
+
+      // Also record in global deleted comments
+      const globalDel = JSON.parse(localStorage.getItem('wave_deleted_comments') || '[]');
+      if (!globalDel.includes(idToBlacklist)) {
+        globalDel.push(idToBlacklist);
+        localStorage.setItem('wave_deleted_comments', JSON.stringify(globalDel));
       }
 
       if (isTok) {
@@ -1938,6 +2206,10 @@ class StorageManager {
         }
         localStorage.setItem(`wave_tube_comments_${videoOrReelId}`, JSON.stringify(stored));
       }
+
+      // Cross-device cloud synchronization
+      this.pushCloudDeletion({ commentId: idToBlacklist });
+
       return true;
     } catch(e) {
       console.error('Error deleting comment:', e);
@@ -1976,6 +2248,9 @@ class StorageManager {
       if (session && ((session.email || '').toLowerCase() === key || (session.id || '').toLowerCase() === key)) {
         localStorage.removeItem('wave_session');
       }
+
+      // Cross-device cloud synchronization
+      this.pushCloudDeletion({ accountKey: key });
 
       return true;
     } catch(e) {
@@ -2434,6 +2709,18 @@ class StorageManager {
 }
 
 const storage = new StorageManager();
+
+// Automatically sync cross-device moderation records (deleted videos, reels, accounts, comments)
+try {
+  storage.syncCloudModeration();
+  if (typeof window !== 'undefined') {
+    window.addEventListener('focus', () => storage.syncCloudModeration());
+    window.addEventListener('online', () => storage.syncCloudModeration());
+    window.addEventListener('DOMContentLoaded', () => storage.syncCloudModeration());
+    window.addEventListener('tokFirebaseReady', () => storage.syncCloudModeration());
+    setInterval(() => storage.syncCloudModeration(), 15000);
+  }
+} catch(e) {}
 
 // ==========================================
 // AUTH MODULE (Firebase Cloud + Local fallback)
